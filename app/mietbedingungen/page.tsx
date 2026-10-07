@@ -149,7 +149,9 @@ export default function RentalTermsPage() {
               </p>
               <p>
                 <strong>Lieferung mit Aufbau und Abbau (optional):</strong> Der Vermieter liefert, baut auf und holt nach
-                Terminabsprache wieder ab. Die Lieferpauschale ist eine Kostenerstattung nach Zone:
+                Terminabsprache wieder ab. Der Mieter stellt dabei{' '}
+                <Placeholder>{terms.deliveryHelpers === 1 ? 'eine erwachsene Person' : `${terms.deliveryHelpers} erwachsene Personen`}</Placeholder>,
+                die beim Tragen vom Fahrzeug zum Aufstellort und zurück hilft. Die Lieferpauschale ist eine Kostenerstattung nach Zone:
               </p>
               <ul>
                 {pricingConfig.deliveryZones.map((zone) => (

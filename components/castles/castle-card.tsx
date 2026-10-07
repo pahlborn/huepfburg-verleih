@@ -30,6 +30,9 @@ export function CastleCard({ castle, headingLevel = 'h2', date, isFreeOnDate }: 
           <span className="rounded-full bg-card px-3 py-1 text-sm font-bold text-primary shadow-sm">
             {sizeLabel[castle.size]}
           </span>
+          <span className="rounded-full bg-card px-3 py-1 text-sm font-bold text-primary shadow-sm">
+            bis {castle.maxPersons} Kinder
+          </span>
           {castle.isPlaceholder ? (
             <span className="rounded-full bg-accent px-3 py-1 text-sm font-bold text-accent-foreground shadow-sm">
               Platzhalter

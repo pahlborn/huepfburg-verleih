@@ -47,7 +47,7 @@ export const faqItems: FaqItem[] = [
     id: 'aufbau',
     category: 'Aufbau',
     question: 'Wer baut die Hüpfburg auf und ab?',
-    answer: `Standard ist die Selbstabholung: Sie holen die Burg bei uns ab und bauen sie nach Anleitung selbst auf und ab. Dafür sind mindestens ${rentalTerms.minPersonsForSetup} Personen und ein Kombi oder größerer Transporter nötig. Alternativ liefern wir die Burg und übernehmen Aufbau und Abbau nach Terminabsprache gegen Kostenerstattung nach Liefer-Zone.`,
+    answer: `Standard ist die Selbstabholung: Sie holen die Burg bei uns ab und bauen sie nach Anleitung selbst auf und ab. Dafür sind mindestens ${rentalTerms.minPersonsForSetup} Personen und ein Kombi oder größerer Transporter nötig. Alternativ liefern wir die Burg und übernehmen Aufbau und Abbau nach Terminabsprache gegen Kostenerstattung nach Liefer-Zone. Bitte halten Sie dann eine erwachsene Person bereit, die beim Tragen hilft.`,
   },
   {
     id: 'transport',

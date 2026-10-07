@@ -14,8 +14,7 @@ export function CastleSpecs({ castle, compact = false, className }: CastleSpecsP
   const items = [
     { icon: Ruler, label: 'Maße', value: formatDimensions(castle) },
     { icon: Baby, label: 'Alter', value: castle.ageRange },
-    { icon: Users, label: 'Max. Personen', value: `${castle.maxPersons} gleichzeitig` },
-    { icon: Weight, label: 'Max. Belastung', value: castle.maxLoad },
+    { icon: Users, label: 'Für Kinder', value: `bis zu ${castle.maxPersons} Kinder gleichzeitig` },
     { icon: Weight, label: 'Gewicht der Burg', value: `${castle.weightKg} kg` },
     { icon: Scaling, label: 'Platzbedarf', value: castle.spaceRequired },
     { icon: Plug, label: 'Strombedarf', value: castle.power },

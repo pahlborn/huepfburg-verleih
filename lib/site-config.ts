@@ -83,6 +83,8 @@ export const siteConfig = {
     cleaningFee: 40,
     /** Mindestzahl Personen für Auf- und Abbau bei Selbstabholung. */
     minPersonsForSetup: 2,
+    /** Bei Lieferung: so viele Helfer stellt der Mieter zum Tragen vom Fahrzeug zum Aufstellort. */
+    deliveryHelpers: 1,
     /** Stornostaffel bei Stornierung durch den Mieter (außer Schlechtwetter). Platzhalter. */
     cancellationTiers: [
       { daysBefore: 14, label: 'bis 14 Tage vor Mietbeginn', percent: 0 },

@@ -158,6 +158,12 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
                 />
               )}
             </FormField>
+          ) : null}
+          {fulfilment === 'delivery' ? (
+            <p className="text-sm text-muted-foreground">
+              Hinweis zur Lieferung: Bitte halten Sie {siteConfig.rentalTerms.deliveryHelpers === 1 ? 'eine erwachsene Person' : `${siteConfig.rentalTerms.deliveryHelpers} erwachsene Personen`} bereit,
+              die beim Tragen vom Fahrzeug zum Aufstellort hilft. Die Burg wiegt {castle.weightKg} kg.
+            </p>
           ) : (
             <p className="text-sm text-muted-foreground">
               Hinweis zur Selbstabholung: Sie brauchen mindestens {siteConfig.rentalTerms.minPersonsForSetup} Personen und ein Fahrzeug passender Größe (
