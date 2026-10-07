@@ -447,7 +447,7 @@ function renderArticles(rows) {
     const priceTxt = a.price == null ? `<span class="na">auf Anfrage</span>` : `<span class="price">${a.from ? "ab " : ""}${euro(a.price)}</span>${a.net ? `<div class="sub">aus netto</div>` : ""}`;
     const split = a.wd != null || a.we != null ? `<span class="num">${euro(a.wd)} / ${euro(a.we)}</span>` : `<span class="na">einheitlich</span>`;
     return `<tr>
-      <td><div class="prov">${esc(p.name)}</div><div class="sub">${esc(p.city)}, ${esc(p.state)}</div><div>${tags}</div></td>
+      <td><div class="prov"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a></div><div class="sub">${esc(p.city)}, ${esc(p.state)}</div><div>${tags}</div></td>
       <td>${esc(a.item)}${a.note ? `<div class="sub">${esc(a.note)}</div>` : ""}</td>
       <td>${esc(SIZE_LABEL[a.size])}</td>
       <td class="num">${a.dims ? esc(a.dims) : `<span class="na">k. A.</span>`}</td>
