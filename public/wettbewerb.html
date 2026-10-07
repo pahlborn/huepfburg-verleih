@@ -221,7 +221,36 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
     </div>
   </section>
 
+  <section style="display:flex;flex-direction:column;gap:10px" aria-labelledby="h-names">
+    <h2 id="h-names">Namen und Auffindbarkeit</h2>
+    <p class="lead">Wie nennen sich die Anbieter, was steht im Seitentitel der Startseite und wie holen sie Orte in die Suche? Gelesen am 7. Oktober 2026 von den Startseiten und Sitemaps; wo die Seite nichts Lesbares lieferte, steht „k. A.“.</p>
+    <div class="table-box">
+      <table id="t-names">
+        <thead>
+          <tr>
+            <th>Anbieter</th>
+            <th>Namensart</th>
+            <th>Domain</th>
+            <th>Seitentitel der Startseite</th>
+            <th>Ortsseiten</th>
+            <th>Auffällig</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="notes" aria-label="Einordnung">
+    <div class="note">
+      <h3>Namen und Orte: was die Anbieter tun</h3>
+      <ul>
+        <li>Von 22 gelesenen Anbietern haben 11 einen Fantasienamen, 5 den Suchbegriff mit Ort als Namen (z. B. „Hannover-Hüpfburg-Verleih“), 3 Fantasie plus Ort und 3 einen Personennamen.</li>
+        <li>13 von 21 lesbaren Startseiten haben einen Ort im Seitentitel. Das ist der gängige Weg, nicht der Firmenname.</li>
+        <li>Mindestens 7 Anbieter bauen Unterseiten mit Ortsendung. Basti-Bus hat 53, Gaudihüpfer 20 solche Seiten.</li>
+        <li>Drei Anbieter im Raum München sitzen nicht in München und gehen drei Wege: Ort im Namen (Münchner Hüpfer, Ismaning), Ort im Titel (Hüpfburg Frosch, Gilching), Ort als Unterseite (Gaudihüpfer, Ampfing). Ob jede dieser Varianten rechtlich unbedenklich ist, habe ich nicht geprüft.</li>
+      </ul>
+    </div>
     <div class="note">
       <h3>Was das für deinen Clown heißt</h3>
       <p>Das gleiche Format (ca. 5,2 × 4 m, 10 Kinder) kostet bei vier Anbietern zwischen 155 € und 190 € pro Tag. Frosch in Gilching vermietet laut Maßen und Motiv offenbar dasselbe Modell für 172,55 €. Dein Platzhalter von 99 € am Wochenende liegt deutlich darunter.</p>
@@ -273,6 +302,33 @@ const P = {
   tolli: { name: "Tolli Park", city: "Mayen", state: "Rheinland-Pfalz", muc: false, url: "https://tolli-park.de/huepfburg-clown/", deposit: null, delivery: "Lieferung und Aufbauhilfe gegen Aufpreis", pickup: true, book: "anfrage", storno: null, weather: false, extra: "Wochenendpreis auf Anfrage" },
   mainz: { name: "Mainzer Hüpfburgen", city: "Mainz", state: "Rheinland-Pfalz", muc: false, url: "https://www.huepfburgen-mainz.de/", deposit: "100 € bar bei Selbstabholung", delivery: "Kalkulator auf der Seite", pickup: true, book: "online", storno: "bis 7 Tage vorher kostenlos, danach 50 %", weather: false, extra: "über 100 Module; Reinigungsgebühr 100 €" },
   dresden: { name: "Dresden Hüpfburg", city: "Dresden", state: "Sachsen", muc: false, url: "https://www.dresden-huepfburg.de/", deposit: null, delivery: "keine, nur Selbstabholung", pickup: true, book: "unklar", storno: null, weather: false, extra: "19 Modelle, „ab 35 €“" },
+};
+
+// Namen und Auffindbarkeit. Gelesen von den Startseiten der Anbieter am 07.10.2026 (Seitentitel, Domain, Ortsseiten in Navigation und Sitemap).
+// type: Fantasiename | Ort + Gattung | Ort + Fantasie | Personenname.  ortInTitel: steht ein Ort im Seitentitel der Startseite.
+const N = {
+  mhuepfer: { type: "Ort + Fantasie", domain: "muenchner-huepfer.de", title: "Hüpfburgen Verleih Vermietung München", ortInTitel: true, pages: "keine eigenen Ortsseiten", note: "Sitz Ismaning, „Münchner“ steckt im Namen" },
+  hmuenchen: { type: "Ort + Gattung", domain: "huepfburg-muenchen.de", title: "Hüpfburg mieten in München: Ihr Hüpfburgverleih für die Weltstadt mit Herz!", ortInTitel: true, pages: "keine eigenen Ortsseiten gefunden", note: "Suchbegriff als Name und Domain, Sitz in München" },
+  frosch: { type: "Fantasiename", domain: "huepfburg-frosch.de", title: "Hüpfburgen mieten in München | Hüpfburg Frosch Verleih", ortInTitel: true, pages: "keine Ortsseiten in der Stichprobe", note: "Sitz Gilching, München steht im Titel und in der Überschrift, nicht im Namen" },
+  lorenz: { type: "Personenname", domain: "lorenz-huepfburg.de", title: "Lorenz Hüpfburg - Mieten von Eventmodulen und Ausstattungen", ortInTitel: false, pages: "keine; Liefergebiet nur im Text", note: "Orte (München, Erding, Freising, Ebersberg, Landshut) nur in der Preisübersicht" },
+  flippy: { type: "Fantasiename", domain: "flippy-hopp.de", title: "Hüpfburg & Eventmodule Mieten | Flippy-Hopp Hüpfburgen für Events", ortInTitel: false, pages: "Seiten je Motiv und Ort, z. B. „…-dalmatiner-muenchen“, „…-zirkus-augsburg-memmingen“", note: "Ort steckt in den Unterseiten, nicht im Namen" },
+  gaudi: { type: "Fantasiename", domain: "gaudihuepfer.de", title: "Hüpfburg mieten im Landkreis Mühldorf am Inn - Gaudihüpfer.de", ortInTitel: true, pages: "20 Ortsseiten „huepfburg-mieten-<ort>“, darunter München, Erding, Ebersberg, Rosenheim", note: "Sitz Ampfing; wirbt gezielt für München über eine Unterseite" },
+  schake: { type: "Personenname", domain: "schake-evga.de", title: "Eventmodule mieten in Feucht & Nürnberg | Schake Event & Garten", ortInTitel: true, pages: "Seite je Produkt mit Ort, z. B. „huepfburg-mieten-nuernberg“", note: "Zwei Orte im Titel: Sitz und Großstadt" },
+  berlin: { type: "Ort + Gattung", domain: "hüpfburg.de", title: "Hüpfburg mieten Berlin ab 25 € | Günstig, schnell & direkt buchen", ortInTitel: true, pages: "jede Produktseite endet auf „-mieten-berlin“; über 500 URLs in der Sitemap", note: "Preis im Seitentitel; Domain ist die Gattung selbst" },
+  ott: { type: "Personenname", domain: "ott-event.de", title: "Veranstaltungstechnik und Service von OTTevent aus Hennigsdorf", ortInTitel: false, pages: "keine", note: "Ort nur im Fließtext des Titels" },
+  hanse: { type: "Ort + Fantasie", domain: "hansehuepfer.de", title: "Hansehüpfer | #1 Hüpfburg Hamburg mieten & Verleih 2026", ortInTitel: true, pages: "4 Hamburg-Seiten nach Suchabsicht: mieten, Verleih, Kindergeburtstag, Preise", note: "Region im Namen, Stadt und Jahr im Titel" },
+  luftschloss: { type: "Fantasiename", domain: "luftschloss-huepfburgen.de", title: null, ortInTitel: null, pages: "k. A.", note: "Seite lieferte keinen lesbaren Titel" },
+  hophop: { type: "Fantasiename", domain: "hophopkids.de", title: "HopHopKids - Hüpfburgenverleih", ortInTitel: false, pages: "keine", note: "Kein Ortsbezug im Titel" },
+  happy: { type: "Fantasiename", domain: "happyrentverleih.de", title: "Happy Rent Verleih NRW | Hüpfburgen - Attraktionen & Event Module", ortInTitel: true, pages: "Stadtseiten für Köln, Düsseldorf, Aachen u. a. (mind. 14 in der Sitemap-Stichprobe)", note: "Region im Titel, Städte als Unterseiten" },
+  kispa: { type: "Ort + Fantasie", domain: "kinderspass-frankfurt.de", title: "Hüpfburgen im Rhein-Main-Gebiet - Hüpfburg mieten Frankfurt", ortInTitel: true, pages: "keine Ortsseiten; 9 Seiten gesamt", note: "Ort im Namen und in der Domain" },
+  spass: { type: "Fantasiename", domain: "spass-verleih.de", title: "Eventmodule und Hüpfburgen mieten von Spass Verleih & Events DL GmbH", ortInTitel: false, pages: "vereinzelt, z. B. „/huepfburg-mieten-frankfurt“", note: "Bundesweit; Ortsseite nur für einen Standort gefunden" },
+  hannover: { type: "Ort + Gattung", domain: "hannover-huepfburg-verleih.de", title: "Hannover-Hüpfburg-Verleih - Tolle Hüpfburgen günstig mieten & liefern lassen", ortInTitel: true, pages: "keine; 13 Seiten gesamt", note: "Suchbegriff als Name und Domain" },
+  show4you: { type: "Fantasiename", domain: "show4you.de", title: "Eventattraktionen & Eventmodule mieten | show4you Bietigheim", ortInTitel: false, pages: "keine", note: "Ort nur als Firmensitz im Titel, „Raum Stuttgart“ in der Beschreibung" },
+  basti: { type: "Fantasiename", domain: "basti-bus.de", title: "Kindergeburtstag im (Basti-Bus) mob. Kinderwerkstatt", ortInTitel: false, pages: "53 Ortsseiten „hupfburg-mieten-<stadt>“", note: "Der Name sagt nichts über Hüpfburgen; Reichweite kommt komplett über die Ortsseiten" },
+  k2: { type: "Fantasiename", domain: "k2-eventmanufaktur.de", title: "Startseite - K2 Konzept- und Eventmanufaktur", ortInTitel: false, pages: "keine", note: "Titel „Startseite“, keine Beschreibung" },
+  tolli: { type: "Fantasiename", domain: "tolli-park.de", title: "Tolli Park Mayen - Freizeitpark mit Indoor-Spielplatz", ortInTitel: true, pages: "keine für Hüpfburgen", note: "Hüpfburg-Verleih ist Nebengeschäft eines Freizeitparks" },
+  mainz: { type: "Ort + Gattung", domain: "huepfburgen-mainz.de", title: "Hüpfburg mieten Mainz – 100+ Funmodule & Eyecatcher", ortInTitel: true, pages: "keine Ortsseiten; rund 130 URLs gesamt", note: "Zahl der Module im Titel" },
+  dresden: { type: "Ort + Gattung", domain: "dresden-huepfburg.de", title: "Jetzt Profi Hüpfburgen in Dresden mieten - Dresden Hüpfburg", ortInTitel: true, pages: "keine", note: "Suchbegriff als Name und Domain" },
 };
 
 // Artikel. price = Vergleichspreis pro Tag brutto (Wochenende, falls getrennt angegeben).
@@ -424,6 +480,24 @@ function renderConditions(rows) {
   }).join("");
 }
 
+function renderNames(rows) {
+  const ids = [...new Set(rows.map((a) => a.p))].filter((id) => N[id]).sort((a, b) => (P[b].muc - P[a].muc) || P[a].name.localeCompare(P[b].name, "de"));
+  const tb = $("t-names").querySelector("tbody");
+  if (!ids.length) { tb.innerHTML = `<tr><td colspan="6" class="empty">Keine Anbieter in der Auswahl oder keine Angaben.</td></tr>`; return; }
+  const na = `<span class="na">k. A.</span>`;
+  tb.innerHTML = ids.map((id) => {
+    const p = P[id], n = N[id];
+    return `<tr>
+      <td><div class="prov">${esc(p.name)}</div><div class="sub">${esc(p.city)}, ${esc(p.state)}</div>${p.muc ? `<span class="pill p-muc">Raum München</span>` : ""}</td>
+      <td>${esc(n.type)}</td>
+      <td class="num">${esc(n.domain)}</td>
+      <td>${n.title ? esc(n.title) : na}${n.ortInTitel === true ? `<div class="sub">Ort im Titel</div>` : n.ortInTitel === false ? `<div class="sub">kein Ort im Titel</div>` : ""}</td>
+      <td>${esc(n.pages)}</td>
+      <td>${esc(n.note)}</td>
+    </tr>`;
+  }).join("");
+}
+
 function renderStrip(rows) {
   const svg = $("strip");
   const W = 1000, L = 40, R = 980, max = 400;
@@ -468,6 +542,7 @@ function render() {
   renderKpis(rows);
   renderArticles(rows);
   renderConditions(rows);
+  renderNames(rows);
   renderStrip(rows);
   const active = [state.q, state.region !== "alle", state.sizes.size, state.books.size, state.max < 400, state.priced, state.pickup, state.delivery, state.weather, state.clown].filter(Boolean).length;
   $("f-status").textContent = active ? `${rows.length} von ${A.length} Artikeln, ${active} Filter aktiv` : `Alle ${A.length} Artikel`;
