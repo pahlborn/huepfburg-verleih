@@ -79,6 +79,23 @@ export const siteConfig = {
     /** Kurzer Hinweis für Startseite, Karten und Buchung (mit Sternchen auf die Fußnote). */
     weatherBadge: 'Kostenlos stornieren bei schlechtem Wetter',
     maxSlopeDegrees: 5,
+    /**
+     * Zeiten für die FAQ. Erfahrungswerte anderer Verleiher und Herstellerangabe (Clown: Aufbau ca. 10 Min.).
+     * Nach dem ersten eigenen Aufbau mit echten Werten ersetzen.
+     */
+    handlingTimes: {
+      setupTotal: 'ca. 15 bis 30 Minuten',
+      inflate: 'ca. 1 bis 5 Minuten',
+      deflate: 'ca. 5 Minuten',
+      fold: 'ca. 15 bis 25 Minuten',
+    },
+    /** Abhol- und Rückgabezeiten (Platzhalter). */
+    handoverTimes: {
+      dayPickupFrom: '[Platzhalter: 9:00 Uhr]',
+      dayReturnBy: '[Platzhalter: 10:00 Uhr am Folgetag]',
+      weekendPickup: '[Platzhalter: Freitag ab 15:00 Uhr]',
+      weekendReturn: '[Platzhalter: Montag bis 10:00 Uhr]',
+    },
     accessWidthMeters: 1.5,
     cleaningFee: 40,
     /** Mindestzahl Personen für Auf- und Abbau bei Selbstabholung. */
