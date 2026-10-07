@@ -13,6 +13,8 @@ export type CastleSize = 'klein' | 'mittel' | 'groß'
 export interface CastleImage {
   src: string
   alt: string
+  /** Bildnachweis, wird als kleine Zeile im Bild angezeigt, z. B. "Bild: Hersteller". */
+  credit?: string
 }
 
 export interface Castle {
@@ -90,7 +92,15 @@ export const castles: Castle[] = [
     setupMinutes: 10,
     // Preise sind Platzhalter, bis die Kalkulation steht.
     pricing: { weekday: 69, weekend: 99, weekendPackage: 169, deposit: 100 },
-    images: [],
+    // ÜBERGANGSLÖSUNG bis zur Veröffentlichung: Herstellerbild mit Bildnachweis.
+    // Vor dem Livegang durch eigene Fotos ersetzen oder schriftliche Freigabe des Herstellers einholen.
+    images: [
+      {
+        src: '/castles/klatschender-clown/1.jpg',
+        alt: 'Bunte Hüpfburg mit Clown in Zylinder und Ringelshirt auf dem Dach',
+        credit: 'Bild: JB Inflatables',
+      },
+    ],
   },
   {
     slug: 'burg-beispiel-3',

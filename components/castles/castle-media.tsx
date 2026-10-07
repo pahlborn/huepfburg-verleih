@@ -28,5 +28,14 @@ export function CastleMedia({
       />
     )
   }
-  return <Image src={image.src || '/placeholder.svg'} alt={image.alt} fill sizes={sizes} priority={priority} className="object-cover" />
+  return (
+    <>
+      <Image src={image.src || '/placeholder.svg'} alt={image.alt} fill sizes={sizes} priority={priority} className="object-cover" />
+      {image.credit ? (
+        <span className="absolute bottom-1 right-1 rounded bg-black/55 px-1.5 py-0.5 text-[10px] leading-none text-white">
+          {image.credit}
+        </span>
+      ) : null}
+    </>
+  )
 }
