@@ -1,4 +1,5 @@
-'use server'
+// Läuft im Browser, solange es kein Backend gibt (statische Vorschau).
+// Mit echter Datenbank wieder als Server-Action ('use server') ausführen.
 
 import { checkAvailability, createBooking } from '@/lib/availability'
 import { validateBookingForm, type BookingFormErrors, type BookingFormValues } from '@/lib/booking-validation'

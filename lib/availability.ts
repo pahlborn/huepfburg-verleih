@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { getCastle } from '@/lib/castles'
 import { addDays, todayISO, weekdayOf, type ISODate } from '@/lib/dates'
 import { getSelectability, type SelectabilityReason } from '@/lib/booking-rules'

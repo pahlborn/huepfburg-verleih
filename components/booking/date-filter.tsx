@@ -2,6 +2,7 @@ import { CalendarSearch } from 'lucide-react'
 import { earliestBookableDate, latestBookableDate } from '@/lib/booking-rules'
 import type { ISODate } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { withBasePath } from '@/lib/base-path'
 
 interface DateFilterProps {
   today: ISODate
@@ -14,7 +15,7 @@ interface DateFilterProps {
 export function DateFilter({ today, defaultDate, inputId, className }: DateFilterProps) {
   return (
     <form
-      action="/huepfburgen"
+      action={withBasePath(process.env.NEXT_PUBLIC_BASE_PATH ? '/huepfburgen/' : '/huepfburgen')}
       method="get"
       className={cn('flex flex-col gap-3 rounded-3xl border-2 bg-card p-4 shadow-sm sm:flex-row sm:items-end sm:p-5', className)}
     >

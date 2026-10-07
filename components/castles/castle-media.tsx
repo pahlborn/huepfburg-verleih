@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { PlaceholderImage } from '@/components/common/placeholder-image'
 import type { Castle } from '@/lib/castles'
+import { withBasePath } from '@/lib/base-path'
 
 interface CastleMediaProps {
   castle: Castle
@@ -30,7 +31,7 @@ export function CastleMedia({
   }
   return (
     <>
-      <Image src={image.src || '/placeholder.svg'} alt={image.alt} fill sizes={sizes} priority={priority} className="object-cover" />
+      <Image src={withBasePath(image.src || '/placeholder.svg')} alt={image.alt} fill sizes={sizes} priority={priority} className="object-cover" />
       {image.credit ? (
         <span className="absolute bottom-1 right-1 rounded bg-black/55 px-1.5 py-0.5 text-[10px] leading-none text-white">
           {image.credit}

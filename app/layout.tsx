@@ -5,6 +5,7 @@ import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
 import { StickyCta } from '@/components/layout/sticky-cta'
 import { siteConfig } from '@/lib/site-config'
+import { withBasePath } from '@/lib/base-path'
 import './globals.css'
 
 const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito', display: 'swap' })
@@ -26,7 +27,9 @@ export const metadata: Metadata = {
     title: `Hüpfburg mieten im ${siteConfig.serviceArea.headline}`,
     description: siteConfig.description,
   },
-  icons: { icon: '/icon.svg' },
+  icons: { icon: withBasePath('/icon.svg') },
+  // Entwurf auf GitHub Pages: nicht in Suchmaschinen aufnehmen.
+  ...(process.env.NEXT_PUBLIC_NOINDEX ? { robots: { index: false, follow: false } } : {}),
 }
 
 export const viewport: Viewport = {

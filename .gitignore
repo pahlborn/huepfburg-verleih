@@ -16,3 +16,6 @@ node_modules
 # Next.js / TypeScript generated
 next-env.d.ts
 *.tsbuildinfo
+
+# Statischer Export für GitHub Pages
+/out/

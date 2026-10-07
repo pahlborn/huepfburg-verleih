@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ChevronRight, CircleCheck, TriangleAlert } from 'lucide-react'
-import { BookingPanel } from '@/components/booking/booking-panel'
+import { BookingPanelLoader } from '@/components/booking/booking-panel-loader'
 import { CastleMedia } from '@/components/castles/castle-media'
 import { CastleSpecs } from '@/components/castles/castle-specs'
-import { getBookedDates } from '@/lib/availability'
 import { castles, getCastle, getLowestPrice } from '@/lib/castles'
-import { isValidISODate, todayISO } from '@/lib/dates'
 import { formatEuro } from '@/lib/format'
 import { siteConfig } from '@/lib/site-config'
+
+export const dynamicParams = false
 
 export function generateStaticParams() {
   return castles.map((castle) => ({ slug: castle.slug }))
@@ -26,17 +26,10 @@ export async function generateMetadata({ params }: PageProps<'/huepfburgen/[slug
   }
 }
 
-export default async function CastleDetailPage({ params, searchParams }: PageProps<'/huepfburgen/[slug]'>) {
+export default async function CastleDetailPage({ params }: PageProps<'/huepfburgen/[slug]'>) {
   const { slug } = await params
   const castle = getCastle(slug)
   if (!castle) notFound()
-
-  const query = await searchParams
-  const rawDate = Array.isArray(query.datum) ? query.datum[0] : query.datum
-  const initialDate = isValidISODate(rawDate) ? rawDate : undefined
-
-  const bookedDates = await getBookedDates(castle.slug)
-  const today = todayISO()
 
   return (
     <>
@@ -117,7 +110,7 @@ export default async function CastleDetailPage({ params, searchParams }: PagePro
             Termin wählen, Preis sofort sehen, direkt buchen. Ohne Anfrage und ohne Warten.
           </p>
           <div className="rounded-[2rem] border bg-background p-5 shadow-sm sm:p-8">
-            <BookingPanel castle={castle} bookedDates={bookedDates} today={today} initialDate={initialDate} />
+            <BookingPanelLoader castle={castle} />
           </div>
           <p className="mt-6 flex items-start gap-2 text-sm text-muted-foreground">
             <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
