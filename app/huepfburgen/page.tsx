@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { CastleDateFilter, CastleGrid } from '@/components/castles/castle-list'
 import { PageHero } from '@/components/common/page-hero'
+import { WeatherFootnote } from '@/components/common/weather-note'
 import { siteConfig } from '@/lib/site-config'
 
 export const metadata: Metadata = {
@@ -30,7 +31,8 @@ export default function CastlesPage() {
         <Suspense fallback={null}>
           <CastleGrid />
         </Suspense>
-        <p className="mt-10 max-w-2xl text-muted-foreground">
+        <WeatherFootnote className="mt-10 max-w-2xl" />
+        <p className="mt-4 max-w-2xl text-muted-foreground">
           Alle Burgen, Maße und Preise auf dieser Seite sind Platzhalter und werden vor dem Start durch die echten Daten ersetzt.
         </p>
       </section>

@@ -8,6 +8,7 @@ import { CastleSpecs } from '@/components/castles/castle-specs'
 import { castles, getCastle, getLowestPrice } from '@/lib/castles'
 import { formatEuro } from '@/lib/format'
 import { siteConfig } from '@/lib/site-config'
+import { WeatherBadge, WeatherFootnote } from '@/components/common/weather-note'
 
 export const dynamicParams = false
 
@@ -87,6 +88,10 @@ export default async function CastleDetailPage({ params }: PageProps<'/huepfburg
             ab <span className="font-heading text-4xl font-semibold text-foreground">{formatEuro(getLowestPrice(castle))}</span> pro Tag,
             zzgl. Kaution {formatEuro(castle.pricing.deposit)}
           </p>
+          <div className="flex flex-col gap-2">
+            <WeatherBadge className="self-start" />
+            <WeatherFootnote />
+          </div>
 
           <ul className="flex flex-col gap-2">
             {castle.highlights.map((highlight) => (

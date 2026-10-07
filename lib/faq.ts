@@ -40,7 +40,7 @@ export const faqItems: FaqItem[] = [
     id: 'wetter',
     category: 'Wetter',
     question: 'Was passiert bei schlechtem Wetter?',
-    answer: `Bei Regen, Gewitter und ab Windstärke ${rentalTerms.windLimit.beaufort} (${rentalTerms.windLimit.kmh}) darf die Burg nicht betrieben werden. Dann wird sie sofort abgeschaltet und entleert. Bei schlechtem Wetter am Miettag können Sie bis ${rentalTerms.weatherChangeHoursBefore} Stunden vorher kostenfrei umbuchen oder stornieren.`,
+    answer: `Bei Regen, Gewitter und ab Windstärke ${rentalTerms.windLimit.beaufort} (${rentalTerms.windLimit.kmh}) darf die Burg nicht betrieben werden. Dann wird sie sofort abgeschaltet und entleert. Bei schlechtem Wetter am Miettag können Sie bis ${rentalTerms.weatherChangeHoursBefore} Stunden vorher kostenfrei umbuchen oder stornieren. Bei gebuchter Lieferung mit Auf- und Abbau sind die dafür anfallenden Kosten ggf. trotzdem zu tragen.`,
     featured: true,
   },
   {

@@ -108,7 +108,8 @@ export default function RentalTermsPage() {
               </p>
               <p>
                 Bei schlechtem Wetter am Miettag ist eine kostenfreie Umbuchung oder Stornierung möglich, wenn Sie uns bis{' '}
-                <Placeholder>{terms.weatherChangeHoursBefore} Stunden</Placeholder> vor Mietbeginn informieren. Wir
+                <Placeholder>{terms.weatherChangeHoursBefore} Stunden</Placeholder> vor Mietbeginn informieren. Bei
+                gebuchter Lieferung mit Auf- und Abbau sind die dafür anfallenden Kosten ggf. trotzdem zu tragen. Wir
                 empfehlen, die Wettervorhersage am Vortag zu prüfen.
               </p>
             </LegalSection>

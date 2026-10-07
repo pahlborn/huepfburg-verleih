@@ -1,4 +1,4 @@
-import { Baby, Plug, Ruler, Scaling, Users } from 'lucide-react'
+import { Baby, Plug, Ruler, Scaling, Users, Weight } from 'lucide-react'
 import type { Castle } from '@/lib/castles'
 import { formatDimensions } from '@/lib/castles'
 import { cn } from '@/lib/utils'
@@ -15,6 +15,8 @@ export function CastleSpecs({ castle, compact = false, className }: CastleSpecsP
     { icon: Ruler, label: 'Maße', value: formatDimensions(castle) },
     { icon: Baby, label: 'Alter', value: castle.ageRange },
     { icon: Users, label: 'Max. Personen', value: `${castle.maxPersons} gleichzeitig` },
+    { icon: Weight, label: 'Max. Belastung', value: castle.maxLoad },
+    { icon: Weight, label: 'Gewicht der Burg', value: `${castle.weightKg} kg` },
     { icon: Scaling, label: 'Platzbedarf', value: castle.spaceRequired },
     { icon: Plug, label: 'Strombedarf', value: castle.power },
   ]
@@ -24,7 +26,7 @@ export function CastleSpecs({ castle, compact = false, className }: CastleSpecsP
       {items.map(({ icon: Icon, label, value }, index) => (
         <div
           key={label}
-          className={cn('flex items-start gap-2.5', compact && index === 0 && 'col-span-2', compact && index === 4 && 'col-span-2')}
+          className={cn('flex items-start gap-2.5', compact && index === 0 && 'col-span-2', compact && index === items.length - 1 && 'col-span-2')}
         >
           <Icon className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
           <div>

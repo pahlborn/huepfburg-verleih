@@ -3,6 +3,7 @@ import { formatCents } from '@/lib/format'
 import { formatDateLong, addDays, type ISODate } from '@/lib/dates'
 import { pricingConfig, type PriceResult, type RentalType } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
+import { WeatherBadge, WeatherFootnote } from '@/components/common/weather-note'
 
 interface PriceSummaryProps {
   price: PriceResult | null
@@ -85,6 +86,11 @@ export function PriceSummary({ price, date, rentalType }: PriceSummaryProps) {
           Die Kaution ist nicht im Mietpreis enthalten. Sie wird bei Übernahme fällig und nach ordnungsgemäßer Rückgabe
           zurückgegeben.
         </p>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <WeatherBadge className="self-start" />
+        <WeatherFootnote />
       </div>
 
       <p className="text-xs text-muted-foreground">

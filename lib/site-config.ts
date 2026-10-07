@@ -76,6 +76,8 @@ export const siteConfig = {
     },
     /** Kostenlose Umbuchung/Stornierung bei schlechtem Wetter bis X Stunden vor Mietbeginn. */
     weatherChangeHoursBefore: 24,
+    /** Kurzer Hinweis für Startseite, Karten und Buchung (mit Sternchen auf die Fußnote). */
+    weatherBadge: 'Kostenlos stornieren bei schlechtem Wetter',
     maxSlopeDegrees: 5,
     accessWidthMeters: 1.5,
     cleaningFee: 40,

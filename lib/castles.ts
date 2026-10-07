@@ -32,7 +32,10 @@ export interface Castle {
   /** Benötigte Stellfläche inklusive Sicherheitsabstand. */
   spaceRequired: string
   power: string
+  /** Gewicht der Burg inkl. Tasche (für Transport bei Selbstabholung). */
   weightKg: number
+  /** Maximale Gesamtbelastung durch die Nutzer laut Hersteller, z. B. '750 kg'. */
+  maxLoad: string
   /** Platzbedarf im Fahrzeug bei Selbstabholung. */
   transport: string
   setupMinutes: number
@@ -65,6 +68,7 @@ export const castles: Castle[] = [
     spaceRequired: 'ca. 6 × 6 m inkl. Sicherheitsabstand',
     power: '230 V, 1 Gebläse (ca. 0,7 kW)',
     weightKg: 35,
+    maxLoad: '[Platzhalter] 450 kg',
     transport: 'Kombi genügt, ca. 100 × 60 × 60 cm',
     setupMinutes: 20,
     pricing: { weekday: 49, weekend: 69, weekendPackage: 119, deposit: 100 },
@@ -88,6 +92,7 @@ export const castles: Castle[] = [
     spaceRequired: '[PRÜFEN: Stellfläche inkl. Sicherheitsabstand laut Bedienungsanleitung]',
     power: '230 V, 1 Gebläse (1,1 kW)',
     weightKg: 95,
+    maxLoad: '[PRÜFEN: max. Gesamtgewicht laut Hersteller]',
     transport: 'Packmaß ca. 70 × 100 cm, 95 kg: Kombi oder Transporter, zwei Personen zum Tragen',
     setupMinutes: 10,
     // Preise sind Platzhalter, bis die Kalkulation steht.
@@ -117,6 +122,7 @@ export const castles: Castle[] = [
     spaceRequired: 'ca. 10 × 8 m inkl. Sicherheitsabstand',
     power: '230 V, 1 Gebläse (ca. 1,5 kW)',
     weightKg: 110,
+    maxLoad: '[Platzhalter] 900 kg',
     transport: 'Transporter nötig, ca. 150 × 80 × 80 cm',
     setupMinutes: 45,
     pricing: { weekday: 99, weekend: 139, weekendPackage: 239, deposit: 150 },

@@ -1,3 +1,4 @@
+import { WeatherBadge } from '@/components/common/weather-note'
 import Link from 'next/link'
 import { ArrowRight, CircleCheck, CircleX } from 'lucide-react'
 import { CastleMedia } from '@/components/castles/castle-media'
@@ -45,6 +46,7 @@ export function CastleCard({ castle, headingLevel = 'h2', date, isFreeOnDate }: 
             </Link>
           </Heading>
           <p className="mt-1 text-muted-foreground">{castle.teaser}</p>
+          <WeatherBadge className="mt-3" />
         </div>
 
         {date && isFreeOnDate !== undefined ? (

@@ -3,8 +3,14 @@ import { DateFilter } from '@/components/booking/date-filter'
 import { PlaceholderImage } from '@/components/common/placeholder-image'
 import type { ISODate } from '@/lib/dates'
 import { siteConfig } from '@/lib/site-config'
+import { WeatherFootnote } from '@/components/common/weather-note'
 
-const promises = ['Verfügbarkeit und Preis sofort sehen', 'Selbstabholung oder Lieferung mit Aufbau', 'Kaution transparent, getrennt ausgewiesen']
+const promises = [
+  'Verfügbarkeit und Preis sofort sehen',
+  `${siteConfig.rentalTerms.weatherBadge}*`,
+  'Selbstabholung oder Lieferung mit Aufbau',
+  'Kaution transparent, getrennt ausgewiesen',
+]
 
 export function Hero({ today }: { today: ISODate }) {
   return (
@@ -28,6 +34,7 @@ export function Hero({ today }: { today: ISODate }) {
             ))}
           </ul>
           <DateFilter today={today} inputId="hero-datum" className="mt-8 max-w-xl" />
+          <WeatherFootnote className="mt-3 max-w-xl" />
         </div>
 
         <div className="rise-in aspect-[4/3] overflow-hidden rounded-[2rem] border-4 border-background shadow-lg [animation-delay:120ms]">
