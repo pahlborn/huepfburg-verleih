@@ -72,7 +72,7 @@ export function PriceSummary({ price, date, rentalType }: PriceSummaryProps) {
           </div>
         ))}
         <div className="flex items-baseline justify-between gap-4 border-t-2 pt-3">
-          <dt className="font-heading text-lg font-semibold">Mietpreis gesamt</dt>
+          <dt className="font-heading text-lg font-semibold">Gesamtpreis</dt>
           <dd className="font-heading text-3xl font-semibold text-primary">{formatCents(price.totalCents)}</dd>
         </div>
       </dl>
@@ -83,7 +83,7 @@ export function PriceSummary({ price, date, rentalType }: PriceSummaryProps) {
           <dd className="font-heading text-xl font-semibold">{formatCents(price.depositCents)}</dd>
         </dl>
         <p className="mt-1 text-sm text-muted-foreground">
-          Die Kaution ist nicht im Mietpreis enthalten. Sie wird bei Übernahme fällig und nach ordnungsgemäßer Rückgabe
+          Die Kaution ist nicht im Gesamtpreis enthalten. Sie wird bei Übernahme fällig und nach ordnungsgemäßer Rückgabe
           zurückgegeben.
         </p>
       </div>
@@ -94,7 +94,7 @@ export function PriceSummary({ price, date, rentalType }: PriceSummaryProps) {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Alle Preise sind Platzhalter. [Hinweis zu MwSt. bzw. § 19 UStG ergänzen] Kontakt: {siteConfig.contact.phone}
+        Alle Preise sind Platzhalter. [Hinweis zu MwSt. bzw. § 19 UStG ergänzen] Fragen vorab? {siteConfig.contact.phone}
       </p>
     </div>
   )

@@ -1,5 +1,6 @@
 import type { Castle } from '@/lib/castles'
 import { addDays, weekdayOf, type ISODate } from '@/lib/dates'
+import { getExtra, sanitizeExtras } from '@/lib/extras'
 import { getHolidayName } from '@/lib/holidays'
 
 /**
@@ -154,10 +155,13 @@ export interface PriceInput {
   rentalType: RentalType
   fulfilment: Fulfilment
   postalCode?: string
+  /** IDs aus lib/extras.ts. Unbekannte oder nicht buchbare werden ignoriert. */
+  extras?: readonly string[]
 }
 
 export interface PriceLine {
-  id: 'rental' | 'delivery'
+  /** 'rental', 'delivery' oder 'extra-<id>'. */
+  id: string
   label: string
   detail?: string
   cents: number
@@ -223,6 +227,12 @@ export function calculatePrice(input: PriceInput): PriceResult {
       detail: `bis ${zone.maxKm} km, Kostenerstattung`,
       cents: toCents(zone.fee),
     })
+  }
+
+  for (const id of sanitizeExtras(input.extras, fulfilment)) {
+    const extra = getExtra(id)
+    if (!extra) continue
+    lines.push({ id: `extra-${extra.id}`, label: `Zubehör: ${extra.name}`, detail: 'pro Miete', cents: toCents(extra.price) })
   }
 
   return {

@@ -247,13 +247,17 @@ export function BookingForm({ castle, selection, price }: BookingFormProps) {
             <SummaryRow label="Wunschzeit" value={timeSlotLabel ?? 'noch nicht gewählt'} />
             <SummaryRow label="Untergrund" value={surfaceLabel ?? 'noch nicht gewählt'} />
             {readyPrice.lines.map((line) => (
-              <SummaryRow key={line.id} label={line.id === 'rental' ? 'Miete' : 'Lieferpauschale'} value={formatCents(line.cents)} />
+              <SummaryRow
+                key={line.id}
+                label={line.id === 'rental' ? 'Miete' : line.id === 'delivery' ? 'Lieferpauschale' : line.label}
+                value={formatCents(line.cents)}
+              />
             ))}
-            <SummaryRow label="Mietpreis gesamt" value={formatCents(readyPrice.totalCents)} strong />
+            <SummaryRow label="Gesamtpreis" value={formatCents(readyPrice.totalCents)} strong />
             <SummaryRow label="Kaution (bei Übernahme, zusätzlich)" value={formatCents(readyPrice.depositCents)} />
           </dl>
           <p className="mt-4 text-sm text-muted-foreground">
-            Mit dem Klick auf „Zahlungspflichtig buchen“ buchen Sie verbindlich und verpflichten sich, den Mietpreis von{' '}
+            Mit dem Klick auf „Zahlungspflichtig buchen“ buchen Sie verbindlich und verpflichten sich, den Gesamtpreis von{' '}
             {formatCents(readyPrice.totalCents)} zu zahlen. Die Kaution von {formatCents(readyPrice.depositCents)} wird
             getrennt bei Übernahme fällig.
           </p>

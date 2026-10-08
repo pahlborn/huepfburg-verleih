@@ -36,6 +36,8 @@ export interface BookingRecord {
     notes: string
   }
   timeSlot: string
+  /** Gebuchtes Zubehör (IDs aus lib/extras.ts). */
+  extras: string[]
   totalCents: number
   depositCents: number
   createdAt: string

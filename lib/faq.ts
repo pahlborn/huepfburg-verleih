@@ -1,9 +1,14 @@
 import { siteConfig } from '@/lib/site-config'
+import { extras } from '@/lib/extras'
 import { formatEuro } from '@/lib/format'
 
 const { rentalTerms } = siteConfig
 const times = rentalTerms.handlingTimes
 const handover = rentalTerms.handoverTimes
+const extraList = extras
+  .filter((extra) => extra.enabled)
+  .map((extra) => `${extra.name} (${formatEuro(extra.price)})`)
+  .join(', ')
 
 export interface FaqItem {
   id: string
@@ -31,7 +36,13 @@ export const faqItems: FaqItem[] = [
     category: 'Buchung und Abholung',
     question: 'Wie läuft die Buchung ab?',
     answer:
-      'Burg und Datum wählen, Selbstabholung oder Lieferung auswählen, Ihre Daten eintragen und verbindlich buchen. Sie erhalten eine Bestätigung per E-Mail. Die Abstimmung der genauen Uhrzeit folgt danach.',
+      'Burg und Datum wählen, Selbstabholung oder Lieferung auswählen, bei Bedarf Zubehör dazunehmen, Ihre Daten eintragen und verbindlich buchen. Sie erhalten eine Bestätigung per E-Mail. Die Abstimmung der genauen Uhrzeit folgt danach.',
+  },
+  {
+    id: 'telefonisch',
+    category: 'Buchung und Abholung',
+    question: 'Kann ich auch telefonisch buchen?',
+    answer: siteConfig.contact.bookingNote,
   },
   {
     id: 'zielgruppe',
@@ -71,6 +82,20 @@ export const faqItems: FaqItem[] = [
     question: 'Welches Fahrzeug brauche ich zur Abholung?',
     answer:
       'Je nach Burg reicht ein Kombi oder es ist ein Transporter oder Anhänger nötig. Packmaß und Gewicht stehen bei jeder Burg. Die Burgen sind zusammengerollt und schwer: Kommen Sie bitte mindestens zu zweit, bei schweren Burgen besser zu dritt.',
+  },
+  {
+    id: 'mitbringen',
+    category: 'Buchung und Abholung',
+    question: 'Was muss ich zur Abholung mitbringen?',
+    answer:
+      'Ihren Personalausweis, die Buchungsbestätigung und die Kaution. Außerdem ein leeres Fahrzeug: Kindersitze, Kisten und Gepäck bitte vorher ausräumen. Kommen Sie mindestens zu zweit, damit Sie die Burg gemeinsam tragen können.',
+  },
+  {
+    id: 'abholung-dritte',
+    category: 'Buchung und Abholung',
+    question: 'Darf jemand anderes die Burg für mich abholen?',
+    answer:
+      'Ja. Geben Sie der Person eine kurze Vollmacht, ein Foto Ihres Ausweises und die Buchungsbestätigung mit. Vertragspartner bleiben Sie.',
   },
 
   // --- Aufbau und Abbau ---
@@ -118,7 +143,13 @@ export const faqItems: FaqItem[] = [
     category: 'Aufbau und Abbau',
     question: 'Was ist bei der Miete dabei?',
     answer:
-      'Hüpfburg, Gebläse, Erdnägel zum Verankern, Unterlegplane, Transporttasche und Aufbauanleitung. Für harten Untergrund gibt es Sandsäcke und Fallschutzmatten [Platzhalter: inklusive oder gegen Aufpreis].',
+      'Hüpfburg, Gebläse, Erdnägel zum Verankern, Unterlegplane, Transporttasche und Aufbauanleitung. Für harten Untergrund und mehr Komfort können Sie Zubehör dazubuchen.',
+  },
+  {
+    id: 'zubehoer',
+    category: 'Aufbau und Abbau',
+    question: 'Welches Zubehör kann ich dazubuchen?',
+    answer: `Beim Buchen können Sie auswählen: ${extraList}. Die Preise gelten pro Miete, auch für das Wochenendpaket, und erscheinen sofort im Gesamtpreis.`,
   },
 
   // --- Aufstellort und Strom ---
@@ -141,14 +172,14 @@ export const faqItems: FaqItem[] = [
     category: 'Aufstellort und Strom',
     question: 'Geht das auch auf Pflaster, Asphalt oder Beton?',
     answer:
-      'Ja. Dort hält die Burg nicht mit Erdnägeln, sondern wird mit Sandsäcken beschwert. Vor dem Eingang liegen Fallschutzmatten. Geben Sie den Untergrund bitte beim Buchen an, dann packen wir das passende Zubehör ein.',
+      'Ja. Dort halten keine Erdnägel, die Burg wird stattdessen mit Wassersäcken beschwert. Vor den Eingang gehört eine Fallschutzmatte. Beides können Sie beim Buchen als Zubehör dazunehmen. Geben Sie außerdem den Untergrund an, dann beraten wir Sie bei Bedarf.',
   },
   {
     id: 'indoor',
     category: 'Aufstellort und Strom',
     question: 'Kann ich die Burg in einer Halle oder Turnhalle aufstellen?',
     answer:
-      'Ja, wenn die Halle hoch genug ist. Die Höhe der Burg steht bei den Maßen, darüber braucht es noch etwas Abstand zur Decke und zu Lampen. Statt Erdnägeln werden Sandsäcke verwendet. Fragen Sie im Zweifel vorher bei uns nach.',
+      'Ja, wenn die Halle hoch genug ist. Die Höhe der Burg steht bei den Maßen, darüber braucht es noch etwas Abstand zur Decke und zu Lampen. Statt Erdnägeln werden Wassersäcke verwendet, und ein Gebläse-Schallschutz macht es drinnen deutlich leiser. Beides gibt es als Zubehör. Fragen Sie im Zweifel vorher bei uns nach.',
   },
   {
     id: 'strom',
@@ -162,8 +193,7 @@ export const faqItems: FaqItem[] = [
     id: 'kabel',
     category: 'Aufstellort und Strom',
     question: 'Darf ich ein Verlängerungskabel benutzen?',
-    answer:
-      'Ja. Nutzen Sie ein für draußen geeignetes Kabel und rollen Sie eine Kabeltrommel immer vollständig ab, sonst kann sie heiß werden. Verlegen Sie das Kabel so, dass niemand darüber stolpert. Bei langen Wegen helfen wir mit einem Kabel nach Absprache.',
+    answer: `Ja, bis ca. ${rentalTerms.maxCableMeters} m. Ein längeres Kabel liefert oft zu wenig Strom, dann bläst sich die Burg nicht richtig auf. Nutzen Sie ein für draußen geeignetes Kabel und rollen Sie eine Kabeltrommel immer vollständig ab, sonst kann sie heiß werden. Verlegen Sie das Kabel so, dass niemand darüber stolpert.`,
   },
   {
     id: 'geblaese',
@@ -245,6 +275,12 @@ export const faqItems: FaqItem[] = [
     question: 'Ab wann ist es zu windig?',
     answer: `Ab Windstärke ${rentalTerms.windLimit.beaufort}, das sind ${rentalTerms.windLimit.kmh}. Daran erkennen Sie es: Kleine Laubbäume beginnen zu schwanken. Die Burg muss dann sofort geräumt und abgeschaltet werden, auch wenn sie gut verankert ist.`,
   },
+  {
+    id: 'hitze',
+    category: 'Wetter',
+    question: 'Und wenn es sehr heiß wird?',
+    answer: `Sagt die Vorhersage für Ihren Ort mehr als ${rentalTerms.heatLimitCelsius} °C voraus, gilt das wie schlechtes Wetter: Sie können bis ${rentalTerms.weatherChangeHoursBefore} Stunden vorher kostenlos umbuchen oder stornieren. Wenn Sie trotzdem feiern: Stellen Sie die Burg möglichst in den Schatten, machen Sie regelmäßig Pausen und halten Sie Wasser bereit. Die Plane wird in der prallen Sonne sehr warm.`,
+  },
 
   // --- Rückgabe ---
   {
@@ -261,11 +297,17 @@ export const faqItems: FaqItem[] = [
       'Lassen Sie sie aufgeblasen stehen, bis sie trocken ist, das geht durch das Gebläse meist schnell. Rollen Sie sie nicht nass ein. Klappt das nicht mehr, sagen Sie uns bei der Rückgabe Bescheid, dann trocknen wir sie.',
   },
   {
+    id: 'verspaetung',
+    category: 'Rückgabe',
+    question: 'Was passiert, wenn ich die Burg zu spät zurückbringe?',
+    answer: `Sagen Sie uns bitte so früh wie möglich Bescheid, oft lässt sich eine Lösung finden. Ohne Absprache berechnen wir je angefangenem Tag ${formatEuro(rentalTerms.lateReturnFeePerDay)}, weil die Burg dann meist schon für die nächste Feier eingeplant ist.`,
+  },
+  {
     id: 'schaden',
     category: 'Rückgabe',
     question: 'Was passiert, wenn etwas kaputtgeht?',
     answer:
-      'Melden Sie Schäden bitte sofort, nutzen Sie die Burg dann nicht weiter. Normale Abnutzung tragen wir. Schäden durch unsachgemäße Nutzung, etwa durch Schuhe, spitze Gegenstände oder Überlastung, trägt der Mieter.',
+      'Melden Sie Schäden bitte sofort, am besten mit einem Foto per Nachricht oder E-Mail, und nutzen Sie die Burg dann nicht weiter. Normale Abnutzung tragen wir. Schäden durch unsachgemäße Nutzung, etwa durch Schuhe, spitze Gegenstände oder Überlastung, trägt der Mieter.',
   },
   {
     id: 'fotos',
@@ -296,6 +338,12 @@ export const faqItems: FaqItem[] = [
     question: 'Kann ich stornieren?',
     answer:
       'Ja. Bei schlechtem Wetter ist die Stornierung innerhalb der Frist kostenfrei. In allen anderen Fällen gilt die Stornostaffel aus den Mietbedingungen: Je früher Sie absagen, desto günstiger.',
+  },
+  {
+    id: 'umbuchen',
+    category: 'Zahlung und Stornierung',
+    question: 'Kann ich meinen Termin verschieben?',
+    answer: `Ja. Auch ohne Wettergrund können Sie ${rentalTerms.freeRebooking.times === 1 ? 'einmal' : `${rentalTerms.freeRebooking.times}-mal`} kostenlos auf einen freien Termin innerhalb von ${rentalTerms.freeRebooking.withinDays} Tagen umbuchen, wenn Sie uns spätestens ${rentalTerms.freeRebooking.requestDaysBefore} Tage vorher Bescheid geben.`,
   },
   {
     id: 'widerruf',

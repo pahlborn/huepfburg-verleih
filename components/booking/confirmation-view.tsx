@@ -7,6 +7,7 @@ import { LinkButton } from '@/components/common/link-button'
 import { parseSelection } from '@/lib/booking-selection'
 import { getCastle } from '@/lib/castles'
 import { addDays, formatDateLong } from '@/lib/dates'
+import { getExtra } from '@/lib/extras'
 import { formatCents } from '@/lib/format'
 import { calculatePrice, pricingConfig } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
@@ -33,6 +34,7 @@ export function ConfirmationView() {
           rentalType: selection.rentalType,
           fulfilment: selection.fulfilment,
           postalCode: selection.postalCode,
+          extras: selection.extras,
         })
       : null
 
@@ -90,7 +92,13 @@ export function ConfirmationView() {
               ? `Lieferung mit Aufbau und Abbau, PLZ ${selection.postalCode}`
               : 'Selbstabholung'}
           </dd>
-          <dt className="text-muted-foreground">Mietpreis</dt>
+          {selection.extras.length > 0 ? (
+            <>
+              <dt className="text-muted-foreground">Zubehör</dt>
+              <dd className="font-semibold">{selection.extras.map((id) => getExtra(id)?.name).filter(Boolean).join(', ')}</dd>
+            </>
+          ) : null}
+          <dt className="text-muted-foreground">Gesamtpreis</dt>
           <dd className="font-heading text-lg font-semibold">{formatCents(price.totalCents)}</dd>
           <dt className="text-muted-foreground">Kaution (bei Übernahme)</dt>
           <dd className="font-semibold">{formatCents(price.depositCents)}</dd>
@@ -107,7 +115,7 @@ export function ConfirmationView() {
       </ol>
 
       <p className="mt-8 text-muted-foreground">
-        Fragen? Rufen Sie uns an unter{' '}
+        Fragen zur Buchung? Rufen Sie uns an unter{' '}
         <a href={siteConfig.contact.phoneHref} className="font-semibold text-primary underline underline-offset-4">
           {siteConfig.contact.phone}
         </a>{' '}

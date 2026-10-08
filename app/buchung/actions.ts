@@ -6,6 +6,7 @@ import { validateBookingForm, type BookingFormErrors, type BookingFormValues } f
 import { selectionToSearchParams, type BookingSelection } from '@/lib/booking-selection'
 import { getCastle } from '@/lib/castles'
 import { isValidISODate } from '@/lib/dates'
+import { sanitizeExtras } from '@/lib/extras'
 import { calculatePrice, getRentalDates } from '@/lib/pricing'
 
 export type SubmitBookingResult =
@@ -47,6 +48,7 @@ export async function submitBooking(
     rentalType: selection.rentalType,
     fulfilment: selection.fulfilment,
     postalCode: selection.postalCode,
+    extras: selection.extras,
   })
   if (price.status !== 'ok') {
     return {
@@ -70,6 +72,7 @@ export async function submitBooking(
       notes: form.notes.trim(),
     },
     timeSlot: form.timeSlot,
+    extras: sanitizeExtras(selection.extras, selection.fulfilment),
     totalCents: price.totalCents,
     depositCents: price.depositCents,
   })

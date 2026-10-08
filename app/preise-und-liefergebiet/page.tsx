@@ -3,6 +3,7 @@ import { HandCoins, Package, Truck } from 'lucide-react'
 import { LinkButton } from '@/components/common/link-button'
 import { PageHero } from '@/components/common/page-hero'
 import { castles } from '@/lib/castles'
+import { extras } from '@/lib/extras'
 import { formatEuro } from '@/lib/format'
 import { pricingConfig } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
@@ -83,6 +84,29 @@ export default function PricesPage() {
             Die Kaution wird bei Übernahme fällig und nach ordnungsgemäßer Rückgabe zurückerstattet. Sie ist nicht Teil des
             Mietpreises und wird immer getrennt ausgewiesen.
           </p>
+        </section>
+
+        <section aria-labelledby="zubehoer" className="flex flex-col gap-4">
+          <h2 id="zubehoer" className="text-3xl font-semibold">
+            Zubehör
+          </h2>
+          <p className="max-w-3xl leading-relaxed text-muted-foreground">
+            Gebläse, Erdnägel, Unterlegplane und Anleitung sind immer dabei. Dazu können Sie beim Buchen wählen, Preise pro
+            Miete:
+          </p>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {extras
+              .filter((extra) => extra.enabled)
+              .map((extra) => (
+                <li key={extra.id} className="flex flex-col gap-1 rounded-2xl border bg-card p-4">
+                  <span className="flex items-baseline justify-between gap-3">
+                    <span className="font-heading text-lg font-semibold">{extra.name}</span>
+                    <span className="font-semibold whitespace-nowrap">{formatEuro(extra.price)}</span>
+                  </span>
+                  <span className="text-sm text-muted-foreground">{extra.description}</span>
+                </li>
+              ))}
+          </ul>
         </section>
 
         <section aria-labelledby="selbstabholung" className="grid gap-6 lg:grid-cols-2">

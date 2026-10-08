@@ -25,6 +25,9 @@ export const siteConfig = {
   },
 
   contact: {
+    /** Freundlicher Hinweis, dass online gebucht wird. Telefon ist für Fragen da, nicht für Buchungen. */
+    bookingNote:
+      'Gebucht wird bequem online: Sie sehen freie Termine und den Preis sofort, und Ihr Termin ist mit der Buchung fest reserviert. Für Fragen sind wir gerne telefonisch oder per E-Mail für Sie da.',
     phone: '0000 000000',
     phoneHref: 'tel:+490000000000',
     email: 'info@example.de',
@@ -76,6 +79,10 @@ export const siteConfig = {
     },
     /** Kostenlose Umbuchung/Stornierung bei schlechtem Wetter bis X Stunden vor Mietbeginn. */
     weatherChangeHoursBefore: 24,
+    /** Hitze zählt wie schlechtes Wetter ab dieser Temperatur laut Vorhersage (Platzhalter, hüpfburg.de nutzt 32 °C). */
+    heatLimitCelsius: 32,
+    /** Einmalige kostenlose Umbuchung ohne Wettergrund (Platzhalter). */
+    freeRebooking: { times: 1, withinDays: 90, requestDaysBefore: 7 },
     /** Kurzer Hinweis für Startseite, Karten und Buchung (mit Sternchen auf die Fußnote). */
     weatherBadge: 'Kostenlos stornieren bei schlechtem Wetter',
     maxSlopeDegrees: 5,
@@ -98,6 +105,10 @@ export const siteConfig = {
     },
     accessWidthMeters: 1.5,
     cleaningFee: 40,
+    /** Pauschale je angefangenem Tag bei verspäteter Rückgabe ohne Absprache (Platzhalter). */
+    lateReturnFeePerDay: 50,
+    /** Höchste empfohlene Länge des Verlängerungskabels in Metern (Platzhalter). */
+    maxCableMeters: 25,
     /** Mindestzahl Personen für Auf- und Abbau bei Selbstabholung. */
     minPersonsForSetup: 2,
     /** Bei Lieferung: so viele Helfer stellt der Mieter zum Tragen vom Fahrzeug zum Aufstellort. */

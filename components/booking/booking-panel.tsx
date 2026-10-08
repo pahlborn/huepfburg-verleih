@@ -11,6 +11,7 @@ import type { BookingSelection } from '@/lib/booking-selection'
 import { getSelectability } from '@/lib/booking-rules'
 import type { Castle } from '@/lib/castles'
 import type { ISODate } from '@/lib/dates'
+import { availableExtras, sanitizeExtras } from '@/lib/extras'
 import { formatCents } from '@/lib/format'
 import {
   calculatePrice,
@@ -51,11 +52,20 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
   )
   const [fulfilment, setFulfilment] = useState<Fulfilment>('pickup')
   const [postalCode, setPostalCode] = useState('')
+  const [chosenExtras, setChosenExtras] = useState<string[]>([])
+  const extrasForFulfilment = availableExtras(fulfilment)
+  const activeExtras = sanitizeExtras(chosenExtras, fulfilment)
 
   const price = useMemo(
-    () => (date ? calculatePrice({ castle, date, rentalType, fulfilment, postalCode }) : null),
-    [castle, date, rentalType, fulfilment, postalCode],
+    () => (date ? calculatePrice({ castle, date, rentalType, fulfilment, postalCode, extras: activeExtras }) : null),
+    // activeExtras ist aus chosenExtras und fulfilment abgeleitet
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [castle, date, rentalType, fulfilment, postalCode, chosenExtras],
   )
+
+  function toggleExtra(id: string, on: boolean) {
+    setChosenExtras((current) => (on ? [...new Set([...current, id])] : current.filter((entry) => entry !== id)))
+  }
 
   const selection: BookingSelection | null =
     date && price?.status === 'ok'
@@ -65,6 +75,7 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
           rentalType,
           fulfilment,
           postalCode: fulfilment === 'delivery' ? postalCode.trim() : undefined,
+          extras: activeExtras,
         }
       : null
 
@@ -167,10 +178,42 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
           ) : (
             <p className="text-sm text-muted-foreground">
               Hinweis zur Selbstabholung: Sie brauchen mindestens {siteConfig.rentalTerms.minPersonsForSetup} Personen und ein Fahrzeug passender Größe (
-              {castle.transport}).
+              {castle.transport}). Bitte bringen Sie Ihren Personalausweis mit und räumen Sie das Fahrzeug vorher leer.
             </p>
           )}
         </Step>
+
+        {extrasForFulfilment.length > 0 ? (
+          <Step number={3} title="Zubehör dazubuchen (optional)">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {extrasForFulfilment.map((extra) => (
+                <label
+                  key={extra.id}
+                  className="flex cursor-pointer items-start gap-3 rounded-2xl border-2 bg-card p-4 transition-colors hover:border-primary/50 has-[:checked]:border-primary has-[:checked]:bg-secondary"
+                >
+                  <input
+                    type="checkbox"
+                    name="extras"
+                    value={extra.id}
+                    checked={activeExtras.includes(extra.id)}
+                    onChange={(event) => toggleExtra(extra.id, event.target.checked)}
+                    className="mt-1 size-5 shrink-0 accent-primary"
+                  />
+                  <span className="flex-1">
+                    <span className="flex items-baseline justify-between gap-3">
+                      <span className="font-heading text-lg leading-snug font-semibold">{extra.name}</span>
+                      <span className="font-semibold whitespace-nowrap">+ {formatCents(extra.price * 100)}</span>
+                    </span>
+                    <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">{extra.description}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Preise gelten pro Miete, auch für das Wochenendpaket. Gebläse, Erdnägel, Unterlegplane und Anleitung sind immer dabei.
+            </p>
+          </Step>
+        ) : null}
       </div>
 
       <aside
@@ -184,7 +227,7 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
       </aside>
 
       <div className="lg:col-start-1 lg:row-start-2">
-        <Step number={3} title="Ihre Daten und verbindlich buchen">
+        <Step number={extrasForFulfilment.length > 0 ? 4 : 3} title="Ihre Daten und verbindlich buchen">
           <BookingForm castle={castle} selection={selection} price={price} />
         </Step>
       </div>

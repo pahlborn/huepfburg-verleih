@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 const terms = siteConfig.rentalTerms
 
 /** Kleingedrucktes zur Schlechtwetter-Regel. Wird überall dort gezeigt, wo der Hinweis mit * steht. */
-export const weatherFootnoteText = `* Bei Regen, Gewitter oder Wind ab Stärke ${terms.windLimit.beaufort} können Sie bis ${terms.weatherChangeHoursBefore} Stunden vor Mietbeginn kostenlos stornieren oder umbuchen. Bei gebuchter Lieferung mit Auf- und Abbau sind die dafür anfallenden Kosten ggf. trotzdem zu tragen.`
+export const weatherFootnoteText = `* Bei Regen, Gewitter, Wind ab Stärke ${terms.windLimit.beaufort} oder Hitze über ${terms.heatLimitCelsius} °C (laut Vorhersage für den Aufstellort) können Sie bis ${terms.weatherChangeHoursBefore} Stunden vor Mietbeginn kostenlos stornieren oder umbuchen. Bei gebuchter Lieferung mit Auf- und Abbau sind die dafür anfallenden Kosten ggf. trotzdem zu tragen.`
 
 export function WeatherBadge({ className }: { className?: string }) {
   return (

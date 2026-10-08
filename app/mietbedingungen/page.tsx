@@ -2,13 +2,14 @@ import type { Metadata } from 'next'
 import { DraftNotice } from '@/components/common/draft-notice'
 import { PageHero } from '@/components/common/page-hero'
 import { LegalSection, Placeholder } from '@/components/legal/legal-section'
+import { extras } from '@/lib/extras'
 import { formatEuro } from '@/lib/format'
 import { pricingConfig } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
 
 export const metadata: Metadata = {
   title: 'Mietbedingungen',
-  description: 'Mietbedingungen für Hüpfburgen: Aufsicht, Wetter, Aufstellort, Strom, Aufbau, Rückgabe, Kaution, Stornierung und Haftung.',
+  description: 'Mietbedingungen für Hüpfburgen: Aufsicht, Wetter, Aufstellort, Strom, Abholung, Zubehör, Rückgabe, Kaution, Stornierung und Haftung.',
   alternates: { canonical: '/mietbedingungen' },
 }
 
@@ -22,9 +23,11 @@ const tableOfContents = [
   { id: 'aufstellort', title: 'Aufstellort' },
   { id: 'strom', title: 'Strom' },
   { id: 'aufbau', title: 'Aufbau, Abbau und Lieferung' },
+  { id: 'abholung', title: 'Abholung und Übernahme' },
+  { id: 'zubehoer', title: 'Zubehör' },
   { id: 'rueckgabe', title: 'Rückgabe und Reinigung' },
   { id: 'kaution', title: 'Kaution' },
-  { id: 'stornierung', title: 'Stornierung' },
+  { id: 'stornierung', title: 'Stornierung und Umbuchung' },
   { id: 'haftung', title: 'Haftung' },
   { id: 'widerruf', title: 'Widerrufsrecht' },
   { id: 'schluss', title: 'Schlussbestimmungen' },
@@ -64,7 +67,12 @@ export default function RentalTermsPage() {
                 Diese Bedingungen gelten für die Vermietung von Hüpfburgen und Zubehör durch {siteConfig.name} (
                 <Placeholder>{siteConfig.address.owner}</Placeholder>). Der Mietvertrag kommt mit der Buchung über den Button
                 &bdquo;Zahlungspflichtig buchen&ldquo; und unserer Bestätigung zustande. Maßgeblich sind die Angaben zu Burg,
-                Termin, Übergabeart und Preis in der Buchungszusammenfassung.
+                Termin, Übergabeart, Zubehör und Preis in der Buchungszusammenfassung.
+              </p>
+              <p>
+                Gebucht wird online über diese Website. So sehen Sie freie Termine und den Preis sofort, und Ihr Termin ist
+                mit der Buchung fest reserviert. Für Fragen vor oder nach der Buchung sind wir gerne telefonisch oder per
+                E-Mail erreichbar.
               </p>
               <p>
                 Der Mietpreis, die Lieferpauschale und die Kaution werden getrennt ausgewiesen. Alle Preise sind{' '}
@@ -107,6 +115,11 @@ export default function RentalTermsPage() {
                 und die Burg zu entleeren. Bei Gewitter verlassen alle Personen die Burg und den Aufstellort.
               </p>
               <p>
+                Als schlechtes Wetter gelten Regen, Gewitter und Sturm sowie große Hitze über{' '}
+                <Placeholder>{terms.heatLimitCelsius} °C</Placeholder> laut Wettervorhersage für den Aufstellort. Bei großer
+                Hitze wird die Plane schnell heiß, dann sind Schatten und regelmäßige Pausen wichtig.
+              </p>
+              <p>
                 Bei schlechtem Wetter am Miettag ist eine kostenfreie Umbuchung oder Stornierung möglich, wenn Sie uns bis{' '}
                 <Placeholder>{terms.weatherChangeHoursBefore} Stunden</Placeholder> vor Mietbeginn informieren. Bei
                 gebuchter Lieferung mit Auf- und Abbau sind die dafür anfallenden Kosten ggf. trotzdem zu tragen. Wir
@@ -135,10 +148,18 @@ export default function RentalTermsPage() {
 
             <LegalSection id="strom" title="Strom">
               <p>
-                Der Mieter stellt den Strom: eine 230-V-Haushaltssteckdose in Reichweite des Gebläses (Kabellänge siehe
-                Burg). Das Gebläse muss während der gesamten Nutzung durchgehend laufen, sonst fällt die Burg zusammen. Bitte
-                prüfen Sie vorab, dass die Steckdose abgesichert ist und kein weiteres Großgerät am selben Stromkreis hängt.
+                Der Mieter stellt den Strom: eine 230-V-Haushaltssteckdose in Reichweite des Gebläses. Das Gebläse muss während
+                der gesamten Nutzung durchgehend laufen, sonst fällt die Burg zusammen. Bitte prüfen Sie vorab, dass die
+                Steckdose abgesichert ist und kein weiteres Großgerät am selben Stromkreis hängt.
               </p>
+              <ul>
+                <li>
+                  Verlängerungskabel nur für draußen geeignet und höchstens ca.{' '}
+                  <Placeholder>{terms.maxCableMeters} m</Placeholder> lang. Ein längeres Kabel liefert oft zu wenig Strom.
+                </li>
+                <li>Eine Kabeltrommel ist immer vollständig abzurollen, sonst kann sie heiß werden.</li>
+                <li>Kabel so verlegen, dass niemand darüber stolpert, und Stecker vor Nässe schützen.</li>
+              </ul>
             </LegalSection>
 
             <LegalSection id="aufbau" title="Aufbau, Abbau und Lieferung">
@@ -164,6 +185,38 @@ export default function RentalTermsPage() {
               <p>Der Mieter sorgt dafür, dass der Aufstellort zum vereinbarten Zeitpunkt frei und zugänglich ist.</p>
             </LegalSection>
 
+            <LegalSection id="abholung" title="Abholung und Übernahme">
+              <ul>
+                <li>Bitte bringen Sie zur Abholung Ihren Personalausweis und die Buchungsbestätigung mit.</li>
+                <li>
+                  Holt jemand anderes die Burg ab, braucht er eine kurze Vollmacht des Mieters, ein Foto von dessen Ausweis und
+                  die Buchungsbestätigung. Mieter und Vertragspartner bleibt die Person, die gebucht hat.
+                </li>
+                <li>
+                  Das Fahrzeug sollte leer sein: Kindersitze, Kisten und Gepäck vorher ausräumen. Das Packmaß und das Gewicht
+                  stehen bei jeder Burg.
+                </li>
+                <li>Bei der Übernahme erklären wir Aufbau, Verankerung und Abbau. Eine Anleitung liegt bei.</li>
+              </ul>
+            </LegalSection>
+
+            <LegalSection id="zubehoer" title="Zubehör">
+              <p>
+                Zu jeder Burg gehören Gebläse, Erdnägel, Unterlegplane und Anleitung. Weiteres Zubehör können Sie beim Buchen
+                dazunehmen. Die Preise gelten pro Miete, auch für das Wochenendpaket:
+              </p>
+              <ul>
+                {extras
+                  .filter((extra) => extra.enabled)
+                  .map((extra) => (
+                    <li key={extra.id}>
+                      {extra.name}: <Placeholder>{formatEuro(extra.price)}</Placeholder>
+                    </li>
+                  ))}
+              </ul>
+              <p>Für das Zubehör gelten dieselben Regeln zu Nutzung, Rückgabe und Haftung wie für die Burg.</p>
+            </LegalSection>
+
             <LegalSection id="rueckgabe" title="Rückgabe und Reinigung">
               <p>
                 Die Burg ist trocken und sauber zurückzugeben. Bei starker Verschmutzung oder Nässe berechnen wir eine
@@ -171,8 +224,14 @@ export default function RentalTermsPage() {
                 feucht verpackte Rückgabe berechnen wir die Ersatzkosten.
               </p>
               <p>
-                Empfehlung: Machen Sie bei Übernahme und Rückgabe kurze Fotos oder ein Video vom Zustand der Burg. Das schützt
-                beide Seiten.
+                Bitte geben Sie die Burg zur vereinbarten Zeit zurück. Wird sie ohne Absprache später zurückgebracht, berechnen
+                wir je angefangenem Tag <Placeholder>{formatEuro(terms.lateReturnFeePerDay)}</Placeholder>, weil die Burg
+                dann oft schon für den nächsten Kunden eingeplant ist.
+              </p>
+              <p>
+                Schäden melden Sie bitte sofort, am besten mit einem Foto per Nachricht oder E-Mail, und spätestens bei der
+                Rückgabe. Empfehlung: Machen Sie bei Übernahme und Rückgabe kurze Fotos oder ein Video vom Zustand der Burg.
+                Das schützt beide Seiten.
               </p>
             </LegalSection>
 
@@ -194,6 +253,13 @@ export default function RentalTermsPage() {
                 ))}
               </ul>
               <p>Dem Mieter bleibt der Nachweis vorbehalten, dass kein oder ein geringerer Schaden entstanden ist.</p>
+              <p>
+                Statt zu stornieren, können Sie Ihren Termin auch ohne Wettergrund{' '}
+                <Placeholder>{terms.freeRebooking.times === 1 ? 'einmal' : `${terms.freeRebooking.times}-mal`}</Placeholder>{' '}
+                kostenlos auf einen freien Termin innerhalb von{' '}
+                <Placeholder>{terms.freeRebooking.withinDays} Tagen</Placeholder> verschieben, wenn Sie uns spätestens{' '}
+                <Placeholder>{terms.freeRebooking.requestDaysBefore} Tage</Placeholder> vor Mietbeginn Bescheid geben.
+              </p>
             </LegalSection>
 
             <LegalSection id="haftung" title="Haftung">

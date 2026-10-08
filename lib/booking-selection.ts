@@ -1,4 +1,5 @@
 import { isValidISODate, type ISODate } from '@/lib/dates'
+import { sanitizeExtras } from '@/lib/extras'
 import { isValidPostalCode, type Fulfilment, type RentalType } from '@/lib/pricing'
 
 /** Was der Besucher im Kalender und Preisrechner gewählt hat. */
@@ -9,6 +10,8 @@ export interface BookingSelection {
   fulfilment: Fulfilment
   /** Nur bei Lieferung. */
   postalCode?: string
+  /** Gebuchtes Zubehör (IDs aus lib/extras.ts). */
+  extras: string[]
 }
 
 export function selectionToSearchParams(selection: BookingSelection, reference: string): URLSearchParams {
@@ -22,6 +25,7 @@ export function selectionToSearchParams(selection: BookingSelection, reference: 
   if (selection.fulfilment === 'delivery' && selection.postalCode) {
     params.set('plz', selection.postalCode)
   }
+  if (selection.extras.length > 0) params.set('zubehoer', selection.extras.join(','))
   return params
 }
 
@@ -38,6 +42,7 @@ export function parseSelection(params: RawParams): BookingSelection | null {
   const rentalType = first(params.typ)
   const fulfilment = first(params.uebergabe)
   const postalCode = first(params.plz)
+  const extrasRaw = first(params.zubehoer)
 
   if (!slug || !isValidISODate(date)) return null
   if (rentalType !== 'day' && rentalType !== 'weekendPackage') return null
@@ -50,5 +55,6 @@ export function parseSelection(params: RawParams): BookingSelection | null {
     rentalType,
     fulfilment,
     postalCode: fulfilment === 'delivery' ? postalCode : undefined,
+    extras: sanitizeExtras(extrasRaw ? extrasRaw.split(',') : [], fulfilment),
   }
 }
