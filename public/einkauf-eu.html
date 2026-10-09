@@ -55,6 +55,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .lead { color: var(--muted); max-width: 75ch; }
 header { display: flex; flex-direction: column; gap: 10px; }
 .num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.topnav { display: flex; flex-wrap: wrap; gap: 6px; }
+.topnav a { text-decoration: none; font-weight: 600; font-size: 0.88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.topnav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+a.pill { text-decoration: none; }
 
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
 .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -141,6 +145,11 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
 
 
 <div class="wrap">
+  <nav class="topnav" aria-label="Einkaufsseiten">
+    <a href="einkauf-eu.html" aria-current="page">Hüpfburgen kaufen</a>
+    <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
+    <a href="wettbewerb.html">Wettbewerb</a>
+  </nav>
   <header>
     <span class="eyebrow">Einkauf · Hersteller und Händler in der EU · Stand 9. Oktober 2026</span>
     <h1>Hüpfburgen kaufen: Modelle aus der EU durchsuchen</h1>
@@ -394,7 +403,7 @@ function card(a) {
     size ? `<span class="pill plain">${size.label}</span>` : "",
     a.sl ? `<span class="pill">Rutsche</span>` : "",
     a.r === true ? `<span class="pill">Dach</span>` : "",
-    a.bl === true ? `<span class="pill good">Gebläse inklusive</span>` : a.bl === false ? `<span class="pill plain">Gebläse extra</span>` : "",
+    a.bl === true ? `<span class="pill good">Gebläse inklusive</span>` : a.bl === false ? `<a class="pill warn" href="zubehoer-eu.html#geblaese">Gebläse extra: passende Gebläse ansehen</a>` : "",
     a.en === true ? `<span class="pill good">EN 14960 angegeben</span>` : `<span class="pill warn">EN 14960 nicht angegeben</span>`,
     a.used ? `<span class="pill sun">Gebraucht</span>` : "",
   ].join("");
