@@ -139,6 +139,16 @@ details .dl dd { margin: 0; overflow-wrap: anywhere; }
 .provtable th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction: column; gap: 6px; max-width: 95ch; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.thumbwrap { grid-area: img; position: relative; align-self: start; min-width: 0; }
+.thumbwrap .thumb { grid-area: auto; }
+.fav { position: absolute; top: 6px; right: 6px; width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+.fav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.fav[aria-pressed="true"] { color: var(--sun); border-color: var(--sun); }
+.fav[aria-pressed="true"] svg { fill: currentColor; }
+.fav:hover { color: var(--sun); }
+.topnav .favlink { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; }
+.topnav .favlink svg { width: 16px; height: 16px; fill: var(--sun); }
+.favbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--sun-soft); border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; }
 </style>
 </head>
 <body>
@@ -149,6 +159,7 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
     <a href="einkauf-eu.html" aria-current="page">Hüpfburgen kaufen</a>
     <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
     <a href="wettbewerb.html">Wettbewerb</a>
+    <a href="merkliste.html" class="favlink"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Merkliste <span class="num" id="fav-count">0</span></a>
   </nav>
   <header>
     <span class="eyebrow">Einkauf · Hersteller und Händler in der EU · Stand 9. Oktober 2026</span>
@@ -212,6 +223,7 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
           <label><input type="checkbox" id="f-blower"> Gebläse im Preis</label>
           <label><input type="checkbox" id="f-en"> EN 14960 angegeben</label>
           <label><input type="checkbox" id="f-new"> Nur Neuware</label>
+          <label><input type="checkbox" id="f-fav"> Nur Merkliste</label>
         </div>
       </div>
 
@@ -269,6 +281,18 @@ const DATA = {"providers":[{"n":"JB Inflatables / huepfburgenwelt.de","u":"https
 const P = DATA.providers, A = DATA.items;
 const COUNTRY = { DE: "Deutschland", AT: "Österreich", NL: "Niederlande", FR: "Frankreich", ES: "Spanien", CZ: "Tschechien", PL: "Polen" };
 const CATS = ["Hüpfburg", "Hüpfburg mit Rutsche", "Multiplay/Combo", "Rutsche", "Hindernis/Parcours", "Sonstiges"];
+// Merkliste: gespeichert im Browser (gleicher Speicher für alle Einkaufsseiten), übertragbar per Link.
+const FAV_KEY = "hb-merkliste-v1";
+const favHash = (s) => { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
+function favLoad() { try { const v = JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); return new Set(Array.isArray(v) ? v : []); } catch (e) { return new Set(); } }
+function favSave() { try { localStorage.setItem(FAV_KEY, JSON.stringify([...FAV])); } catch (e) {} }
+let FAV = favLoad();
+try { const f = new URLSearchParams(location.search).get("f"); if (f) { f.split(".").filter((x) => /^[0-9a-z]{1,8}$/.test(x)).forEach((x) => FAV.add(x)); favSave(); } } catch (e) {}
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>';
+function favButton(a) { const on = FAV.has(a.fk); return `<button type="button" class="fav" data-fk="${a.fk}" aria-pressed="${on}" aria-label="${on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen"}: ${esc(a.n)}">${STAR}</button>`; }
+function favCount() { const el = document.getElementById("fav-count"); if (el) el.textContent = FAV.size; }
+function favToggle(fk) { FAV.has(fk) ? FAV.delete(fk) : FAV.add(fk); favSave(); favCount(); }
+window.addEventListener("storage", (e) => { if (e.key === FAV_KEY) { FAV = favLoad(); favCount(); render(); } });
 const PAGE = 40;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -312,6 +336,7 @@ const sizeOf = (a) => {
 };
 A.forEach((a, i) => {
   a.id = i;
+  a.fk = favHash(a.u + "|" + a.n);
   a.area = a.l && a.w ? a.l * a.w : null;
   a.sqm = a.pn && a.area ? a.pn / a.area : null;
   a.size = sizeOf(a);
@@ -320,7 +345,7 @@ A.forEach((a, i) => {
   a.hay = [a.n, a.t, a.c, P[a.p].n, COUNTRY[P[a.p].c]].join(" ").toLowerCase();
 });
 
-const state = { q: "", sizes: new Set(), kids: new Set(), cats: new Set(), motifs: new Set(), kg: new Set(), ctry: new Set(), prov: "alle", max: 14000, priced: false, slide: false, roof: false, blower: false, en: false, fresh: false, sort: "price-asc", shown: PAGE };
+const state = { q: "", sizes: new Set(), kids: new Set(), cats: new Set(), motifs: new Set(), kg: new Set(), ctry: new Set(), prov: "alle", max: 14000, priced: false, slide: false, roof: false, blower: false, en: false, fresh: false, favonly: false, sort: "price-asc", shown: PAGE };
 
 function buildControls() {
   $("f-size").innerHTML = SIZES.map((c) => {
@@ -349,6 +374,7 @@ function inBuckets(value, set, list) {
 }
 
 function matches(a) {
+  if (state.favonly && !FAV.has(a.fk)) return false;
   if (state.q && !a.hay.includes(state.q)) return false;
   if (state.sizes.size && !state.sizes.has(a.size)) return false;
   if (!inBuckets(a.k, state.kids, KIDS)) return false;
@@ -419,7 +445,7 @@ function card(a) {
     ? `<img src="${esc(a.img)}" alt="${esc(a.n)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'noimg',textContent:'Bild auf der Seite des Anbieters'}))">`
     : `<span class="noimg">Bild auf der Seite des Anbieters</span>`;
   return `<article class="item">
-    <a class="thumb" href="${esc(a.u)}" target="_blank" rel="noopener" aria-label="${esc(a.n)} beim Anbieter ansehen">${img}</a>
+    <div class="thumbwrap"><a class="thumb" href="${esc(a.u)}" target="_blank" rel="noopener" aria-label="${esc(a.n)} beim Anbieter ansehen">${img}</a>${favButton(a)}</div>
     <div class="head">
       <h3><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.n)}</a></h3>
       <div class="meta"><span>${esc(p.n)}</span><span>${esc(COUNTRY[p.c])}</span><span>${esc(a.c)}${a.t ? " · " + esc(a.t) : ""}</span></div>
@@ -471,7 +497,7 @@ function bind() {
   const reset = () => { state.shown = PAGE; render(); };
   $("f-q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); reset(); });
   $("f-price").addEventListener("input", (e) => { state.max = Number(e.target.value); reset(); });
-  [["f-priced", "priced"], ["f-slide", "slide"], ["f-roof", "roof"], ["f-blower", "blower"], ["f-en", "en"], ["f-new", "fresh"]].forEach(([id, k]) => $(id).addEventListener("change", (e) => { state[k] = e.target.checked; reset(); }));
+  [["f-priced", "priced"], ["f-slide", "slide"], ["f-roof", "roof"], ["f-blower", "blower"], ["f-en", "en"], ["f-new", "fresh"], ["f-fav", "favonly"]].forEach(([id, k]) => $(id).addEventListener("change", (e) => { state[k] = e.target.checked; reset(); }));
   $("f-prov").addEventListener("change", (e) => { state.prov = e.target.value; reset(); });
   $("f-sort").addEventListener("change", (e) => { state.sort = e.target.value; reset(); });
   const toggleGroup = (id, set, sel) => $(id).addEventListener("click", (e) => {
@@ -486,9 +512,10 @@ function bind() {
   toggleGroup("f-cat", state.cats, ".chip");
   toggleGroup("f-motif", state.motifs, ".chip");
   toggleGroup("f-ctry", state.ctry, ".chip");
+  $("list").addEventListener("click", (e) => { const b = e.target.closest(".fav"); if (!b) return; favToggle(b.dataset.fk); const on = FAV.has(b.dataset.fk); b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", (on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen")); if (state.favonly && !on) render(); });
   $("more").addEventListener("click", () => { state.shown += PAGE; render(); });
   $("f-reset").addEventListener("click", () => {
-    Object.assign(state, { q: "", prov: "alle", max: 14000, priced: false, slide: false, roof: false, blower: false, en: false, fresh: false, shown: PAGE });
+    Object.assign(state, { q: "", prov: "alle", max: 14000, priced: false, slide: false, roof: false, blower: false, en: false, fresh: false, favonly: false, shown: PAGE });
     [state.sizes, state.kids, state.kg, state.cats, state.motifs, state.ctry].forEach((s) => s.clear());
     $("filters").reset();
     $("f-price").value = 14000;
@@ -498,6 +525,7 @@ function bind() {
 }
 
 buildControls();
+favCount();
 bind();
 renderProviders();
 render();
