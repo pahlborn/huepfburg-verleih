@@ -112,11 +112,24 @@ tbody tr:hover { background: var(--accent-soft); }
 .note ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
 footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction: column; gap: 6px; max-width: 90ch; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.backbtn { font: inherit; font-weight: 600; font-size: 0.88rem; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.backbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.backbtn:hover { border-color: var(--accent); }
+.topnav { display: flex; flex-wrap: wrap; gap: 6px; }
+.topnav a { text-decoration: none; font-weight: 600; font-size: 0.88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.topnav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
 </style>
 
 </head>
 <body>
 <div class="wrap">
+  <nav class="topnav" aria-label="Einkaufsseiten">
+    <button type="button" class="backbtn" onclick="goBack()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Zurück</button>
+    <a href="einkauf-eu.html">Hüpfburgen kaufen</a>
+    <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
+    <a href="wettbewerb.html" aria-current="page">Wettbewerb</a>
+    <a href="merkliste.html">Merkliste</a>
+  </nav>
   <header>
     <span class="eyebrow">Marktübersicht · Stand 7. Oktober 2026</span>
     <h1>Hüpfburg-Verleih: Wettbewerb in Deutschland</h1>
@@ -277,6 +290,7 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
 </div>
 
 <script>
+function goBack() { let sameSite = false; try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {} if (sameSite && history.length > 1) history.back(); else location.href = "einkauf-eu.html"; }
 // Anbieter mit Konditionen. Werte von den Webseiten der Anbieter, Stand 07.10.2026.
 const P = {
   mhuepfer: { name: "Münchner Hüpfer", city: "Ismaning", state: "Bayern", muc: true, url: "https://muenchner-huepfer.de/preise-angebote", deposit: null, delivery: "Aufbau 65 €, Abbau 90 € (bis 15 km), weiter nach Strecke", pickup: true, book: "anfrage", storno: null, weather: false, extra: "Abholung ab 9 Uhr, Rückgabe bis 20 Uhr" },

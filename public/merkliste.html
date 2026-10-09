@@ -86,6 +86,9 @@ section.group { display: flex; flex-direction: column; gap: 10px; }
 .empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 28px; text-align: center; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: center; }
 @media (max-width: 640px) { .row-item { grid-template-columns: 72px minmax(0, 1fr); } .price { text-align: left; grid-column: 2; } .remove { grid-column: 2; justify-self: start; } }
 footer { color: var(--muted); font-size: 0.82rem; max-width: 90ch; }
+.backbtn { font: inherit; font-weight: 600; font-size: 0.88rem; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.backbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.backbtn:hover { border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -93,6 +96,7 @@ footer { color: var(--muted); font-size: 0.82rem; max-width: 90ch; }
 
 <div class="wrap">
   <nav class="topnav" aria-label="Einkaufsseiten">
+    <button type="button" class="backbtn" onclick="goBack()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Zurück</button>
     <a href="einkauf-eu.html">Hüpfburgen kaufen</a>
     <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
     <a href="wettbewerb.html">Wettbewerb</a>
@@ -213,6 +217,7 @@ $("clear").addEventListener("click", () => {
   FAV.clear(); favSave(); render();
 });
 window.addEventListener("storage", (e) => { if (e.key === FAV_KEY) { FAV = favLoad(); render(); } });
+function goBack() { let sameSite = false; try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {} if (sameSite && history.length > 1) history.back(); else location.href = "einkauf-eu.html"; }
 render();
 </script>
 

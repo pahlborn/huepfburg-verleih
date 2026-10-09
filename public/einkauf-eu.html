@@ -149,6 +149,15 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
 .topnav .favlink { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; }
 .topnav .favlink svg { width: 16px; height: 16px; fill: var(--sun); }
 .favbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--sun-soft); border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; }
+.backbtn { font: inherit; font-weight: 600; font-size: 0.88rem; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.backbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.backbtn:hover { border-color: var(--accent); }
+.favfilter { font: inherit; font-weight: 600; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 1px solid var(--sun); background: var(--sun-soft); color: var(--fg); border-radius: 10px; padding: 10px 12px; cursor: pointer; min-height: 44px; }
+.favfilter svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--warn); stroke-width: 1.8; stroke-linejoin: round; }
+.favfilter .favn { margin-left: auto; font-size: 0.82rem; color: var(--muted); }
+.favfilter[aria-pressed="true"] { background: var(--sun); border-color: var(--sun); color: #172033; }
+.favfilter[aria-pressed="true"] svg { fill: #172033; stroke: #172033; }
+.favfilter[aria-pressed="true"] .favn { color: #172033; }
 </style>
 </head>
 <body>
@@ -156,6 +165,7 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
 
 <div class="wrap">
   <nav class="topnav" aria-label="Einkaufsseiten">
+    <button type="button" class="backbtn" onclick="goBack()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Zurück</button>
     <a href="einkauf-eu.html" aria-current="page">Hüpfburgen kaufen</a>
     <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
     <a href="wettbewerb.html">Wettbewerb</a>
@@ -176,6 +186,7 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
 
   <div class="layout">
     <form class="filters" id="filters" aria-label="Filter" onsubmit="return false">
+      <button type="button" class="favfilter" id="f-favbtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg><span>Nur Merkliste zeigen</span><span class="num favn" id="f-favn">0</span></button>
       <div class="field">
         <label for="f-q">Suche</label>
         <input type="search" id="f-q" placeholder="Name, Motiv oder Anbieter, z. B. Clown">
@@ -223,7 +234,6 @@ footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction:
           <label><input type="checkbox" id="f-blower"> Gebläse im Preis</label>
           <label><input type="checkbox" id="f-en"> EN 14960 angegeben</label>
           <label><input type="checkbox" id="f-new"> Nur Neuware</label>
-          <label><input type="checkbox" id="f-fav"> Nur Merkliste</label>
         </div>
       </div>
 
@@ -293,6 +303,49 @@ function favButton(a) { const on = FAV.has(a.fk); return `<button type="button" 
 function favCount() { const el = document.getElementById("fav-count"); if (el) el.textContent = FAV.size; }
 function favToggle(fk) { FAV.has(fk) ? FAV.delete(fk) : FAV.add(fk); favSave(); favCount(); }
 window.addEventListener("storage", (e) => { if (e.key === FAV_KEY) { FAV = favLoad(); favCount(); render(); } });
+// Filter merken: localStorage (bleibt auch nach dem Schließen), Scrollposition und Anzahl geladener Artikel nur für diese Sitzung.
+const PERSIST = {
+  key: "hb-filter-burgen",
+  sets: {"f-size": "sizes", "f-kids": "kids", "f-kg": "kg", "f-cat": "cats", "f-motif": "motifs", "f-ctry": "ctry"},
+  inputs: {"f-q": "q", "f-price": "max"},
+  checks: {"f-priced": "priced", "f-slide": "slide", "f-roof": "roof", "f-blower": "blower", "f-en": "en", "f-new": "fresh"},
+  selects: {"f-prov": "prov", "f-sort": "sort"},
+};
+function persistSave() {
+  try {
+    const out = {};
+    Object.keys(state).forEach((k) => { if (k === "shown") return; out[k] = state[k] instanceof Set ? [...state[k]] : state[k]; });
+    localStorage.setItem(PERSIST.key, JSON.stringify(out));
+    sessionStorage.setItem(PERSIST.key + "-view", JSON.stringify({ shown: state.shown, y: window.scrollY }));
+  } catch (e) {}
+}
+function persistLoad() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(PERSIST.key) || "null"); } catch (e) {}
+  if (saved && typeof saved === "object") {
+    Object.keys(state).forEach((k) => {
+      if (!(k in saved) || k === "shown") return;
+      if (state[k] instanceof Set) { state[k].clear(); (saved[k] || []).forEach((v) => state[k].add(String(v))); }
+      else if (typeof saved[k] === typeof state[k]) state[k] = saved[k];
+    });
+  }
+  Object.entries(PERSIST.sets).forEach(([id, k]) => document.querySelectorAll(`#${id} [data-v]`).forEach((b) => b.setAttribute("aria-pressed", String(state[k].has(b.dataset.v)))));
+  Object.entries(PERSIST.inputs).forEach(([id, k]) => { const el = document.getElementById(id); if (el) el.value = state[k]; });
+  Object.entries(PERSIST.checks).forEach(([id, k]) => { const el = document.getElementById(id); if (el) el.checked = !!state[k]; });
+  Object.entries(PERSIST.selects).forEach(([id, k]) => { const el = document.getElementById(id); if (el && [...el.options].some((o) => o.value === String(state[k]))) el.value = String(state[k]); });
+  let view = null;
+  try { view = JSON.parse(sessionStorage.getItem(PERSIST.key + "-view") || "null"); } catch (e) {}
+  if (view && view.shown > state.shown) state.shown = view.shown;
+  return view;
+}
+let persistTimer = null;
+window.addEventListener("scroll", () => { clearTimeout(persistTimer); persistTimer = setTimeout(persistSave, 200); }, { passive: true });
+window.addEventListener("pagehide", persistSave);
+function goBack() {
+  let sameSite = false;
+  try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  if (sameSite && history.length > 1) history.back(); else location.href = "einkauf-eu.html";
+}
 const PAGE = 40;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -491,13 +544,15 @@ function render() {
   $("more").textContent = `Weitere Modelle anzeigen (${rows.length - Math.min(rows.length, state.shown)} übrig)`;
   $("r-status").textContent = rows.length === A.length ? `Alle ${A.length} Modelle` : `${rows.length} von ${A.length} Modellen`;
   $("f-price-out").textContent = state.max >= 14000 ? "unbegrenzt" : eur(state.max);
+  const fb = $("f-favbtn"); fb.setAttribute("aria-pressed", String(state.favonly)); $("f-favn").textContent = A.filter((a) => FAV.has(a.fk)).length;
+  persistSave();
 }
 
 function bind() {
   const reset = () => { state.shown = PAGE; render(); };
   $("f-q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); reset(); });
   $("f-price").addEventListener("input", (e) => { state.max = Number(e.target.value); reset(); });
-  [["f-priced", "priced"], ["f-slide", "slide"], ["f-roof", "roof"], ["f-blower", "blower"], ["f-en", "en"], ["f-new", "fresh"], ["f-fav", "favonly"]].forEach(([id, k]) => $(id).addEventListener("change", (e) => { state[k] = e.target.checked; reset(); }));
+  [["f-priced", "priced"], ["f-slide", "slide"], ["f-roof", "roof"], ["f-blower", "blower"], ["f-en", "en"], ["f-new", "fresh"]].forEach(([id, k]) => $(id).addEventListener("change", (e) => { state[k] = e.target.checked; reset(); }));
   $("f-prov").addEventListener("change", (e) => { state.prov = e.target.value; reset(); });
   $("f-sort").addEventListener("change", (e) => { state.sort = e.target.value; reset(); });
   const toggleGroup = (id, set, sel) => $(id).addEventListener("click", (e) => {
@@ -512,7 +567,8 @@ function bind() {
   toggleGroup("f-cat", state.cats, ".chip");
   toggleGroup("f-motif", state.motifs, ".chip");
   toggleGroup("f-ctry", state.ctry, ".chip");
-  $("list").addEventListener("click", (e) => { const b = e.target.closest(".fav"); if (!b) return; favToggle(b.dataset.fk); const on = FAV.has(b.dataset.fk); b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", (on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen")); if (state.favonly && !on) render(); });
+  $("list").addEventListener("click", (e) => { const b = e.target.closest(".fav"); if (!b) return; favToggle(b.dataset.fk); const on = FAV.has(b.dataset.fk); b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", (on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen")); if (state.favonly && !on) render(); else $("f-favn").textContent = A.filter((a) => FAV.has(a.fk)).length; });
+  $("f-favbtn").addEventListener("click", () => { state.favonly = !state.favonly; state.shown = PAGE; render(); });
   $("more").addEventListener("click", () => { state.shown += PAGE; render(); });
   $("f-reset").addEventListener("click", () => {
     Object.assign(state, { q: "", prov: "alle", max: 14000, priced: false, slide: false, roof: false, blower: false, en: false, fresh: false, favonly: false, shown: PAGE });
@@ -528,7 +584,9 @@ buildControls();
 favCount();
 bind();
 renderProviders();
+const VIEW = persistLoad();
 render();
+if (VIEW && VIEW.y) requestAnimationFrame(() => window.scrollTo(0, VIEW.y));
 </script>
 
 </body>
