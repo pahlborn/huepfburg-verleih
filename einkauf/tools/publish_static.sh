@@ -3,7 +3,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 tmp="$(mktemp -d)"
-git fetch -q origin gh-pages
+git fetch -q origin +gh-pages:refs/remotes/origin/gh-pages
 git worktree add -q "$tmp" origin/gh-pages
 cp public/einkauf-eu.html public/zubehoer-eu.html public/merkliste.html "$tmp/"
 cd "$tmp"
