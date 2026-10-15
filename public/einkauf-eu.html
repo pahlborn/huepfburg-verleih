@@ -124,7 +124,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .pill.warn { background: var(--warn-soft); color: var(--warn); }
 .pill.sun { background: var(--sun-soft); color: var(--warn); }
 .pill.deal { background: #c2410c; color: #ffffff; }
-.price .was { font-size: 0.85rem; color: var(--muted); text-decoration: line-through; font-variant-numeric: tabular-nums; }
+.price .was { font-size: 0.95rem; font-weight: 600; color: var(--fg); text-decoration: line-through; text-decoration-color: #c2410c; text-decoration-thickness: 2px; font-variant-numeric: tabular-nums; }
+.price .nowas { font-size: 0.75rem; color: var(--muted); font-style: italic; }
 .price .until { font-size: 0.75rem; color: var(--warn); font-weight: 600; }
 .dealfilter { font: inherit; font-weight: 600; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 1px solid #c2410c; background: var(--bg); color: var(--fg); border-radius: 10px; padding: 10px 12px; cursor: pointer; min-height: 44px; }
 .dealfilter .tagico { font-family: var(--font-data); font-weight: 800; color: #c2410c; width: 20px; text-align: center; }
@@ -518,7 +519,7 @@ function card(a) {
       <h3><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.n)}</a></h3>
       <div class="meta"><span>${esc(p.n)}</span><span>${esc(COUNTRY[p.c])}</span><span>${esc(a.c)}${a.t ? " · " + esc(a.t) : ""}</span></div>
     </div>
-    <div class="price">${a.s && a.s.o ? `<span class="was">statt ${eur(a.s.o)}</span>` : ""}<span class="p">${a.pn == null ? "auf Anfrage" : eur(a.pn)}</span>${priceSub}${a.s && a.s.u ? `<span class="until">gültig bis ${esc(a.s.u)}</span>` : ""}${sqm}</div>
+    <div class="price">${a.s && a.s.o ? `<span class="was">statt ${eur(a.s.o)}</span>` : a.s ? `<span class="nowas">kein alter Preis angegeben</span>` : ""}<span class="p">${a.pn == null ? "auf Anfrage" : eur(a.pn)}</span>${priceSub}${a.s && a.s.u ? `<span class="until">gültig bis ${esc(a.s.u)}</span>` : ""}${sqm}</div>
     <div class="specs">
       <span><b>Maße</b> <span class="num">${d ? esc(d) : "k. A."}</span></span>
       <span><b>Personen</b> <span class="num">${a.k ?? "k. A."}</span></span>
