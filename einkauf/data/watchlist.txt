@@ -1,3 +1,4 @@
 # Merkliste für den wöchentlichen Angebots-Check.
 # Eine Zeile pro Eintrag: den Link aus merkliste.html ("Link kopieren") einfügen,
 # oder einzelne Produkt-URLs. Zeilen mit # werden ignoriert.
+https://pahlborn.github.io/huepfburg-verleih/merkliste.html?f=bjyfh.1ojhrs7.11iv3m7
