@@ -19,3 +19,6 @@ next-env.d.ts
 
 # Statischer Export für GitHub Pages
 /out/
+
+# Arbeitsdateien des Angebots-Checks
+/einkauf/work/

@@ -1,0 +1,567 @@
+<title>Hüpfburg-Zubehör EU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: Zubehör-Werkzeug. Kopf mit Navigation und Kennzahlen, Rubriken als Reiter, Gebläse-Ratgeber, Filter links, Ergebnisliste rechts. Gleiche Gestaltung wie die Burgenliste. */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #172033;
+  --muted: #5b6577;
+  --line: #dde3ec;
+  --accent: #1d5fc4;
+  --accent-soft: #e3ecfb;
+  --sun: #f2b705;
+  --sun-soft: #fdf3cf;
+  --good: #1f8a4c;
+  --good-soft: #e1f3e8;
+  --warn: #a86a00;
+  --warn-soft: #fbefd6;
+  --bad: #b42318;
+  --bad-soft: #fde7e5;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+    --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115;
+    --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f; --bad: #ff8a7a; --bad-soft: #3a1714;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+  --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115;
+  --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f; --bad: #ff8a7a; --bad-soft: #3a1714;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 48px; }
+.wrap { max-width: 1320px; margin-inline: auto; display: flex; flex-direction: column; gap: 22px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 800; line-height: 1.1; }
+h2 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.lead { color: var(--muted); max-width: 78ch; }
+header { display: flex; flex-direction: column; gap: 10px; }
+.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.topnav { display: flex; flex-wrap: wrap; gap: 6px; }
+.topnav a { text-decoration: none; font-weight: 600; font-size: 0.88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.topnav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kpi .v { font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.kpi .l { color: var(--muted); font-size: 0.82rem; }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 10px; padding: 8px 12px; cursor: pointer; display: inline-flex; gap: 8px; align-items: baseline; }
+.tab .c { color: var(--muted); font-weight: 500; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.tab[aria-selected="true"] .c { color: var(--surface); opacity: 0.85; }
+
+.guide { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.classes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.cls { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 6px; background: var(--bg); min-width: 0; }
+.cls h3 { font-size: 1.05rem; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.cls h3 .num { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.cls .fit { font-size: 0.88rem; }
+.cls .sizes { font-size: 0.8rem; color: var(--muted); }
+.cls .row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 6px; }
+.cls button { font: inherit; font-size: 0.82rem; font-weight: 600; align-self: flex-start; border: 1px solid var(--accent); color: var(--accent); background: transparent; border-radius: 8px; padding: 4px 10px; cursor: pointer; }
+.callout { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; font-size: 0.9rem; }
+.facts summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+.facts .grid { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px 20px; }
+.facts h4 { margin: 0 0 4px; font-family: var(--font-display); font-size: 0.95rem; }
+.facts ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 0.88rem; }
+.facts li a { font-size: 0.78rem; }
+
+.layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.filters { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow-y: auto; }
+@media (max-width: 900px) { .filters { position: static; max-height: none; } }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > label, .lbl { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+input[type="search"], select { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); width: 100%; min-width: 0; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 0.82rem; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.checks { display: flex; flex-direction: column; gap: 8px; }
+.checks label { display: flex; gap: 8px; align-items: center; font-size: 0.92rem; cursor: pointer; }
+.checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+.hint { font-size: 0.78rem; color: var(--muted); }
+.btn { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--bg); color: var(--fg); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+
+.results { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.bar select { width: auto; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; grid-template-columns: 160px minmax(0, 1fr) auto; grid-template-areas: "img head price" "img specs specs" "img tags tags" "img pc pc" "img det det"; gap: 6px 18px; }
+.item > .head { grid-area: head; min-width: 0; }
+.item > .price { grid-area: price; }
+.item > .specs { grid-area: specs; }
+.item > .tags { grid-area: tags; }
+.item > .pc { grid-area: pc; }
+.item > details { grid-area: det; }
+.item h3 { font-size: 1.02rem; font-weight: 700; }
+.item h3 a { color: var(--fg); text-decoration: none; }
+.item h3 a:hover { color: var(--accent); text-decoration: underline; }
+.meta { color: var(--muted); font-size: 0.85rem; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.thumb { grid-area: img; display: block; aspect-ratio: 1 / 1; width: 100%; max-width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid var(--line); align-self: start; position: relative; }
+.thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.thumb .noimg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; font-size: 0.78rem; color: #5b6577; background: #eef2f7; }
+.price { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.price .p { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price .sub { font-size: 0.75rem; color: var(--muted); }
+.specs { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.88rem; }
+.specs b { font-weight: 600; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { display: inline-block; font-size: 0.74rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; background: var(--accent-soft); color: var(--accent); }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.plain { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.pc { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 18px; font-size: 0.86rem; }
+.pc ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; }
+.pc li { display: flex; gap: 6px; align-items: baseline; }
+.pc li::before { font-weight: 800; flex: none; width: 1em; text-align: center; }
+.pc .pro li::before { content: "+"; color: var(--good); }
+.pc .con li::before { content: "–"; color: var(--bad); }
+.pc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+details { font-size: 0.85rem; }
+details summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+details .dl { margin-top: 8px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; color: var(--muted); }
+details .dl dt { font-weight: 600; color: var(--fg); }
+details .dl dd { margin: 0; overflow-wrap: anywhere; }
+.empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; color: var(--muted); }
+.more { align-self: center; }
+@media (max-width: 760px) { .item { grid-template-columns: 96px minmax(0, 1fr); grid-template-areas: "img head" "img price" "specs specs" "tags tags" "pc pc" "det det"; } .price { align-items: flex-start; text-align: left; } }
+@media (max-width: 480px) { .pc { grid-template-columns: minmax(0, 1fr); } }
+footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction: column; gap: 6px; max-width: 95ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.thumbwrap { grid-area: img; position: relative; align-self: start; min-width: 0; }
+.thumbwrap .thumb { grid-area: auto; }
+.fav { position: absolute; top: 6px; right: 6px; width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+.fav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.fav[aria-pressed="true"] { color: var(--sun); border-color: var(--sun); }
+.fav[aria-pressed="true"] svg { fill: currentColor; }
+.fav:hover { color: var(--sun); }
+.topnav .favlink { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; }
+.topnav .favlink svg { width: 16px; height: 16px; fill: var(--sun); }
+.favbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--sun-soft); border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; }
+.backbtn { font: inherit; font-weight: 600; font-size: 0.88rem; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.backbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.backbtn:hover { border-color: var(--accent); }
+.favfilter { font: inherit; font-weight: 600; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 1px solid var(--sun); background: var(--sun-soft); color: var(--fg); border-radius: 10px; padding: 10px 12px; cursor: pointer; min-height: 44px; }
+.favfilter svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--warn); stroke-width: 1.8; stroke-linejoin: round; }
+.favfilter .favn { margin-left: auto; font-size: 0.82rem; color: var(--muted); }
+.favfilter[aria-pressed="true"] { background: var(--sun); border-color: var(--sun); color: #172033; }
+.favfilter[aria-pressed="true"] svg { fill: #172033; stroke: #172033; }
+.favfilter[aria-pressed="true"] .favn { color: #172033; }
+</style>
+
+<div class="wrap">
+  <nav class="topnav" aria-label="Einkaufsseiten">
+    <button type="button" class="backbtn" onclick="goBack()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Zurück</button>
+    <a href="einkauf-eu.html">Hüpfburgen kaufen</a>
+    <a href="zubehoer-eu.html" aria-current="page">Zubehör und Gebläse</a>
+    <a href="wettbewerb.html">Wettbewerb</a>
+    <a href="merkliste.html" class="favlink"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Merkliste <span class="num" id="fav-count">0</span></a>
+  </nav>
+
+  <header>
+    <span class="eyebrow">Einkauf · Zubehör von Händlern in der EU · Stand 9. Oktober 2026</span>
+    <h1>Zubehör und Gebläse für Hüpfburgen</h1>
+    <p class="lead">Gebläse, Matten, Befestigung, Transport, Strom und Reparatur von <span id="h-prov">0</span> Anbietern. Preise zum Vergleich in Euro netto. Viele Burgen werden ohne Gebläse verkauft; der Ratgeber unten zeigt, welche Leistung zu welcher Burggröße passt.</p>
+  </header>
+
+  <section class="kpis" aria-label="Kennzahlen">
+    <div class="kpi"><span class="v" id="k-all">0</span><span class="l">Artikel insgesamt</span></div>
+    <div class="kpi"><span class="v" id="k-blow">0</span><span class="l">Gebläse für Hüpfburgen</span></div>
+    <div class="kpi"><span class="v" id="k-15">–</span><span class="l">Median 1,5-PS-Gebläse netto (Standardgröße)</span></div>
+    <div class="kpi"><span class="v" id="k-20">–</span><span class="l">Median 2-PS-Gebläse netto (große Burgen)</span></div>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="Rubriken" id="tabs"></div>
+
+  <section class="guide" id="guide" aria-labelledby="h-guide">
+    <h2 id="h-guide">Welches Gebläse passt zur Burg?</h2>
+    <div class="callout" id="clown-note"></div>
+    <div class="classes" id="classes"></div>
+    <p class="hint">Richtwerte von Eventmodule Factory und Happy Fun, siehe Quellen unten. Die Wattangaben der Anbieter meinen mal die abgegebene, mal die aufgenommene Leistung; deshalb ordnet diese Liste nach PS-Klasse, wie die meisten Händler ihre Gebläse benennen. Im Zweifel gilt die Angabe des Burgenherstellers.</p>
+    <details class="facts"><summary>Strom, Kabel, Sicherheit und Wetter: was die Quellen sagen</summary><div class="grid" id="facts"></div></details>
+  </section>
+
+  <div class="layout">
+    <form class="filters" id="filters" aria-label="Filter" onsubmit="return false">
+      <button type="button" class="favfilter" id="f-favbtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg><span>Nur Merkliste zeigen</span><span class="num favn" id="f-favn">0</span></button>
+      <div class="field">
+        <label for="f-q">Suche</label>
+        <input type="search" id="f-q" placeholder="z. B. Gibbons, Wassersack, Plane">
+      </div>
+      <div class="field" id="g-ps">
+        <span class="lbl" id="l-ps">Leistungsklasse</span>
+        <div class="chips" role="group" aria-labelledby="l-ps" id="f-ps"></div>
+      </div>
+      <div class="field" id="g-blow">
+        <span class="lbl">Gebläse</span>
+        <div class="checks">
+          <label><input type="checkbox" id="f-castle" checked> Nur Gebläse für Hüpfburgen</label>
+          <label><input type="checkbox" id="f-single"> Nur Einzelgeräte (keine Sets)</label>
+        </div>
+        <span class="hint">Ausgeblendet sind Gebläse für Skydancer, Werbesäulen, Wasserbälle und sehr schwache Geräte.</span>
+      </div>
+      <div class="field">
+        <label for="f-price">Preis netto bis <span class="num" id="f-price-out"></span></label>
+        <input type="range" id="f-price" min="10" max="2500" step="10" value="2500">
+        <div class="checks"><label><input type="checkbox" id="f-priced"> Nur mit Preis</label></div>
+      </div>
+      <div class="field">
+        <span class="lbl" id="l-ctry">Land</span>
+        <div class="chips" role="group" aria-labelledby="l-ctry" id="f-ctry"></div>
+      </div>
+      <div class="field">
+        <label for="f-prov">Anbieter</label>
+        <select id="f-prov"></select>
+      </div>
+      <button type="button" class="btn" id="f-reset">Filter zurücksetzen</button>
+    </form>
+
+    <section class="results" aria-labelledby="h-res">
+      <div class="bar">
+        <h2 id="h-res"><span id="r-status">Artikel</span></h2>
+        <label class="hint" for="f-sort">Sortieren
+          <select id="f-sort">
+            <option value="price-asc">Preis aufsteigend</option>
+            <option value="price-desc">Preis absteigend</option>
+            <option value="ps-asc">Leistung aufsteigend</option>
+            <option value="kg-asc">Gewicht aufsteigend</option>
+            <option value="name-asc">Name A bis Z</option>
+          </select>
+        </label>
+      </div>
+      <div class="list" id="list" aria-live="polite"></div>
+      <button type="button" class="btn more" id="more" hidden>Weitere Artikel anzeigen</button>
+    </section>
+  </div>
+
+  <footer>
+    <p><strong>Bewertung:</strong> Vor- und Nachteile sind aus den Angaben der Anbieter abgeleitet (Gewicht, Preis im Vergleich zur eigenen Leistungsklasse, angegebene Prüfzeichen, Spritzwasserschutz, widersprüchliche Angaben, Lieferbarkeit). Es ist kein Praxistest. „Günstig“ heißt mindestens 15 % unter dem Median der Klasse, „teuer“ mindestens 25 % darüber, jeweils pro Gerät.</p>
+    <p><strong>Preise:</strong> Netto wie angegeben. Bruttopreise deutscher Shops geteilt durch 1,19. Złoty und Kronen mit dem EZB-Kurs vom <span id="rate-date"></span> umgerechnet (1 € = <span id="rate-pln"></span> PLN, <span id="rate-czk"></span> CZK). Versand ist nicht enthalten. Baumärkte und Anhängerhändler verkaufen an Privatkunden; einige Hüpfburg-Händler nur an Gewerbe.</p>
+    <p><strong>Grenzen:</strong> Kiddyfun-Kategorieseiten ließen sich nicht lesen, dort fehlen vermutlich Artikel. Bei Eventmodule Factory waren nur die ersten Listenseiten lesbar. Anhänger stammen teils aus Händlerinseraten, die sich schnell ändern. Bilder werden von den Seiten der Anbieter geladen und gehören ihnen.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+const P = DATA.providers, A = DATA.items, G = DATA.guide;
+const COUNTRY = { DE: "Deutschland", AT: "Österreich", NL: "Niederlande", FR: "Frankreich", ES: "Spanien", CZ: "Tschechien", PL: "Polen" };
+const CATS = [
+  { id: "geblaese", c: "Gebläse", label: "Gebläse" },
+  { id: "geblaese-zubehoer", c: "Gebläse-Zubehör", label: "Gebläse-Zubehör" },
+  { id: "matten", c: "Matten und Planen", label: "Matten und Planen" },
+  { id: "befestigung", c: "Befestigung", label: "Befestigung" },
+  { id: "transport", c: "Transport", label: "Transport und Anhänger" },
+  { id: "strom", c: "Strom und Sicherheit", label: "Strom und Sicherheit" },
+  { id: "spiel", c: "Spiel und Spaß", label: "Spiel und Spaß" },
+  { id: "reparatur", c: "Reinigung und Reparatur", label: "Reinigung und Reparatur" },
+  { id: "sonstiges", c: "Sonstiges", label: "Sonstiges" },
+];
+const PS = [
+  { v: 1, label: "1 PS", fit: "Mini-Burgen bis ca. 3 × 4 m", sizes: "Größenklasse Mini" },
+  { v: 1.5, label: "1,5 PS", fit: "Burgen bis ca. 4 × 5 oder 5 × 6 m ohne Rutsche", sizes: "Midi und Standard" },
+  { v: 2, label: "2 PS", fit: "ab ca. 5 × 5 m mit Rutsche, mittlere bis große Burgen", sizes: "Standard mit Rutsche, Groß" },
+  { v: 3, label: "3 PS", fit: "große Module ab ca. 35 m² Grundfläche", sizes: "Groß und XXL, sonst mehrere Gebläse" },
+];
+// Merkliste: gespeichert im Browser (gleicher Speicher für alle Einkaufsseiten), übertragbar per Link.
+const FAV_KEY = "hb-merkliste-v1";
+const favHash = (s) => { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
+function favLoad() { try { const v = JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); return new Set(Array.isArray(v) ? v : []); } catch (e) { return new Set(); } }
+function favSave() { try { localStorage.setItem(FAV_KEY, JSON.stringify([...FAV])); } catch (e) {} }
+let FAV = favLoad();
+try { const f = new URLSearchParams(location.search).get("f"); if (f) { f.split(".").filter((x) => /^[0-9a-z]{1,8}$/.test(x)).forEach((x) => FAV.add(x)); favSave(); } } catch (e) {}
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>';
+function favButton(a) { const on = FAV.has(a.fk); return `<button type="button" class="fav" data-fk="${a.fk}" aria-pressed="${on}" aria-label="${on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen"}: ${esc(a.n)}">${STAR}</button>`; }
+function favCount() { const el = document.getElementById("fav-count"); if (el) el.textContent = FAV.size; }
+function favToggle(fk) { FAV.has(fk) ? FAV.delete(fk) : FAV.add(fk); favSave(); favCount(); }
+window.addEventListener("storage", (e) => { if (e.key === FAV_KEY) { FAV = favLoad(); favCount(); render(); } });
+// Filter merken: localStorage (bleibt auch nach dem Schließen), Scrollposition und Anzahl geladener Artikel nur für diese Sitzung.
+const PERSIST = {
+  key: "hb-filter-zubehoer",
+  sets: {"f-ps": "ps", "f-ctry": "ctry"},
+  inputs: {"f-q": "q", "f-price": "max"},
+  checks: {"f-castle": "castle", "f-single": "single", "f-priced": "priced"},
+  selects: {"f-prov": "prov", "f-sort": "sort"},
+};
+function persistSave() {
+  try {
+    const out = {};
+    Object.keys(state).forEach((k) => { if (k === "shown") return; out[k] = state[k] instanceof Set ? [...state[k]] : state[k]; });
+    localStorage.setItem(PERSIST.key, JSON.stringify(out));
+    sessionStorage.setItem(PERSIST.key + "-view", JSON.stringify({ shown: state.shown, y: window.scrollY }));
+  } catch (e) {}
+}
+function persistLoad() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(PERSIST.key) || "null"); } catch (e) {}
+  if (saved && typeof saved === "object") {
+    Object.keys(state).forEach((k) => {
+      if (!(k in saved) || k === "shown") return;
+      if (state[k] instanceof Set) { state[k].clear(); (saved[k] || []).forEach((v) => state[k].add(String(v))); }
+      else if (typeof saved[k] === typeof state[k]) state[k] = saved[k];
+    });
+  }
+  Object.entries(PERSIST.sets).forEach(([id, k]) => document.querySelectorAll(`#${id} [data-v]`).forEach((b) => b.setAttribute("aria-pressed", String(state[k].has(b.dataset.v)))));
+  Object.entries(PERSIST.inputs).forEach(([id, k]) => { const el = document.getElementById(id); if (el) el.value = state[k]; });
+  Object.entries(PERSIST.checks).forEach(([id, k]) => { const el = document.getElementById(id); if (el) el.checked = !!state[k]; });
+  Object.entries(PERSIST.selects).forEach(([id, k]) => { const el = document.getElementById(id); if (el && [...el.options].some((o) => o.value === String(state[k]))) el.value = String(state[k]); });
+  let view = null;
+  try { view = JSON.parse(sessionStorage.getItem(PERSIST.key + "-view") || "null"); } catch (e) {}
+  if (view && view.shown > state.shown) state.shown = view.shown;
+  return view;
+}
+let persistTimer = null;
+window.addEventListener("scroll", () => { clearTimeout(persistTimer); persistTimer = setTimeout(persistSave, 200); }, { passive: true });
+window.addEventListener("pagehide", persistSave);
+function goBack() {
+  let sameSite = false;
+  try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  if (sameSite && history.length > 1) history.back(); else location.href = "einkauf-eu.html";
+}
+const PAGE = 30;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const eur = (v) => v == null ? "–" : Math.round(v).toLocaleString("de-DE") + " €";
+const dec = (v) => v == null ? null : String(v).replace(".", ",");
+const median = (arr) => { if (!arr.length) return null; const s = [...arr].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const psLabel = (v) => v == null ? null : PS.find((p) => p.v === v)?.label;
+const FLAG = { "netto": "netto laut Anbieter", "aus brutto": "aus Bruttopreis umgerechnet", "CZK umgerechnet": "aus CZK umgerechnet", "PLN umgerechnet": "aus PLN umgerechnet", "Steuer unklar": "Steuer nicht angegeben", "auf Anfrage": "Preis auf Anfrage" };
+
+const isCastleBlower = (a) => a.c === "Gebläse" && !a.nc;
+A.forEach((a, i) => {
+  a.id = i;
+  a.fk = favHash(a.u + "|" + a.n);
+  a.unit = a.pn != null ? a.pn / (a.set || 1) : null;
+  a.brand = /gibbons/i.test(a.n) ? "Gibbons" : /huawei|\bHW\b|RE[HV]/i.test(a.n) ? "Huawei" : null;
+  a.hay = [a.n, a.c, P[a.p].n, COUNTRY[P[a.p].c], a.nt, a.fit].join(" ").toLowerCase();
+});
+const classMedian = {};
+PS.forEach((c) => { classMedian[c.v] = median(A.filter((a) => isCastleBlower(a) && a.ps === c.v && a.unit != null && !a.starter).map((a) => a.unit)); });
+const brandSellers = {};
+["Gibbons", "Huawei"].forEach((b) => { brandSellers[b] = new Set(A.filter((a) => isCastleBlower(a) && a.brand === b).map((a) => a.p)).size; });
+
+function prosCons(a) {
+  const pro = [], con = [];
+  const txt = [a.n, a.nt, a.mat, a.ip, a.cert].join(" ");
+  if (a.kg != null && a.kg <= 13) pro.push(`Leicht: ${dec(a.kg)} kg`);
+  if (a.kg != null && a.kg >= 20) con.push(`Schwer: ${dec(a.kg)} kg`);
+  const med = classMedian[a.ps];
+  if (a.unit != null && med && !a.starter) {
+    if (a.unit <= med * 0.85) pro.push(`Günstig für die Klasse: ${eur(a.unit)} je Gerät (Median ${eur(med)})`);
+    if (a.unit >= med * 1.25) con.push(`Teuer für die Klasse: ${eur(a.unit)} je Gerät (Median ${eur(med)})`);
+  }
+  if (/metall/i.test(txt)) pro.push("Metallgehäuse");
+  if (a.cert && /CE|GS|TÜV|TUV/i.test(a.cert) && !/seitenweit/i.test(a.cert)) pro.push(`Prüfzeichen angegeben: ${a.cert}`);
+  if (/spritzwasser|IP\s?\d\d|wasserbest/i.test(txt)) pro.push("Spritzwasserschutz angegeben");
+  if (/stapelbar/i.test(txt)) pro.push("Stapelbar");
+  if (a.set > 1) pro.push(`Set mit ${a.set} Geräten`);
+  if (a.starter) pro.push("Starterset mit Erdnägeln und Plane");
+  if (a.brand && brandSellers[a.brand] >= 3) pro.push(`Marke ${a.brand} bei ${brandSellers[a.brand]} Händlern dieser Liste erhältlich`);
+  const g = txt.match(/(\d)\s*Jahre?\s*Garantie/i); if (g && Number(g[1]) >= 2) pro.push(`${g[1]} Jahre Garantie`);
+  if (a.db != null && a.db >= 85) con.push(`Laut: ${a.db} dB laut Anbieter`);
+  if (/widersprüch/i.test(a.nt || "")) con.push("Widersprüchliche Angaben auf der Anbieterseite");
+  if (a.pn == null) con.push("Preis nur auf Anfrage");
+  if (a.pf === "PLN umgerechnet" || a.pf === "CZK umgerechnet") con.push("Preis in Fremdwährung, Versand aus dem Ausland");
+  if (/nicht verfügbar|ausverkauft|sold out|nicht lieferbar/i.test(a.nt || "")) con.push("Derzeit nicht lieferbar laut Seite");
+  if (/gebraucht/i.test(txt)) con.push("Gebraucht");
+  if (a.kg == null && a.kw == null && a.hp == null) con.push("Kaum technische Angaben");
+  return { pro, con };
+}
+
+const state = { cat: "Gebläse", q: "", ps: new Set(), castle: true, single: false, max: 2500, priced: false, ctry: new Set(), prov: "alle", favonly: false, sort: "price-asc", shown: PAGE };
+
+function buildStatic() {
+  $("h-prov").textContent = P.length;
+  $("k-all").textContent = A.length;
+  $("k-blow").textContent = A.filter(isCastleBlower).length;
+  $("k-15").textContent = eur(classMedian[1.5]);
+  $("k-20").textContent = eur(classMedian[2]);
+  $("rate-date").textContent = DATA.rates.date;
+  $("rate-pln").textContent = dec(DATA.rates.PLN);
+  $("rate-czk").textContent = dec(DATA.rates.CZK);
+  $("tabs").innerHTML = CATS.filter((c) => A.some((a) => a.c === c.c)).map((c) => `<button type="button" role="tab" class="tab" id="tab-${c.id}" data-c="${esc(c.c)}" aria-selected="false">${esc(c.label)} <span class="c">${A.filter((a) => a.c === c.c).length}</span></button>`).join("");
+  $("f-ps").innerHTML = PS.map((c) => `<button type="button" class="chip" aria-pressed="false" data-v="${c.v}">${c.label}</button>`).join("");
+  const ctrs = [...new Set(P.map((p) => p.c))].sort((a, b) => COUNTRY[a].localeCompare(COUNTRY[b], "de"));
+  $("f-ctry").innerHTML = ctrs.map((c) => `<button type="button" class="chip" aria-pressed="false" data-v="${c}">${esc(COUNTRY[c])}</button>`).join("");
+  $("f-prov").innerHTML = `<option value="alle">Alle Anbieter</option>` + P.map((p, i) => ({ p, i })).sort((x, y) => x.p.n.localeCompare(y.p.n, "de")).map(({ p, i }) => `<option value="${i}">${esc(p.n)}</option>`).join("");
+
+  $("classes").innerHTML = PS.map((c) => {
+    const items = A.filter((a) => isCastleBlower(a) && a.ps === c.v && a.unit != null && !a.starter);
+    const cheapest = items.slice().sort((x, y) => x.unit - y.unit)[0];
+    return `<div class="cls">
+      <h3>${c.label} <span class="num">${A.filter((a) => isCastleBlower(a) && a.ps === c.v).length} Angebote</span></h3>
+      <p class="fit">${esc(c.fit)}</p>
+      <p class="sizes">Passt etwa zu: ${esc(c.sizes)}</p>
+      <div class="row"><span>Median je Gerät</span><span class="num">${eur(classMedian[c.v])}</span></div>
+      <div class="row"><span>Günstigstes</span><span class="num">${cheapest ? eur(cheapest.unit) : "–"}</span></div>
+      <button type="button" data-ps="${c.v}">Diese Klasse zeigen</button>
+    </div>`;
+  }).join("");
+  const jb = A.find((a) => /huepfburgenwelt/.test(a.u) && /Gebläse 1,1 kW/.test(a.n));
+  $("clown-note").innerHTML = `<strong>Für den Klatschenden Clown (5,2 × 4 m):</strong> Beim Kauf über huepfburgenwelt.de ist ein Gebläse dabei. Ohne Gebläse gekauft passt die 1,5-PS-Klasse (1,1 kW Abgabeleistung)${jb ? `, z. B. das <a href="${esc(jb.u)}" target="_blank" rel="noopener">JB-Gebläse 1,1 kW</a> für ${eur(jb.pn)} netto` : ""}. Für einen Ersatz am Wochenende lohnt ein zweites Gerät derselben Klasse.`;
+
+  const topics = ["Leistung nach Größe", "Strom", "Kabel", "Sicherheit", "Wetter", "Benzin", "Norm", "Sonstiges"];
+  $("facts").innerHTML = topics.filter((t) => G.some((f) => f.topic === t)).map((t) => `<div><h4>${esc(t === "Sonstiges" ? "Lautstärke und Weiteres" : t)}</h4><ul>${G.filter((f) => f.topic === t).map((f) => `<li><span>${esc(f.statement_de)} <a href="${esc(f.source_url)}" target="_blank" rel="noopener">Quelle</a></span></li>`).join("")}</ul></div>`).join("");
+}
+
+function matches(a) {
+  if (state.favonly && !FAV.has(a.fk)) return false;
+  if (a.c !== state.cat) return false;
+  if (state.q && !a.hay.includes(state.q)) return false;
+  if (state.cat === "Gebläse") {
+    if (state.castle && a.nc) return false;
+    if (state.single && (a.set > 1 || a.starter)) return false;
+    if (state.ps.size && !state.ps.has(String(a.ps))) return false;
+  }
+  if (state.priced && a.pn == null) return false;
+  if (a.pn != null && state.max < 2500 && a.pn > state.max) return false;
+  if (state.ctry.size && !state.ctry.has(P[a.p].c)) return false;
+  if (state.prov !== "alle" && String(a.p) !== state.prov) return false;
+  return true;
+}
+
+function sortRows(rows) {
+  const [key, dir] = state.sort.split("-");
+  const d = dir === "asc" ? 1 : -1;
+  if (key === "name") return rows.sort((x, y) => x.n.localeCompare(y.n, "de"));
+  const val = (a) => key === "price" ? a.pn : key === "ps" ? a.ps ?? a.kw : a.kg;
+  return rows.sort((x, y) => {
+    const a = val(x), b = val(y);
+    if (a == null && b == null) return x.n.localeCompare(y.n, "de");
+    if (a == null) return 1;
+    if (b == null) return -1;
+    return (a - b) * d || ((x.pn ?? 1e9) - (y.pn ?? 1e9));
+  });
+}
+
+function card(a) {
+  const p = P[a.p];
+  const specs = [];
+  if (a.c === "Gebläse") {
+    if (a.kw != null) specs.push(["Leistung", `${dec(a.kw)} kW${a.hp ? " · " + dec(a.hp) + " PS" : ""}`]);
+    else if (a.hp != null) specs.push(["Leistung", `${dec(a.hp)} PS`]);
+    if (a.air) specs.push(["Luftmenge", a.air]);
+    if (a.db != null) specs.push(["Lautstärke", `${a.db} dB`]);
+  }
+  if (a.kg != null) specs.push(["Gewicht", `${dec(a.kg)} kg`]);
+  if (a.size) specs.push(["Maße", a.size]);
+  if (a.cab != null) specs.push(["Kabel", `${dec(a.cab)} m`]);
+  if (a.ip) specs.push(["Schutz", a.ip]);
+  const tags = [
+    a.ps ? `<span class="pill">${psLabel(a.ps)}</span>` : "",
+    a.nc ? `<span class="pill warn">nicht für Hüpfburgen gedacht</span>` : "",
+    a.set > 1 ? `<span class="pill plain">${a.set}er-Set</span>` : "",
+    a.starter ? `<span class="pill plain">Starterset</span>` : "",
+    a.brand ? `<span class="pill plain">${a.brand}</span>` : "",
+    a.fuel === "Benzin" ? `<span class="pill warn">Benzin</span>` : "",
+  ].join("");
+  let pc = "";
+  if (isCastleBlower(a)) {
+    const { pro, con } = prosCons(a);
+    pc = `<div class="pc"><div class="pro"><span class="h">Vorteile</span><ul>${pro.length ? pro.map((x) => `<li>${esc(x)}</li>`).join("") : "<li>keine Besonderheiten angegeben</li>"}</ul></div><div class="con"><span class="h">Nachteile</span><ul>${con.length ? con.map((x) => `<li>${esc(x)}</li>`).join("") : "<li>keine bekannt</li>"}</ul></div></div>`;
+  }
+  const details = [
+    ["Preis auf der Seite", esc([a.po, a.pnote].filter(Boolean).join(" · ") || "–")],
+    ["Geeignet für", esc(a.fit || "nicht angegeben")],
+    ["Material", esc(a.mat || "nicht angegeben")],
+    ["Spannung", esc(a.v || "nicht angegeben")],
+    ["Prüfzeichen", esc(a.cert || "nicht angegeben")],
+    ["Hinweise", esc(a.nt || "–")],
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  const img = a.img
+    ? `<img src="${esc(a.img)}" alt="${esc(a.n)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'noimg',textContent:'Bild beim Anbieter'}))">`
+    : `<span class="noimg">Bild beim Anbieter</span>`;
+  const unit = a.set > 1 && a.unit != null ? `<span class="sub num">${eur(a.unit)} je Gerät</span>` : "";
+  return `<article class="item">
+    <div class="thumbwrap"><a class="thumb" href="${esc(a.u)}" target="_blank" rel="noopener" aria-label="${esc(a.n)} beim Anbieter ansehen">${img}</a>${favButton(a)}</div>
+    <div class="head"><h3><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.n)}</a></h3>
+      <div class="meta"><span>${esc(p.n)}</span><span>${esc(COUNTRY[p.c] || p.c)}</span></div></div>
+    <div class="price"><span class="p">${a.pn == null ? "auf Anfrage" : eur(a.pn)}</span>${a.pn == null ? "" : `<span class="sub">${esc(FLAG[a.pf] || "")}</span>`}${unit}</div>
+    <div class="specs">${specs.length ? specs.map(([k, v]) => `<span><b>${k}</b> <span class="num">${esc(v)}</span></span>`).join("") : `<span class="hint">Keine technischen Angaben auf der Seite</span>`}</div>
+    <div class="tags">${tags}</div>
+    ${pc}
+    <details><summary>Details und Quelle</summary><dl class="dl">${details}</dl></details>
+  </article>`;
+}
+
+function render() {
+  document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.c === state.cat)));
+  const isBlow = state.cat === "Gebläse";
+  $("guide").hidden = !isBlow;
+  $("g-ps").hidden = !isBlow;
+  $("g-blow").hidden = !isBlow;
+  const rows = sortRows(A.filter(matches));
+  const total = A.filter((a) => a.c === state.cat).length;
+  $("list").innerHTML = rows.length ? rows.slice(0, state.shown).map(card).join("") : `<div class="empty">Kein Artikel passt zu den Filtern. Setzen Sie die Filter zurück oder wählen Sie eine andere Rubrik.</div>`;
+  $("more").hidden = rows.length <= state.shown;
+  $("more").textContent = `Weitere Artikel anzeigen (${rows.length - Math.min(rows.length, state.shown)} übrig)`;
+  const catLabel = CATS.find((c) => c.c === state.cat).label;
+  $("r-status").textContent = `${catLabel}: ${rows.length === total ? rows.length : rows.length + " von " + total} Artikel`;
+  $("f-price-out").textContent = state.max >= 2500 ? "unbegrenzt" : eur(state.max);
+  const fb = $("f-favbtn"); fb.setAttribute("aria-pressed", String(state.favonly)); $("f-favn").textContent = A.filter((a) => FAV.has(a.fk)).length;
+  persistSave();
+}
+
+function setCat(c) { state.cat = c; state.shown = PAGE; state.ps.clear(); document.querySelectorAll("#f-ps .chip").forEach((x) => x.setAttribute("aria-pressed", "false")); render(); }
+
+function bind() {
+  const re = () => { state.shown = PAGE; render(); };
+  $("tabs").addEventListener("click", (e) => { const t = e.target.closest(".tab"); if (t) setCat(t.dataset.c); });
+  $("f-q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); re(); });
+  $("f-price").addEventListener("input", (e) => { state.max = Number(e.target.value); re(); });
+  [["f-castle", "castle"], ["f-single", "single"], ["f-priced", "priced"]].forEach(([id, k]) => $(id).addEventListener("change", (e) => { state[k] = e.target.checked; re(); }));
+  $("f-prov").addEventListener("change", (e) => { state.prov = e.target.value; re(); });
+  $("f-sort").addEventListener("change", (e) => { state.sort = e.target.value; re(); });
+  const group = (id, set) => $(id).addEventListener("click", (e) => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    const v = b.dataset.v; const on = !set.has(v); on ? set.add(v) : set.delete(v);
+    b.setAttribute("aria-pressed", String(on)); re();
+  });
+  group("f-ps", state.ps);
+  group("f-ctry", state.ctry);
+  $("classes").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-ps]"); if (!b) return;
+    state.ps.clear(); state.ps.add(b.dataset.ps);
+    document.querySelectorAll("#f-ps .chip").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.v === b.dataset.ps)));
+    re(); $("h-res").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  $("list").addEventListener("click", (e) => { const b = e.target.closest(".fav"); if (!b) return; favToggle(b.dataset.fk); const on = FAV.has(b.dataset.fk); b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", (on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen")); if (state.favonly && !on) render(); else $("f-favn").textContent = A.filter((a) => FAV.has(a.fk)).length; });
+  $("f-favbtn").addEventListener("click", () => { state.favonly = !state.favonly; state.shown = PAGE; render(); });
+  $("more").addEventListener("click", () => { state.shown += PAGE; render(); });
+  $("f-reset").addEventListener("click", () => {
+    Object.assign(state, { q: "", castle: true, single: false, max: 2500, priced: false, prov: "alle", favonly: false, shown: PAGE });
+    state.ps.clear(); state.ctry.clear();
+    $("filters").reset(); $("f-castle").checked = true; $("f-price").value = 2500;
+    document.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
+    render();
+  });
+}
+
+buildStatic();
+favCount();
+bind();
+const VIEW = persistLoad();
+const fromHash = CATS.find((c) => c.id === location.hash.slice(1));
+if (fromHash && A.some((a) => a.c === fromHash.c) && fromHash.c !== state.cat) { state.cat = fromHash.c; state.ps.clear(); document.querySelectorAll("#f-ps .chip").forEach((x) => x.setAttribute("aria-pressed", "false")); }
+window.addEventListener("hashchange", () => { const c = CATS.find((x) => x.id === location.hash.slice(1)); if (c && A.some((a) => a.c === c.c)) setCat(c.c); });
+render();
+if (VIEW && VIEW.y && !fromHash) requestAnimationFrame(() => window.scrollTo(0, VIEW.y));
+</script>

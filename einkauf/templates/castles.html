@@ -1,0 +1,599 @@
+<title>Hüpfburg-Einkauf EU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: Einkaufswerkzeug. Kopf mit Kennzahlen, Filterleiste links (oben auf dem Handy), Ergebnisliste rechts. Gleiche Gestaltung wie die Wettbewerbsliste. */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #172033;
+  --muted: #5b6577;
+  --line: #dde3ec;
+  --accent: #1d5fc4;
+  --accent-soft: #e3ecfb;
+  --sun: #f2b705;
+  --sun-soft: #fdf3cf;
+  --good: #1f8a4c;
+  --good-soft: #e1f3e8;
+  --warn: #a86a00;
+  --warn-soft: #fbefd6;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+    --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115;
+    --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+  --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115;
+  --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 24px 48px; }
+.wrap { max-width: 1320px; margin-inline: auto; display: flex; flex-direction: column; gap: 24px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 800; line-height: 1.1; }
+h2 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.lead { color: var(--muted); max-width: 75ch; }
+header { display: flex; flex-direction: column; gap: 10px; }
+.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.topnav { display: flex; flex-wrap: wrap; gap: 6px; }
+.topnav a { text-decoration: none; font-weight: 600; font-size: 0.88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.topnav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+a.pill { text-decoration: none; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kpi .v { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.kpi .l { color: var(--muted); font-size: 0.82rem; }
+
+.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.filters { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow-y: auto; }
+@media (max-width: 900px) { .filters { position: static; max-height: none; } }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > label, .lbl { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+input[type="search"], input[type="number"], select { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); width: 100%; min-width: 0; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
+.pair span { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 0.82rem; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.sizes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.sizebtn { font: inherit; text-align: left; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 10px; padding: 7px 10px; cursor: pointer; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.sizebtn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.sizebtn .ico { display: flex; align-items: flex-end; justify-content: center; height: 24px; }
+.sizebtn .ico i { display: block; background: var(--accent); border-radius: 3px 3px 1px 1px; }
+.sizebtn b { font-weight: 600; display: block; }
+.sizebtn small { color: var(--muted); font-size: 0.76rem; display: block; line-height: 1.3; }
+.sizebtn .cnt { color: var(--muted); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+.checks { display: flex; flex-direction: column; gap: 8px; }
+.checks label { display: flex; gap: 8px; align-items: center; font-size: 0.92rem; cursor: pointer; }
+.checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+.hint { font-size: 0.78rem; color: var(--muted); }
+.btn { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--bg); color: var(--fg); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+
+.results { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.bar .status { font-weight: 600; }
+.bar select { width: auto; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; grid-template-areas: "img head price" "img specs specs" "img tags tags" "img det det"; gap: 6px 18px; }
+.item > .head { grid-area: head; min-width: 0; }
+.item > .price { grid-area: price; }
+.item > .specs { grid-area: specs; }
+.item > .tags { grid-area: tags; }
+.item > details { grid-area: det; }
+.thumb { grid-area: img; display: block; aspect-ratio: 4 / 3; width: 100%; max-width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid var(--line); align-self: start; position: relative; }
+.thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.thumb .noimg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; font-size: 0.78rem; color: #5b6577; background: #eef2f7; }
+@media (max-width: 760px) { .item { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "img img" "head price" "specs specs" "tags tags" "det det"; } }
+.item h3 { font-size: 1.05rem; font-weight: 700; }
+.item h3 a { color: var(--fg); text-decoration: none; }
+.item h3 a:hover { color: var(--accent); text-decoration: underline; }
+.meta { color: var(--muted); font-size: 0.85rem; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.price { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.price .p { font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price .sub { font-size: 0.75rem; color: var(--muted); }
+.specs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.88rem; }
+.specs b { font-weight: 600; }
+.tags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { display: inline-block; font-size: 0.74rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; background: var(--accent-soft); color: var(--accent); }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.sun { background: var(--sun-soft); color: var(--warn); }
+.pill.deal { background: #c2410c; color: #ffffff; }
+.price .was { font-size: 0.95rem; font-weight: 600; color: var(--fg); text-decoration: line-through; text-decoration-color: #c2410c; text-decoration-thickness: 2px; font-variant-numeric: tabular-nums; }
+.price .nowas { font-size: 0.75rem; color: var(--muted); font-style: italic; }
+.price .until { font-size: 0.75rem; color: var(--warn); font-weight: 600; }
+.dealfilter { font: inherit; font-weight: 600; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 1px solid #c2410c; background: var(--bg); color: var(--fg); border-radius: 10px; padding: 10px 12px; cursor: pointer; min-height: 44px; }
+.dealfilter .tagico { font-family: var(--font-data); font-weight: 800; color: #c2410c; width: 20px; text-align: center; }
+.dealfilter .favn { margin-left: auto; font-size: 0.82rem; color: var(--muted); }
+.dealfilter[aria-pressed="true"] { background: #c2410c; color: #ffffff; }
+.dealfilter[aria-pressed="true"] .tagico, .dealfilter[aria-pressed="true"] .favn { color: #ffffff; }
+.pill.plain { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+details { grid-column: 1 / -1; font-size: 0.85rem; }
+details summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+details .dl { margin-top: 8px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; color: var(--muted); }
+details .dl dt { font-weight: 600; color: var(--fg); }
+details .dl dd { margin: 0; overflow-wrap: anywhere; }
+.empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; color: var(--muted); }
+.more { align-self: center; }
+@media (max-width: 420px) { .item { grid-template-columns: minmax(0, 1fr); grid-template-areas: "img" "head" "price" "specs" "tags" "det"; } .price { align-items: flex-start; text-align: left; } }
+
+.provtable { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; }
+.provtable table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.88rem; }
+.provtable th, .provtable td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.provtable th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction: column; gap: 6px; max-width: 95ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.thumbwrap { grid-area: img; position: relative; align-self: start; min-width: 0; }
+.thumbwrap .thumb { grid-area: auto; }
+.fav { position: absolute; top: 6px; right: 6px; width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+.fav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.fav[aria-pressed="true"] { color: var(--sun); border-color: var(--sun); }
+.fav[aria-pressed="true"] svg { fill: currentColor; }
+.fav:hover { color: var(--sun); }
+.topnav .favlink { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; }
+.topnav .favlink svg { width: 16px; height: 16px; fill: var(--sun); }
+.favbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--sun-soft); border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; }
+.backbtn { font: inherit; font-weight: 600; font-size: 0.88rem; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.backbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.backbtn:hover { border-color: var(--accent); }
+.favfilter { font: inherit; font-weight: 600; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 1px solid var(--sun); background: var(--sun-soft); color: var(--fg); border-radius: 10px; padding: 10px 12px; cursor: pointer; min-height: 44px; }
+.favfilter svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--warn); stroke-width: 1.8; stroke-linejoin: round; }
+.favfilter .favn { margin-left: auto; font-size: 0.82rem; color: var(--muted); }
+.favfilter[aria-pressed="true"] { background: var(--sun); border-color: var(--sun); color: #172033; }
+.favfilter[aria-pressed="true"] svg { fill: #172033; stroke: #172033; }
+.favfilter[aria-pressed="true"] .favn { color: #172033; }
+</style>
+
+<div class="wrap">
+  <nav class="topnav" aria-label="Einkaufsseiten">
+    <button type="button" class="backbtn" onclick="goBack()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Zurück</button>
+    <a href="einkauf-eu.html" aria-current="page">Hüpfburgen kaufen</a>
+    <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
+    <a href="wettbewerb.html">Wettbewerb</a>
+    <a href="merkliste.html" class="favlink"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Merkliste <span class="num" id="fav-count">0</span></a>
+  </nav>
+  <header>
+    <span class="eyebrow">Einkauf · Hersteller und Händler in der EU · Stand 9. Oktober 2026, Angebote 15. Oktober 2026</span>
+    <h1>Hüpfburgen kaufen: Modelle aus der EU durchsuchen</h1>
+    <p class="lead">Gewerbliche Hüpfburgen aus PVC von <span id="h-prov">12</span> Anbietern in <span id="h-ctry">7</span> Ländern. Alle Preise sind zum Vergleich auf Euro netto umgerechnet. Klick auf Bild oder Namen öffnet die Seite des Anbieters. Dort bitte Preis, Versand und Lieferumfang immer prüfen.</p>
+  </header>
+
+  <section class="kpis" aria-label="Kennzahlen zur Auswahl">
+    <div class="kpi"><span class="v" id="k-count">0</span><span class="l">Modelle in der Auswahl</span></div>
+    <div class="kpi"><span class="v" id="k-median">–</span><span class="l">Median Preis netto</span></div>
+    <div class="kpi"><span class="v" id="k-range">–</span><span class="l">Preisspanne netto</span></div>
+    <div class="kpi"><span class="v" id="k-sqm">–</span><span class="l">Median Euro pro m² Fläche</span></div>
+  </section>
+
+  <div class="layout">
+    <form class="filters" id="filters" aria-label="Filter" onsubmit="return false">
+      <button type="button" class="favfilter" id="f-favbtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg><span>Nur Merkliste zeigen</span><span class="num favn" id="f-favn">0</span></button>
+      <button type="button" class="dealfilter" id="f-dealbtn" aria-pressed="false"><span class="tagico" aria-hidden="true">%</span><span>Nur Angebote und Outlet</span><span class="num favn" id="f-dealn">0</span></button>
+      <div class="field">
+        <label for="f-q">Suche</label>
+        <input type="search" id="f-q" placeholder="Name, Motiv oder Anbieter, z. B. Clown">
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="l-size">Größe</span>
+        <div class="sizes" role="group" aria-labelledby="l-size" id="f-size"></div>
+        <span class="hint">Eingeordnet nach Grundfläche der Burg. Rundherum kommt noch ein Sicherheitsabstand dazu.</span>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="l-kids">Personen gleichzeitig</span>
+        <div class="chips" role="group" aria-labelledby="l-kids" id="f-kids"></div>
+        <span class="hint">Viele Anbieter nennen Personen, nicht nur Kinder.</span>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="l-cat">Art</span>
+        <div class="chips" role="group" aria-labelledby="l-cat" id="f-cat"></div>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="l-motif">Motiv</span>
+        <div class="chips" role="group" aria-labelledby="l-motif" id="f-motif"></div>
+      </div>
+
+      <div class="field">
+        <label for="f-price">Preis netto bis <span class="num" id="f-price-out"></span></label>
+        <input type="range" id="f-price" min="1000" max="14000" step="250" value="14000">
+        <div class="checks"><label><input type="checkbox" id="f-priced"> Nur mit Preis</label></div>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="l-kg">Gewicht der Burg</span>
+        <div class="chips" role="group" aria-labelledby="l-kg" id="f-kg"></div>
+        <span class="hint">Wichtig für Transport und Tragen. Ohne Gebläse, soweit angegeben.</span>
+      </div>
+
+      <div class="field">
+        <span class="lbl">Ausstattung</span>
+        <div class="checks">
+          <label><input type="checkbox" id="f-slide"> Mit Rutsche</label>
+          <label><input type="checkbox" id="f-roof"> Mit Dach</label>
+          <label><input type="checkbox" id="f-blower"> Gebläse im Preis</label>
+          <label><input type="checkbox" id="f-en"> EN 14960 angegeben</label>
+          <label><input type="checkbox" id="f-new"> Nur Neuware</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="l-ctry">Land</span>
+        <div class="chips" role="group" aria-labelledby="l-ctry" id="f-ctry"></div>
+      </div>
+
+      <div class="field">
+        <label for="f-prov">Anbieter</label>
+        <select id="f-prov"></select>
+      </div>
+
+      <button type="button" class="btn" id="f-reset">Alle Filter zurücksetzen</button>
+    </form>
+
+    <section class="results" aria-labelledby="h-res">
+      <div class="bar">
+        <h2 id="h-res"><span class="status" id="r-status">Alle Modelle</span></h2>
+        <label class="hint" for="f-sort">Sortieren
+          <select id="f-sort">
+            <option value="price-asc">Preis aufsteigend</option>
+            <option value="price-desc">Preis absteigend</option>
+            <option value="area-asc">Fläche aufsteigend</option>
+            <option value="area-desc">Fläche absteigend</option>
+            <option value="kg-asc">Gewicht aufsteigend</option>
+            <option value="kids-desc">Personen absteigend</option>
+            <option value="sqm-asc">Euro pro m² aufsteigend</option>
+            <option value="deal-desc">Größter Rabatt zuerst</option>
+          </select>
+        </label>
+      </div>
+      <div class="list" id="list" aria-live="polite"></div>
+      <button type="button" class="btn more" id="more" hidden>Weitere Modelle anzeigen</button>
+    </section>
+  </div>
+
+  <section style="display:flex;flex-direction:column;gap:10px" aria-labelledby="h-prov-t">
+    <h2 id="h-prov-t">Anbieter in dieser Liste</h2>
+    <div class="provtable"><table id="t-prov">
+      <thead><tr><th>Anbieter</th><th>Land</th><th class="num">Modelle</th><th>Preisangabe auf der Seite</th><th>Gebläse</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <footer>
+    <p><strong>So sind die Preise vergleichbar gemacht:</strong> Netto-Preise wie angegeben. Brutto-Preise deutscher Shops geteilt durch 1,19. Kronen und Złoty mit dem EZB-Referenzkurs vom <span id="rate-date"></span> umgerechnet (1 € = <span id="rate-czk"></span> CZK, <span id="rate-pln"></span> PLN). Bei Tierra Fantasía steht auf der Seite nicht, ob mit oder ohne Steuer; der Wert ist wie angegeben übernommen. Versandkosten, Gebläse (oft 150 bis 800 € extra) und Zoll sind nicht eingerechnet.</p>
+    <p><strong>Angebote (Stand 15. Oktober 2026):</strong> Gefunden wurden Rabatte im Shop von JB (huepfburgenwelt.de) und Kiddyfun (Sale), Sonderangebote mit Lagerware bei Eventmodule Factory, ein Abverkauf mit Einzelstücken und gebrauchten Burgen bei Happy Fun („Mega Abverkauf“, laut Startseite bis zu −70 %) und eine Aktion von −20 % bei Gangaru bis 31.10.2026. Die Outlet-Kategorien von JB und Kiddyfun sowie der Abverkauf von Happy Fun sind neu mit aufgenommen. Ausdrücklich als Winter- oder Auslaufpreis bezeichnete Angebote waren bei keinem Anbieter zu finden. Der „statt“-Preis ist der vom Anbieter angegebene frühere Preis, netto umgerechnet; ob er vorher tatsächlich so verlangt wurde, ist nicht geprüft.</p>
+    <p><strong>Grenzen:</strong> Das ist eine Auswahl aus den öffentlich lesbaren Katalogen, keine vollständige Marktübersicht. jbinflatables.com und huepfburg-shop.de sperren automatisches Lesen und fehlen deshalb (JB ist über den deutschen Shop huepfburgenwelt.de enthalten). Bei Eventmodule Factory war nur die erste Katalogseite lesbar. Maße stehen bei manchen Anbietern ohne Achsen-Beschriftung; die Reihenfolge ist dann wie angegeben übernommen. „TÜV geprüft“ ohne Nennung der Norm zählt hier nicht als EN 14960.</p>
+    <p><strong>Größen und Motive:</strong> Die Größenklassen folgen dem Muster von hüpfburg.de (bis 3 × 4 m, bis 4 × 5 m, bis 5 × 6 m) und sind aus der Grundfläche berechnet; die Hinweise zu Gärten und Anlässen sind eine Faustregel. Motive sind aus Name und Beschreibung abgeleitet. Bilder werden direkt von den Seiten der Anbieter geladen und gehören den Anbietern; bei Sky-inflatables war kein Bild auslesbar.</p>
+    <p>Mehrere Anbieter verkaufen nur an Gewerbetreibende (z. B. Eventmodulewelt, Eventmodule Factory). Prüfbuch, Zertifikat mit Seriennummer und Garantie vor dem Kauf schriftlich bestätigen lassen.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+const P = DATA.providers, A = DATA.items;
+const COUNTRY = { DE: "Deutschland", AT: "Österreich", NL: "Niederlande", FR: "Frankreich", ES: "Spanien", CZ: "Tschechien", PL: "Polen" };
+const CATS = ["Hüpfburg", "Hüpfburg mit Rutsche", "Multiplay/Combo", "Rutsche", "Hindernis/Parcours", "Sonstiges"];
+// Merkliste: gespeichert im Browser (gleicher Speicher für alle Einkaufsseiten), übertragbar per Link.
+const FAV_KEY = "hb-merkliste-v1";
+const favHash = (s) => { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
+function favLoad() { try { const v = JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); return new Set(Array.isArray(v) ? v : []); } catch (e) { return new Set(); } }
+function favSave() { try { localStorage.setItem(FAV_KEY, JSON.stringify([...FAV])); } catch (e) {} }
+let FAV = favLoad();
+try { const f = new URLSearchParams(location.search).get("f"); if (f) { f.split(".").filter((x) => /^[0-9a-z]{1,8}$/.test(x)).forEach((x) => FAV.add(x)); favSave(); } } catch (e) {}
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>';
+function favButton(a) { const on = FAV.has(a.fk); return `<button type="button" class="fav" data-fk="${a.fk}" aria-pressed="${on}" aria-label="${on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen"}: ${esc(a.n)}">${STAR}</button>`; }
+function favCount() { const el = document.getElementById("fav-count"); if (el) el.textContent = FAV.size; }
+function favToggle(fk) { FAV.has(fk) ? FAV.delete(fk) : FAV.add(fk); favSave(); favCount(); }
+window.addEventListener("storage", (e) => { if (e.key === FAV_KEY) { FAV = favLoad(); favCount(); render(); } });
+// Filter merken: localStorage (bleibt auch nach dem Schließen), Scrollposition und Anzahl geladener Artikel nur für diese Sitzung.
+const PERSIST = {
+  key: "hb-filter-burgen",
+  sets: {"f-size": "sizes", "f-kids": "kids", "f-kg": "kg", "f-cat": "cats", "f-motif": "motifs", "f-ctry": "ctry"},
+  inputs: {"f-q": "q", "f-price": "max"},
+  checks: {"f-priced": "priced", "f-slide": "slide", "f-roof": "roof", "f-blower": "blower", "f-en": "en", "f-new": "fresh"},
+  selects: {"f-prov": "prov", "f-sort": "sort"},
+};
+function persistSave() {
+  try {
+    const out = {};
+    Object.keys(state).forEach((k) => { if (k === "shown") return; out[k] = state[k] instanceof Set ? [...state[k]] : state[k]; });
+    localStorage.setItem(PERSIST.key, JSON.stringify(out));
+    sessionStorage.setItem(PERSIST.key + "-view", JSON.stringify({ shown: state.shown, y: window.scrollY }));
+  } catch (e) {}
+}
+function persistLoad() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(PERSIST.key) || "null"); } catch (e) {}
+  if (saved && typeof saved === "object") {
+    Object.keys(state).forEach((k) => {
+      if (!(k in saved) || k === "shown") return;
+      if (state[k] instanceof Set) { state[k].clear(); (saved[k] || []).forEach((v) => state[k].add(String(v))); }
+      else if (typeof saved[k] === typeof state[k]) state[k] = saved[k];
+    });
+  }
+  Object.entries(PERSIST.sets).forEach(([id, k]) => document.querySelectorAll(`#${id} [data-v]`).forEach((b) => b.setAttribute("aria-pressed", String(state[k].has(b.dataset.v)))));
+  Object.entries(PERSIST.inputs).forEach(([id, k]) => { const el = document.getElementById(id); if (el) el.value = state[k]; });
+  Object.entries(PERSIST.checks).forEach(([id, k]) => { const el = document.getElementById(id); if (el) el.checked = !!state[k]; });
+  Object.entries(PERSIST.selects).forEach(([id, k]) => { const el = document.getElementById(id); if (el && [...el.options].some((o) => o.value === String(state[k]))) el.value = String(state[k]); });
+  let view = null;
+  try { view = JSON.parse(sessionStorage.getItem(PERSIST.key + "-view") || "null"); } catch (e) {}
+  if (view && view.shown > state.shown) state.shown = view.shown;
+  return view;
+}
+let persistTimer = null;
+window.addEventListener("scroll", () => { clearTimeout(persistTimer); persistTimer = setTimeout(persistSave, 200); }, { passive: true });
+window.addEventListener("pagehide", persistSave);
+function goBack() {
+  let sameSite = false;
+  try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  if (sameSite && history.length > 1) history.back(); else location.href = "einkauf-eu.html";
+}
+const PAGE = 40;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const eur = (v) => v == null ? "–" : Math.round(v).toLocaleString("de-DE") + " €";
+const dec = (v) => v == null ? null : String(v).replace(".", ",");
+const median = (arr) => { if (!arr.length) return null; const s = [...arr].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const SIZES = [
+  { id: "mini", label: "Mini", hint: "bis ca. 3 × 4 m · kleine Gärten, Kleinkinder", s: 3, b: 4, icon: [14, 10] },
+  { id: "midi", label: "Midi", hint: "bis ca. 4 × 5 m · Garten, Kindergeburtstag", s: 4, b: 5, icon: [18, 14] },
+  { id: "standard", label: "Standard", hint: "bis ca. 5 × 6 m · größere Gärten und Feste", s: 5, b: 6, icon: [22, 18] },
+  { id: "gross", label: "Groß", hint: "bis ca. 6 × 8 m · Vereins- und Firmenfeste", s: 6, b: 8, icon: [28, 21] },
+  { id: "xxl", label: "XXL", hint: "größer · Spielparks und Großveranstaltungen", s: Infinity, b: Infinity, icon: [34, 24] },
+];
+const KIDS = [
+  { id: "k4", label: "bis 4", test: (k) => k <= 4 },
+  { id: "k8", label: "5 bis 8", test: (k) => k >= 5 && k <= 8 },
+  { id: "k12", label: "9 bis 12", test: (k) => k >= 9 && k <= 12 },
+  { id: "k13", label: "über 12", test: (k) => k > 12 },
+];
+const WEIGHTS = [
+  { id: "w60", label: "bis 60 kg", test: (w) => w <= 60 },
+  { id: "w100", label: "61 bis 100 kg", test: (w) => w > 60 && w <= 100 },
+  { id: "w150", label: "101 bis 150 kg", test: (w) => w > 100 && w <= 150 },
+  { id: "w999", label: "über 150 kg", test: (w) => w > 150 },
+];
+const MOTIFS = [
+  { id: "clown", label: "Clown und Zirkus", re: /clown(?!fisch|fish)|zirkus|circus|cirque|cirkus|payaso|klaun|cyrk/ },
+  { id: "prinzessin", label: "Prinzessin und Einhorn", re: /prinzess|princes|einhorn|unicorn|licorne|jednoro|unicornio|feen|fairy/ },
+  { id: "tiere", label: "Dschungel und Tiere", re: /dschungel|jungle|zoo|safari|giraffe|elefant|löwe|lion|affe|monkey|krokodil|frosch|tier|animal|wald|forest|panda|tiger|bär|bear/ },
+  { id: "dino", label: "Dino", re: /dino/ },
+  { id: "meer", label: "Piraten und Meer", re: /pirat|schiff|ozean|ocean|meer|atlantik|fisch|fish|hai|shark|delfin|wal\b|unterwasser|mořsk|marin/ },
+  { id: "ritter", label: "Ritter und Schloss", re: /ritter|knight|camelot|schloss|château|chateau|castillo|mittelalter|medieval|könig|king/ },
+  { id: "sport", label: "Sport", re: /fußball|fussball|football|soccer|sport|basket|arena|olymp/ },
+  { id: "fahrzeug", label: "Fahrzeuge und Feuerwehr", re: /feuerwehr|fire|auto\b|truck|monster|zug|train|traktor|formel|polizei|bagger|lkw|car\b|rakete|rocket/ },
+  { id: "suess", label: "Süßes und Party", re: /candy|süß|bonbon|torte|cake|party|disco|eis\b|ice cream|zuckerwatte|sweet/ },
+];
+const sizeOf = (a) => {
+  if (!a.l || !a.w) return null;
+  const s = Math.min(a.l, a.w), b = Math.max(a.l, a.w);
+  return SIZES.find((c) => s <= c.s && b <= c.b).id;
+};
+A.forEach((a, i) => {
+  a.id = i;
+  a.fk = favHash(a.u + "|" + a.n);
+  a.area = a.l && a.w ? a.l * a.w : null;
+  a.sqm = a.pn && a.area ? a.pn / a.area : null;
+  a.size = sizeOf(a);
+  a.pct = a.s && a.s.o && a.pn ? Math.round((1 - a.pn / a.s.o) * 100) : null;
+  const txt = (a.n + " " + (a.t || "")).toLowerCase();
+  a.motifs = MOTIFS.filter((m) => m.re.test(txt)).map((m) => m.id);
+  a.hay = [a.n, a.t, a.c, P[a.p].n, COUNTRY[P[a.p].c]].join(" ").toLowerCase();
+});
+
+const state = { q: "", sizes: new Set(), kids: new Set(), cats: new Set(), motifs: new Set(), kg: new Set(), ctry: new Set(), prov: "alle", max: 14000, priced: false, slide: false, roof: false, blower: false, en: false, fresh: false, favonly: false, deals: false, sort: "price-asc", shown: PAGE };
+
+function buildControls() {
+  $("f-size").innerHTML = SIZES.map((c) => {
+    const n = A.filter((a) => a.size === c.id).length;
+    return `<button type="button" class="sizebtn" aria-pressed="false" data-v="${c.id}"><span class="ico" aria-hidden="true"><i style="width:${c.icon[0]}px;height:${c.icon[1]}px"></i></span><span><b>${c.label}</b><small>${esc(c.hint)}</small></span><span class="cnt">${n}</span></button>`;
+  }).join("");
+  const chipList = (arr) => arr.map((c) => `<button type="button" class="chip" aria-pressed="false" data-v="${c.id}">${esc(c.label)}</button>`).join("");
+  $("f-kids").innerHTML = chipList(KIDS);
+  $("f-kg").innerHTML = chipList(WEIGHTS);
+  $("f-motif").innerHTML = chipList(MOTIFS.filter((m) => A.some((a) => a.motifs.includes(m.id))));
+  $("f-cat").innerHTML = CATS.filter((c) => A.some((a) => a.c === c)).map((c) => `<button type="button" class="chip" aria-pressed="false" data-v="${esc(c)}">${esc(c)}</button>`).join("");
+  const ctrs = [...new Set(P.map((p) => p.c))].sort((a, b) => COUNTRY[a].localeCompare(COUNTRY[b], "de"));
+  $("f-ctry").innerHTML = ctrs.map((c) => `<button type="button" class="chip" aria-pressed="false" data-v="${c}">${esc(COUNTRY[c])}</button>`).join("");
+  $("f-prov").innerHTML = `<option value="alle">Alle Anbieter</option>` + P.map((p, i) => ({ p, i })).sort((x, y) => x.p.n.localeCompare(y.p.n, "de")).map(({ p, i }) => `<option value="${i}">${esc(p.n)}</option>`).join("");
+  $("h-prov").textContent = P.length;
+  $("h-ctry").textContent = ctrs.length;
+  $("rate-date").textContent = DATA.rates.date;
+  $("rate-czk").textContent = dec(DATA.rates.CZK);
+  $("rate-pln").textContent = dec(DATA.rates.PLN);
+}
+
+function inBuckets(value, set, list) {
+  if (!set.size) return true;
+  if (value == null) return false;
+  return list.some((b) => set.has(b.id) && b.test(value));
+}
+
+function matches(a) {
+  if (state.favonly && !FAV.has(a.fk)) return false;
+  if (state.q && !a.hay.includes(state.q)) return false;
+  if (state.sizes.size && !state.sizes.has(a.size)) return false;
+  if (!inBuckets(a.k, state.kids, KIDS)) return false;
+  if (!inBuckets(a.kg, state.kg, WEIGHTS)) return false;
+  if (state.cats.size && !state.cats.has(a.c)) return false;
+  if (state.motifs.size && !a.motifs.some((m) => state.motifs.has(m))) return false;
+  if (state.ctry.size && !state.ctry.has(P[a.p].c)) return false;
+  if (state.prov !== "alle" && String(a.p) !== state.prov) return false;
+  if (state.priced && a.pn == null) return false;
+  if (a.pn != null && state.max < 14000 && a.pn > state.max) return false;
+  if (state.slide && !a.sl) return false;
+  if (state.roof && a.r !== true) return false;
+  if (state.blower && a.bl !== true) return false;
+  if (state.en && a.en !== true) return false;
+  if (state.fresh && a.used) return false;
+  if (state.deals && !a.s) return false;
+  return true;
+}
+
+function sortRows(rows) {
+  const [key, dir] = state.sort.split("-");
+  const d = dir === "asc" ? 1 : -1;
+  const val = (a) => key === "price" ? a.pn : key === "area" ? a.area : key === "kg" ? a.kg : key === "kids" ? a.k : key === "deal" ? a.pct : a.sqm;
+  return rows.sort((x, y) => {
+    const a = val(x), b = val(y);
+    if (a == null && b == null) return x.n.localeCompare(y.n, "de");
+    if (a == null) return 1;
+    if (b == null) return -1;
+    return (a - b) * d;
+  });
+}
+
+const FLAG = {
+  "netto": "netto laut Anbieter",
+  "aus brutto": "aus Bruttopreis umgerechnet",
+  "CZK umgerechnet": "aus CZK umgerechnet",
+  "PLN umgerechnet": "aus PLN umgerechnet",
+  "Steuer unklar": "Steuer auf der Seite nicht angegeben",
+  "auf Anfrage": "Preis auf Anfrage",
+};
+
+function dims(a) {
+  const parts = [a.l, a.w, a.h].map(dec);
+  if (!a.l && !a.w) return null;
+  return parts.filter(Boolean).join(" × ") + " m";
+}
+
+function card(a) {
+  const p = P[a.p];
+  const d = dims(a);
+  const size = SIZES.find((c) => c.id === a.size);
+  const tags = [
+    a.s ? `<span class="pill deal">${a.pct ? "−" + a.pct + " % · " : ""}${esc(a.s.l)}</span>` : "",
+    size ? `<span class="pill plain">${size.label}</span>` : "",
+    a.sl ? `<span class="pill">Rutsche</span>` : "",
+    a.r === true ? `<span class="pill">Dach</span>` : "",
+    a.bl === true ? `<span class="pill good">Gebläse inklusive</span>` : a.bl === false ? `<a class="pill warn" href="zubehoer-eu.html#geblaese">Gebläse extra: passende Gebläse ansehen</a>` : "",
+    a.en === true ? `<span class="pill good">EN 14960 angegeben</span>` : `<span class="pill warn">EN 14960 nicht angegeben</span>`,
+    a.used ? `<span class="pill sun">Gebraucht</span>` : "",
+  ].join("");
+  const priceSub = a.pn == null ? "" : `<span class="sub">${esc(FLAG[a.pf] || "")}</span>`;
+  const sqm = a.sqm ? `<span class="sub num">${Math.round(a.sqm).toLocaleString("de-DE")} € pro m²</span>` : "";
+  const details = [
+    ["Preis auf der Seite", a.po || a.pnote ? esc([a.po, a.pnote].filter(Boolean).join(" · ")) : "–"],
+    ["Angebot", a.s ? esc([a.s.l, a.s.o ? `vorher ${eur(a.s.o)} netto` : "", a.s.u ? `bis ${a.s.u}` : "", a.s.n || "", "Stand 15.10.2026"].filter(Boolean).join(" · ")) : "kein Angebot gefunden (Stand 15.10.2026)"],
+    ["Material", esc(a.m || "nicht angegeben")],
+    ["Alter", esc(a.a || "nicht angegeben")],
+    ["Hinweise", esc(a.nt || "–")],
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  const img = a.img
+    ? `<img src="${esc(a.img)}" alt="${esc(a.n)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'noimg',textContent:'Bild auf der Seite des Anbieters'}))">`
+    : `<span class="noimg">Bild auf der Seite des Anbieters</span>`;
+  return `<article class="item">
+    <div class="thumbwrap"><a class="thumb" href="${esc(a.u)}" target="_blank" rel="noopener" aria-label="${esc(a.n)} beim Anbieter ansehen">${img}</a>${favButton(a)}</div>
+    <div class="head">
+      <h3><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.n)}</a></h3>
+      <div class="meta"><span>${esc(p.n)}</span><span>${esc(COUNTRY[p.c])}</span><span>${esc(a.c)}${a.t ? " · " + esc(a.t) : ""}</span></div>
+    </div>
+    <div class="price">${a.s && a.s.o ? `<span class="was">statt ${eur(a.s.o)}</span>` : a.s ? `<span class="nowas">kein alter Preis angegeben</span>` : ""}<span class="p">${a.pn == null ? "auf Anfrage" : eur(a.pn)}</span>${priceSub}${a.s && a.s.u ? `<span class="until">gültig bis ${esc(a.s.u)}</span>` : ""}${sqm}</div>
+    <div class="specs">
+      <span><b>Maße</b> <span class="num">${d ? esc(d) : "k. A."}</span></span>
+      <span><b>Personen</b> <span class="num">${a.k ?? "k. A."}</span></span>
+      <span><b>Gewicht</b> <span class="num">${a.kg != null ? dec(a.kg) + " kg" : "k. A."}</span></span>
+    </div>
+    <div class="tags">${tags}</div>
+    <details><summary>Details und Quelle</summary><dl class="dl">${details}</dl></details>
+  </article>`;
+}
+
+function renderKpis(rows) {
+  const prices = rows.filter((a) => a.pn != null).map((a) => a.pn);
+  $("k-count").textContent = rows.length;
+  $("k-median").textContent = prices.length ? eur(median(prices)) : "–";
+  $("k-range").textContent = prices.length ? `${eur(Math.min(...prices))} bis ${eur(Math.max(...prices))}` : "–";
+  const sq = rows.filter((a) => a.sqm).map((a) => a.sqm);
+  $("k-sqm").textContent = sq.length ? eur(median(sq)) : "–";
+}
+
+function renderProviders() {
+  const tb = $("t-prov").querySelector("tbody");
+  tb.innerHTML = P.map((p, i) => {
+    const items = A.filter((a) => a.p === i);
+    const flags = [...new Set(items.map((a) => FLAG[a.pf]))].join(", ");
+    const bl = items.some((a) => a.bl === true) ? (items.every((a) => a.bl === true) ? "inklusive" : "teils inklusive") : items.some((a) => a.bl === false) ? "extra" : "k. A.";
+    return `<tr><td><a href="${esc(p.u)}" target="_blank" rel="noopener">${esc(p.n)}</a></td><td>${esc(COUNTRY[p.c])}</td><td class="num">${items.length}</td><td>${esc(flags)}</td><td>${bl}</td></tr>`;
+  }).join("");
+}
+
+function render() {
+  const rows = sortRows(A.filter(matches));
+  renderKpis(rows);
+  const list = $("list");
+  list.innerHTML = rows.length
+    ? rows.slice(0, state.shown).map(card).join("")
+    : `<div class="empty">Kein Modell passt zu allen Filtern. Wählen Sie zum Beispiel eine weitere Größe oder setzen Sie die Filter zurück.</div>`;
+  $("more").hidden = rows.length <= state.shown;
+  $("more").textContent = `Weitere Modelle anzeigen (${rows.length - Math.min(rows.length, state.shown)} übrig)`;
+  $("r-status").textContent = rows.length === A.length ? `Alle ${A.length} Modelle` : `${rows.length} von ${A.length} Modellen`;
+  $("f-price-out").textContent = state.max >= 14000 ? "unbegrenzt" : eur(state.max);
+  $("f-dealbtn").setAttribute("aria-pressed", String(state.deals)); $("f-dealn").textContent = A.filter((a) => a.s).length;
+  const fb = $("f-favbtn"); fb.setAttribute("aria-pressed", String(state.favonly)); $("f-favn").textContent = A.filter((a) => FAV.has(a.fk)).length;
+  persistSave();
+}
+
+function bind() {
+  const reset = () => { state.shown = PAGE; render(); };
+  $("f-q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); reset(); });
+  $("f-price").addEventListener("input", (e) => { state.max = Number(e.target.value); reset(); });
+  [["f-priced", "priced"], ["f-slide", "slide"], ["f-roof", "roof"], ["f-blower", "blower"], ["f-en", "en"], ["f-new", "fresh"]].forEach(([id, k]) => $(id).addEventListener("change", (e) => { state[k] = e.target.checked; reset(); }));
+  $("f-prov").addEventListener("change", (e) => { state.prov = e.target.value; reset(); });
+  $("f-sort").addEventListener("change", (e) => { state.sort = e.target.value; reset(); });
+  const toggleGroup = (id, set, sel) => $(id).addEventListener("click", (e) => {
+    const b = e.target.closest(sel); if (!b) return;
+    const v = b.dataset.v; const on = !set.has(v);
+    on ? set.add(v) : set.delete(v);
+    b.setAttribute("aria-pressed", String(on)); reset();
+  });
+  toggleGroup("f-size", state.sizes, ".sizebtn");
+  toggleGroup("f-kids", state.kids, ".chip");
+  toggleGroup("f-kg", state.kg, ".chip");
+  toggleGroup("f-cat", state.cats, ".chip");
+  toggleGroup("f-motif", state.motifs, ".chip");
+  toggleGroup("f-ctry", state.ctry, ".chip");
+  $("list").addEventListener("click", (e) => { const b = e.target.closest(".fav"); if (!b) return; favToggle(b.dataset.fk); const on = FAV.has(b.dataset.fk); b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", (on ? "Von der Merkliste nehmen" : "Auf die Merkliste setzen")); if (state.favonly && !on) render(); else $("f-favn").textContent = A.filter((a) => FAV.has(a.fk)).length; });
+  $("f-favbtn").addEventListener("click", () => { state.favonly = !state.favonly; state.shown = PAGE; render(); });
+  $("f-dealbtn").addEventListener("click", () => { state.deals = !state.deals; state.shown = PAGE; render(); });
+  $("more").addEventListener("click", () => { state.shown += PAGE; render(); });
+  $("f-reset").addEventListener("click", () => {
+    Object.assign(state, { q: "", prov: "alle", max: 14000, priced: false, slide: false, roof: false, blower: false, en: false, fresh: false, favonly: false, deals: false, shown: PAGE });
+    [state.sizes, state.kids, state.kg, state.cats, state.motifs, state.ctry].forEach((s) => s.clear());
+    $("filters").reset();
+    $("f-price").value = 14000;
+    document.querySelectorAll(".chip, .sizebtn").forEach((c) => c.setAttribute("aria-pressed", "false"));
+    render();
+  });
+}
+
+buildControls();
+favCount();
+bind();
+renderProviders();
+const VIEW = persistLoad();
+render();
+if (VIEW && VIEW.y) requestAnimationFrame(() => window.scrollTo(0, VIEW.y));
+</script>

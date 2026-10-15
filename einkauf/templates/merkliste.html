@@ -1,0 +1,213 @@
+<title>Hüpfburg-Merkliste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: Merkliste. Navigation, Summen, Übertragungs-Link, dann Burgen und Zubehör nach Rubrik. Gleiche Gestaltung wie die Einkaufsseiten. */
+:root {
+  --bg: #f5f7fa; --surface: #ffffff; --fg: #172033; --muted: #5b6577; --line: #dde3ec;
+  --accent: #1d5fc4; --accent-soft: #e3ecfb; --sun: #f2b705; --sun-soft: #fdf3cf;
+  --good: #1f8a4c; --good-soft: #e1f3e8; --warn: #a86a00; --warn-soft: #fbefd6; --bad: #b42318; --bad-soft: #fde7e5;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+    --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115;
+    --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f; --bad: #ff8a7a; --bad-soft: #3a1714;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+  --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115;
+  --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f; --bad: #ff8a7a; --bad-soft: #3a1714;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 48px; }
+.wrap { max-width: 1100px; margin-inline: auto; display: flex; flex-direction: column; gap: 22px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); font-weight: 800; line-height: 1.1; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.lead { color: var(--muted); max-width: 75ch; }
+header { display: flex; flex-direction: column; gap: 8px; }
+.topnav { display: flex; flex-wrap: wrap; gap: 6px; }
+.topnav a { text-decoration: none; font-weight: 600; font-size: 0.88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.topnav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.topnav .favlink { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; }
+.topnav .favlink svg { width: 16px; height: 16px; fill: currentColor; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kpi .v { font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.kpi .l { color: var(--muted); font-size: 0.82rem; }
+.share { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.share .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.share input { flex: 1 1 260px; min-width: 0; font: inherit; font-size: 0.85rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
+.btn { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--bg); color: var(--fg); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.btn.danger { border-color: var(--bad); color: var(--bad); background: transparent; }
+.hint { font-size: 0.8rem; color: var(--muted); }
+section.group { display: flex; flex-direction: column; gap: 10px; }
+.ghead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ghead .sum { color: var(--muted); font-size: 0.9rem; }
+.rows { display: flex; flex-direction: column; gap: 8px; }
+.row-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; grid-template-columns: 88px minmax(0, 1fr) auto auto; gap: 12px; align-items: center; }
+.thumb { display: block; aspect-ratio: 4 / 3; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid var(--line); position: relative; }
+.thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.thumb .noimg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #5b6577; background: #eef2f7; text-align: center; padding: 4px; }
+.info { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.info a.name { color: var(--fg); font-weight: 700; text-decoration: none; }
+.info a.name:hover { color: var(--accent); text-decoration: underline; }
+.info .meta { color: var(--muted); font-size: 0.82rem; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.pill { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; background: var(--accent-soft); color: var(--accent); }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.price { text-align: right; }
+.price .p { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price .sub { display: block; font-size: 0.72rem; color: var(--muted); }
+.remove { font: inherit; font-size: 0.82rem; font-weight: 600; border: 1px solid var(--line); background: var(--bg); color: var(--muted); border-radius: 8px; padding: 8px 10px; cursor: pointer; min-height: 40px; }
+.remove:hover { color: var(--bad); border-color: var(--bad); }
+.empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 28px; text-align: center; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+@media (max-width: 640px) { .row-item { grid-template-columns: 72px minmax(0, 1fr); } .price { text-align: left; grid-column: 2; } .remove { grid-column: 2; justify-self: start; } }
+footer { color: var(--muted); font-size: 0.82rem; max-width: 90ch; }
+.backbtn { font: inherit; font-weight: 600; font-size: 0.88rem; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.backbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.backbtn:hover { border-color: var(--accent); }
+</style>
+
+<div class="wrap">
+  <nav class="topnav" aria-label="Einkaufsseiten">
+    <button type="button" class="backbtn" onclick="goBack()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Zurück</button>
+    <a href="einkauf-eu.html">Hüpfburgen kaufen</a>
+    <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
+    <a href="wettbewerb.html">Wettbewerb</a>
+    <a href="merkliste.html" class="favlink" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Merkliste <span class="num" id="fav-count">0</span></a>
+  </nav>
+
+  <header>
+    <span class="eyebrow">Einkauf · Merkliste</span>
+    <h1>Meine Merkliste</h1>
+    <p class="lead">Alles, was du auf den Einkaufsseiten mit dem Stern markiert hast: Burgen und Zubehör zusammen, mit Summe. Die Liste liegt in diesem Browser. Mit dem Link unten nimmst du sie auf ein anderes Gerät mit.</p>
+  </header>
+
+  <section class="kpis" aria-label="Summen">
+    <div class="kpi"><span class="v" id="k-n">0</span><span class="l">Artikel gemerkt</span></div>
+    <div class="kpi"><span class="v" id="k-b">–</span><span class="l">Burgen, Summe netto</span></div>
+    <div class="kpi"><span class="v" id="k-z">–</span><span class="l">Zubehör, Summe netto</span></div>
+    <div class="kpi"><span class="v" id="k-all">–</span><span class="l">Alles zusammen netto</span></div>
+  </section>
+
+  <section class="share" aria-labelledby="h-share">
+    <h2 id="h-share">Merkliste mitnehmen</h2>
+    <div class="row">
+      <input type="text" id="share-url" readonly aria-label="Link zur Merkliste">
+      <button type="button" class="btn primary" id="copy">Link kopieren</button>
+      <button type="button" class="btn danger" id="clear">Merkliste leeren</button>
+    </div>
+    <p class="hint" id="share-hint">Öffne den Link auf dem Handy oder einem anderen Rechner, dann kommen die Artikel dort dazu.</p>
+  </section>
+
+  <div id="content"></div>
+
+  <footer>Summen sind Netto-Vergleichspreise wie auf den Einkaufsseiten, ohne Versand. Gemerkte Alternativen werden mitgezählt; nimm Artikel heraus, die du nicht kaufen willst, dann stimmt die Summe für dein Paket.</footer>
+</div>
+
+<script>
+const DB = __DATA_B__;
+const DZ = __DATA_Z__;
+const COUNTRY = { DE: "Deutschland", AT: "Österreich", NL: "Niederlande", FR: "Frankreich", ES: "Spanien", CZ: "Tschechien", PL: "Polen" };
+const ZCATS = ["Gebläse", "Gebläse-Zubehör", "Matten und Planen", "Befestigung", "Transport", "Strom und Sicherheit", "Spiel und Spaß", "Reinigung und Reparatur", "Sonstiges"];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const eur = (v) => v == null ? "–" : Math.round(v).toLocaleString("de-DE") + " €";
+const FAV_KEY = "hb-merkliste-v1";
+const favHash = (s) => { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
+function favLoad() { try { const v = JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); return new Set(Array.isArray(v) ? v : []); } catch (e) { return new Set(); } }
+function favSave() { try { localStorage.setItem(FAV_KEY, JSON.stringify([...FAV])); } catch (e) {} }
+let FAV = favLoad();
+try { const f = new URLSearchParams(location.search).get("f"); if (f) { f.split(".").filter((x) => /^[0-9a-z]{1,8}$/.test(x)).forEach((x) => FAV.add(x)); favSave(); history.replaceState(null, "", location.pathname); } } catch (e) {}
+DB.items.forEach((a) => { a.fk = favHash(a.u + "|" + a.n); a.kind = "b"; a.prov = DB.providers[a.p]; });
+DZ.items.forEach((a) => { a.fk = favHash(a.u + "|" + a.n); a.kind = "z"; a.prov = DZ.providers[a.p]; });
+let armed = false;
+
+function row(a) {
+  const img = a.img ? `<img src="${esc(a.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'noimg',textContent:'Bild beim Anbieter'}))">` : `<span class="noimg">Bild beim Anbieter</span>`;
+  const tags = [];
+  if (a.kind === "b") {
+    if (a.bl === true) tags.push(`<span class="pill good">Gebläse inklusive</span>`);
+    else if (a.bl === false) tags.push(`<a class="pill warn" href="zubehoer-eu.html#geblaese">Gebläse extra</a>`);
+    if (a.l && a.w) tags.push(`<span class="pill">${String(a.l).replace(".", ",")} × ${String(a.w).replace(".", ",")} m</span>`);
+    if (a.kg != null) tags.push(`<span class="pill">${String(a.kg).replace(".", ",")} kg</span>`);
+  } else if (a.ps) {
+    tags.push(`<span class="pill">${String(a.ps).replace(".", ",")} PS</span>`);
+  }
+  return `<div class="row-item">
+    <a class="thumb" href="${esc(a.u)}" target="_blank" rel="noopener" aria-label="${esc(a.n)} beim Anbieter ansehen">${img}</a>
+    <div class="info"><a class="name" href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.n)}</a>
+      <span class="meta">${esc(a.prov.n)} · ${esc(COUNTRY[a.prov.c] || a.prov.c)}</span>
+      ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}</div>
+    <div class="price">${a.s && a.s.o ? `<span class="sub" style="text-decoration:line-through">statt ${eur(a.s.o)}</span>` : ""}<span class="p">${a.pn == null ? "auf Anfrage" : eur(a.pn)}</span>${a.pn == null ? "" : `<span class="sub">netto</span>`}${a.s ? `<span class="sub" style="color:var(--warn);font-weight:600">${esc(a.s.l)}${a.s.u ? " bis " + esc(a.s.u) : ""}</span>` : ""}</div>
+    <button type="button" class="remove" data-fk="${a.fk}">Entfernen</button>
+  </div>`;
+}
+
+const sum = (arr) => arr.reduce((s, a) => s + (a.pn || 0), 0);
+
+function render() {
+  const b = DB.items.filter((a) => FAV.has(a.fk));
+  const z = DZ.items.filter((a) => FAV.has(a.fk));
+  $("fav-count").textContent = b.length + z.length;
+  $("k-n").textContent = b.length + z.length;
+  $("k-b").textContent = b.length ? eur(sum(b)) : "–";
+  $("k-z").textContent = z.length ? eur(sum(z)) : "–";
+  $("k-all").textContent = b.length + z.length ? eur(sum(b) + sum(z)) : "–";
+  const keys = [...b, ...z].map((a) => a.fk);
+  const base = location.href.split(/[?#]/)[0];
+  $("share-url").value = keys.length ? `${base}?f=${keys.join(".")}` : "";
+  $("copy").disabled = !keys.length; $("clear").disabled = !keys.length;
+  if (!b.length && !z.length) {
+    $("content").innerHTML = `<div class="empty"><strong>Noch nichts gemerkt.</strong><span>Tippe auf den Stern am Bild einer Burg oder eines Zubehörteils, dann erscheint es hier.</span><span><a href="einkauf-eu.html">Zu den Hüpfburgen</a> · <a href="zubehoer-eu.html">Zum Zubehör</a></span></div>`;
+    return;
+  }
+  let html = "";
+  if (b.length) html += `<section class="group" aria-labelledby="g-b"><div class="ghead"><h2 id="g-b">Hüpfburgen</h2><span class="sum num">${b.length} · ${eur(sum(b))}</span></div><div class="rows">${b.sort((x, y) => (x.pn ?? 1e9) - (y.pn ?? 1e9)).map(row).join("")}</div></section>`;
+  ZCATS.forEach((c) => {
+    const items = z.filter((a) => a.c === c);
+    if (!items.length) return;
+    const id = "g-" + c.replace(/\W+/g, "-");
+    html += `<section class="group" aria-labelledby="${id}"><div class="ghead"><h2 id="${id}">${esc(c)}</h2><span class="sum num">${items.length} · ${eur(sum(items))}</span></div><div class="rows">${items.sort((x, y) => (x.pn ?? 1e9) - (y.pn ?? 1e9)).map(row).join("")}</div></section>`;
+  });
+  const unknown = [...FAV].filter((k) => !DB.items.some((a) => a.fk === k) && !DZ.items.some((a) => a.fk === k)).length;
+  if (unknown) html += `<p class="hint">${unknown} gemerkte Artikel gibt es in der aktuellen Liste nicht mehr.</p>`;
+  $("content").innerHTML = `<div style="display:flex;flex-direction:column;gap:22px">${html}</div>`;
+}
+
+$("content").addEventListener("click", (e) => {
+  const btn = e.target.closest(".remove"); if (!btn) return;
+  FAV.delete(btn.dataset.fk); favSave(); render();
+});
+$("copy").addEventListener("click", () => {
+  const url = $("share-url").value;
+  const done = () => { $("share-hint").textContent = "Link kopiert. Auf dem anderen Gerät öffnen, dann kommen die Artikel dort dazu."; };
+  const fallback = () => { $("share-url").focus(); $("share-url").select(); $("share-hint").textContent = "Link markiert. Jetzt kopieren und auf dem anderen Gerät öffnen."; };
+  try { navigator.clipboard.writeText(url).then(done, fallback); } catch (e) { fallback(); }
+});
+$("clear").addEventListener("click", () => {
+  if (!armed) { armed = true; $("clear").textContent = "Wirklich alles entfernen?"; setTimeout(() => { armed = false; $("clear").textContent = "Merkliste leeren"; }, 4000); return; }
+  armed = false; $("clear").textContent = "Merkliste leeren";
+  FAV.clear(); favSave(); render();
+});
+window.addEventListener("storage", (e) => { if (e.key === FAV_KEY) { FAV = favLoad(); render(); } });
+function goBack() { let sameSite = false; try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {} if (sameSite && history.length > 1) history.back(); else location.href = "einkauf-eu.html"; }
+render();
+</script>

@@ -1,0 +1,3 @@
+# Merkliste für den wöchentlichen Angebots-Check.
+# Eine Zeile pro Eintrag: den Link aus merkliste.html ("Link kopieren") einfügen,
+# oder einzelne Produkt-URLs. Zeilen mit # werden ignoriert.
