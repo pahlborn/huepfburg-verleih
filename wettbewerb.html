@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hüpfburg-Wettbewerb Deutschland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: Arbeitswerkzeug. Kopf mit Kennzahlen, Filterleiste, Preisstreifen, Artikeltabelle, Konditionen je Anbieter. */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #172033;
+  --muted: #5b6577;
+  --line: #dde3ec;
+  --accent: #1d5fc4;      /* PVC-Planenblau */
+  --accent-soft: #e3ecfb;
+  --sun: #f2b705;         /* Planengelb, für den Raum München */
+  --sun-soft: #fdf3cf;
+  --red: #d6402b;
+  --good: #1f8a4c;
+  --good-soft: #e1f3e8;
+  --warn: #a86a00;
+  --warn-soft: #fbefd6;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+    --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115; --red: #ff7a66;
+    --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141d; --surface: #161d29; --fg: #e7ecf4; --muted: #9aa6b8; --line: #2a3446;
+  --accent: #6fa3ff; --accent-soft: #1c2b47; --sun: #f5c842; --sun-soft: #3a3115; --red: #ff7a66;
+  --good: #5fd18e; --good-soft: #15301f; --warn: #f0b44c; --warn-soft: #36290f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 24px 48px; }
+.wrap { max-width: 1240px; margin-inline: auto; display: flex; flex-direction: column; gap: 28px; }
+h1, h2 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 800; line-height: 1.1; }
+h2 { font-size: 1.3rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, th:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.lead { color: var(--muted); max-width: 70ch; }
+header { display: flex; flex-direction: column; gap: 10px; }
+.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.kpi .v { font-family: var(--font-data); font-size: 1.45rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.kpi .l { font-size: 0.8rem; color: var(--muted); }
+
+.filters { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > label, .field > .lbl { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+input[type="search"], select { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); width: 100%; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--bg); color: var(--fg); padding: 5px 11px; border-radius: 999px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.checks { display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; }
+.checks label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+.filter-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 0.9rem; color: var(--muted); }
+.btn { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--surface); color: var(--fg); padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+
+.strip-box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.strip-box svg { width: 100%; height: auto; display: block; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+.table-box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 980px; font-size: 0.88rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; background: var(--surface); position: sticky; top: 0; white-space: nowrap; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable::after { content: " ↕"; opacity: 0.35; }
+th[aria-sort="ascending"]::after { content: " ↑"; opacity: 1; }
+th[aria-sort="descending"]::after { content: " ↓"; opacity: 1; }
+td.r, th.r { text-align: right; }
+tbody tr:hover { background: var(--accent-soft); }
+.prov { font-weight: 600; }
+.sub { color: var(--muted); font-size: 0.8rem; }
+.pill { display: inline-block; font-size: 0.74rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.p-muc { background: var(--sun-soft); color: var(--fg); border: 1px solid var(--sun); }
+.p-sofort { background: var(--good-soft); color: var(--good); }
+.p-online { background: var(--accent-soft); color: var(--accent); }
+.p-anfrage { background: var(--warn-soft); color: var(--warn); }
+.p-unklar { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.p-clown { background: var(--accent-soft); color: var(--accent); }
+.price { font-family: var(--font-data); font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.na { color: var(--muted); font-style: italic; }
+.empty { padding: 28px; text-align: center; color: var(--muted); }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.note h3 { margin: 0; font-size: 1rem; font-family: var(--font-display); }
+.note p, .note li { color: var(--muted); font-size: 0.9rem; }
+.note ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+footer { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction: column; gap: 6px; max-width: 90ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.backbtn { font: inherit; font-weight: 600; font-size: 0.88rem; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.backbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.backbtn:hover { border-color: var(--accent); }
+.topnav { display: flex; flex-wrap: wrap; gap: 6px; }
+.topnav a { text-decoration: none; font-weight: 600; font-size: 0.88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.topnav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <nav class="topnav" aria-label="Einkaufsseiten">
+    <button type="button" class="backbtn" onclick="goBack()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Zurück</button>
+    <a href="einkauf-eu.html">Hüpfburgen kaufen</a>
+    <a href="zubehoer-eu.html">Zubehör und Gebläse</a>
+    <a href="wettbewerb.html" aria-current="page">Wettbewerb</a>
+    <a href="merkliste.html">Merkliste</a>
+  </nav>
+  <header>
+    <span class="eyebrow">Marktübersicht · Stand 7. Oktober 2026</span>
+    <h1>Hüpfburg-Verleih: Wettbewerb in Deutschland</h1>
+    <p class="lead">Artikel, Preise und Konditionen von 23 Anbietern aus 11 Bundesländern, mit Schwerpunkt auf dem Raum München, Dachau und Freising. Alle Werte stammen von den Webseiten der Anbieter. Preise in Euro brutto pro Miettag, Netto-Angaben sind umgerechnet und markiert.</p>
+  </header>
+
+  <section class="kpis" aria-label="Kennzahlen zur aktuellen Auswahl">
+    <div class="kpi"><span class="v" id="k-count">0</span><span class="l">Artikel in der Auswahl</span></div>
+    <div class="kpi"><span class="v" id="k-median">–</span><span class="l">Median Tagespreis</span></div>
+    <div class="kpi"><span class="v" id="k-range">–</span><span class="l">Preisspanne</span></div>
+    <div class="kpi"><span class="v" id="k-clown">–</span><span class="l">Median Clown-Format 5×4 m (bundesweit)</span></div>
+    <div class="kpi"><span class="v" id="k-sofort">–</span><span class="l">Anbieter mit Online-Sofortbuchung</span></div>
+  </section>
+
+  <section class="filters" aria-label="Filter">
+    <div class="field">
+      <label for="f-q">Suche</label>
+      <input type="search" id="f-q" placeholder="Anbieter, Ort oder Motiv, z. B. Clown">
+    </div>
+    <div class="field">
+      <label for="f-region">Region</label>
+      <select id="f-region"></select>
+    </div>
+    <div class="field">
+      <span class="lbl" id="l-size">Größe</span>
+      <div class="chips" role="group" aria-labelledby="l-size" id="f-size"></div>
+    </div>
+    <div class="field">
+      <label for="f-max">Tagespreis bis <span class="num" id="f-max-out"></span></label>
+      <input type="range" id="f-max" min="25" max="400" step="5" value="400">
+    </div>
+    <div class="field">
+      <span class="lbl" id="l-book">Buchung</span>
+      <div class="chips" role="group" aria-labelledby="l-book" id="f-book"></div>
+    </div>
+    <div class="field">
+      <span class="lbl">Konditionen</span>
+      <div class="checks">
+        <label><input type="checkbox" id="f-priced"> Nur mit konkretem Preis</label>
+        <label><input type="checkbox" id="f-pickup"> Selbstabholung möglich</label>
+        <label><input type="checkbox" id="f-delivery"> Lieferung im Preis enthalten</label>
+        <label><input type="checkbox" id="f-weather"> Kostenloses Storno bei Regen</label>
+        <label><input type="checkbox" id="f-clown"> Nur Clown-Format (ca. 5×4 m)</label>
+      </div>
+    </div>
+    <div class="filter-foot">
+      <span id="f-status">Alle Artikel</span>
+      <button type="button" class="btn" id="f-reset">Filter zurücksetzen</button>
+    </div>
+  </section>
+
+  <section class="strip-box" aria-labelledby="h-strip">
+    <h2 id="h-strip">Tagespreise der Auswahl</h2>
+    <svg id="strip" viewBox="0 0 1000 120" role="img" aria-label="Streudiagramm der Tagespreise"></svg>
+    <div class="legend">
+      <span><i class="dot" style="background: var(--sun)"></i>Raum München</span>
+      <span><i class="dot" style="background: var(--accent)"></i>übriges Deutschland</span>
+      <span><i class="dot" style="background: transparent; border: 2px solid var(--red)"></i>„ab“-Preis</span>
+      <span><i style="display:inline-block;width:14px;border-top:2px dashed var(--red)"></i>dein Platzhalter Clown: 99 € (Wochenende)</span>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px" aria-labelledby="h-art">
+    <h2 id="h-art">Artikel</h2>
+    <div class="table-box">
+      <table id="t-art">
+        <thead>
+          <tr>
+            <th class="sortable" data-key="provider" tabindex="0">Anbieter</th>
+            <th class="sortable" data-key="item" tabindex="0">Artikel</th>
+            <th class="sortable" data-key="size" tabindex="0">Größe</th>
+            <th>Maße</th>
+            <th class="sortable r" data-key="persons" tabindex="0">Kinder</th>
+            <th class="sortable r" data-key="price" tabindex="0">Tagespreis</th>
+            <th>Werktag / Wochenende</th>
+            <th>Lieferung</th>
+            <th>Buchung</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px" aria-labelledby="h-cond">
+    <h2 id="h-cond">Konditionen je Anbieter</h2>
+    <div class="table-box">
+      <table id="t-cond">
+        <thead>
+          <tr>
+            <th>Anbieter</th>
+            <th>Kaution</th>
+            <th>Lieferung und Aufbau</th>
+            <th>Abholung</th>
+            <th>Storno und Wetter</th>
+            <th>Besonderheiten</th>
+            <th>Quelle</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px" aria-labelledby="h-names">
+    <h2 id="h-names">Namen und Auffindbarkeit</h2>
+    <p class="lead">Wie nennen sich die Anbieter, was steht im Seitentitel der Startseite und wie holen sie Orte in die Suche? Gelesen am 7. Oktober 2026 von den Startseiten und Sitemaps; wo die Seite nichts Lesbares lieferte, steht „k. A.“.</p>
+    <div class="table-box">
+      <table id="t-names">
+        <thead>
+          <tr>
+            <th>Anbieter</th>
+            <th>Namensart</th>
+            <th>Domain</th>
+            <th>Seitentitel der Startseite</th>
+            <th>Ortsseiten</th>
+            <th>Auffällig</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="notes" aria-label="Einordnung">
+    <div class="note">
+      <h3>Namen und Orte: was die Anbieter tun</h3>
+      <ul>
+        <li>Von 22 gelesenen Anbietern haben 11 einen Fantasienamen, 5 den Suchbegriff mit Ort als Namen (z. B. „Hannover-Hüpfburg-Verleih“), 3 Fantasie plus Ort und 3 einen Personennamen.</li>
+        <li>13 von 21 lesbaren Startseiten haben einen Ort im Seitentitel. Das ist der gängige Weg, nicht der Firmenname.</li>
+        <li>Mindestens 7 Anbieter bauen Unterseiten mit Ortsendung. Basti-Bus hat 53, Gaudihüpfer 20 solche Seiten.</li>
+        <li>Drei Anbieter im Raum München sitzen nicht in München und gehen drei Wege: Ort im Namen (Münchner Hüpfer, Ismaning), Ort im Titel (Hüpfburg Frosch, Gilching), Ort als Unterseite (Gaudihüpfer, Ampfing). Ob jede dieser Varianten rechtlich unbedenklich ist, habe ich nicht geprüft.</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h3>Was das für deinen Clown heißt</h3>
+      <p>Das gleiche Format (ca. 5,2 × 4 m, 10 Kinder) kostet bei vier Anbietern zwischen 155 € und 190 € pro Tag. Frosch in Gilching vermietet laut Maßen und Motiv offenbar dasselbe Modell für 172,55 €. Dein Platzhalter von 99 € am Wochenende liegt deutlich darunter.</p>
+    </div>
+    <div class="note">
+      <h3>Sofortbuchung ist selten</h3>
+      <p>Die meisten Verleiher arbeiten mit Anfrageformular, Mail oder Telefon. Nur wenige zeigen einen Kalender mit freien Tagen und lassen direkt reservieren. Im Raum München hat das keiner der gefundenen Anbieter.</p>
+    </div>
+    <div class="note">
+      <h3>Übliche Konditionen</h3>
+      <ul>
+        <li>Kaution meist 100 €, bei Spielmodulen bis 300 €</li>
+        <li>Lieferung meist als Pauschale von 50 bis 100 € oder nach Kilometern, in München bis 155 € für Hin- und Rückweg</li>
+        <li>Kostenloses Storno bei Regen ist weit verbreitet</li>
+        <li>Folgetage oft deutlich billiger (z. B. 75 bis 100 €)</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>Grundlage sind die öffentlichen Webseiten der Anbieter, abgerufen am 7. Oktober 2026. Fehlende Angaben sind mit „k. A.“ markiert. „ab“-Preise sind Werbepreise der Anbieter und meist der kleinste Artikel. Bei Netto-Preisen ist die Umsatzsteuer aufgeschlagen (19 %, bei Happy Rent laut Anbieter 21 %). Größenklassen: klein bis ca. 4 × 4 m oder bis 5 Kinder, mittel um 5 × 4 m mit 8 bis 12 Kindern, groß ab ca. 6 m oder über 12 Kinder.</p>
+    <p>Nicht erfasst: private Angebote auf Kleinanzeigen und Mietportalen wie mietmeile.de oder rentinorio.de. Sie sind oft günstiger, aber selten mit Prüfung nach EN 14960 und Versicherung.</p>
+  </footer>
+</div>
+
+<script>
+function goBack() { let sameSite = false; try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {} if (sameSite && history.length > 1) history.back(); else location.href = "einkauf-eu.html"; }
+// Anbieter mit Konditionen. Werte von den Webseiten der Anbieter, Stand 07.10.2026.
+const P = {
+  mhuepfer: { name: "Münchner Hüpfer", city: "Ismaning", state: "Bayern", muc: true, url: "https://muenchner-huepfer.de/preise-angebote", deposit: null, delivery: "Aufbau 65 €, Abbau 90 € (bis 15 km), weiter nach Strecke", pickup: true, book: "anfrage", storno: null, weather: false, extra: "Abholung ab 9 Uhr, Rückgabe bis 20 Uhr" },
+  hmuenchen: { name: "Hüpfburg München", city: "München", state: "Bayern", muc: true, url: "https://www.huepfburg-muenchen.de/", deposit: null, delivery: "Lieferung und Abholung im Stadtgebiet München inklusive, Aufbau-Service optional", pickup: true, book: "anfrage", storno: null, weather: false, extra: "30 Modelle in drei Preisstufen, Abholung teils schon am Vortag", deliveryIncluded: true },
+  frosch: { name: "Hüpfburg Frosch", city: "Gilching", state: "Bayern", muc: true, url: "https://huepfburg-frosch.de/huepfburgen/clown-mit-dach/", deposit: null, delivery: "gegen Aufpreis auf Anfrage, Auf- und Abbau dann inklusive", pickup: true, book: "anfrage", storno: "Privat: kostenlos bei Regen; Selbstabholung bis 1 Std. vorher, Lieferung bis zum Vortag", weather: true, extra: "Preise netto ausgewiesen, ab 125 € netto pro Tag" },
+  lorenz: { name: "Lorenz Hüpfburg", city: "Moosinning", state: "Bayern", muc: true, url: "https://www.lorenz-huepfburg.de/preisuebersicht/", deposit: null, delivery: "50 € Grundpreis, ab 50 km zusätzlich 0,60 €/km; Aufbau gegen Aufpreis", pickup: true, book: "anfrage", storno: "kostenlos bei Regen", weather: true, extra: "Liefergebiet München, Erding, Freising, Ebersberg, Landshut; Verschmutzung 20 €, kleine Schäden 30 €; Betreuung 35 €/Std." },
+  flippy: { name: "Flippy-Hopp", city: "München & Umland", state: "Bayern", muc: true, url: "https://www.flippy-hopp.de/huepfburg-mieten-muenchen", deposit: null, delivery: null, pickup: null, book: "anfrage", storno: null, weather: false, extra: "nennt nur „ab ca. 150–250 €“; auch in Stuttgart aktiv" },
+  thw: { name: "THW (über KJR Dachau gelistet)", city: "Landkreis Dachau", state: "Bayern", muc: true, url: "https://www.kjr-dachau.de/service/materialvermietung", deposit: null, delivery: "nicht im Preis", pickup: true, book: "anfrage", storno: null, weather: false, extra: "Ehrenamtliche Organisation, Konkurrenz vor allem bei Vereinen" },
+  gaudi: { name: "Gaudihüpfer", city: "Ampfing", state: "Bayern", muc: false, url: "https://www.gaudihuepfer.de/huepfburg-mieten-muenchen/", deposit: null, delivery: "59 € pauschal im 10-km-Radius um Waldkraiburg, Auf- und Abbau ab 79 €", pickup: true, book: "online", storno: "kostenlos bei Witterungsproblemen", weather: true, extra: "wirbt gezielt für München; Folgetag z. B. 100 €" },
+  schake: { name: "Schake Event & Garten", city: "Feucht bei Nürnberg", state: "Bayern", muc: false, url: "https://schake-evga.de/huepfburg-in-nuernberg-mieten/", deposit: null, delivery: "Aufbau optional, Rundum-sorglos-Paket 120 €/Tag", pickup: true, book: "anfrage", storno: null, weather: false, extra: "Folgetag 80 €; Kabeltrommel und Unterlegplane inklusive" },
+  berlin: { name: "Berliner Hüpfburg Verleih (hüpfburg.de)", city: "Berlin-Lichtenberg", state: "Berlin", muc: false, url: "https://www.xn--hpfburg-n2a.de/", deposit: null, delivery: "in ganz Berlin, Kosten k. A.", pickup: true, book: "sofort", storno: "bis 7 Tage vorher kostenlos", weather: false, extra: "Online-Kalender; bei Selbstabholung „3 Tage mieten, 1 Tag bezahlen“" },
+  ott: { name: "OTTevent", city: "Hennigsdorf", state: "Brandenburg", muc: false, url: "https://ott-event.de/produkt/huepfburg-clown-mit-dach/", deposit: "100 € bei Selbstabholung", delivery: "Transport ab 1 €/km, Auf- und Abbau gegen Aufpreis", pickup: true, book: "sofort", storno: null, weather: false, extra: "Online-Sofortbuchung oder Anfrage; Unterlegmatte inklusive" },
+  hanse: { name: "Hansehüpfer", city: "Hamburg-Harburg", state: "Hamburg", muc: false, url: "https://www.hansehuepfer.de/huepfburg-hamburg-mieten", deposit: "300 € (bei Spielmodulen angegeben)", delivery: "kostenlos in Hamburg, Auf- und Abbau inklusive", pickup: true, book: "online", storno: null, weather: false, extra: "Hüpfburgen „ab 50 €“", deliveryIncluded: true },
+  luftschloss: { name: "Luftschloss Hüpfburgen", city: "Kaltenkirchen", state: "Schleswig-Holstein", muc: false, url: "https://www.luftschloss-huepfburgen.de/", deposit: "100 / 150 / 200 € je nach Größe", delivery: "49 € bis 25 km; Aufbau und Reinigung 49 / 79 / 99 €", pickup: true, book: "anfrage", storno: "Schönwettergarantie; sonst 100 % bis 28 Tage, 50 % bis 46 Tage, danach 29 €", weather: true, extra: "Reinigungspauschale 20 bis 110 €; Betreuung 39 €/Std." },
+  hophop: { name: "HopHopKids", city: "Bochum", state: "Nordrhein-Westfalen", muc: false, url: "https://hophopkids.de/deine-huepfburg-mieten/", deposit: "100 € bar bei Abholung", delivery: "keine Lieferung, nur Selbstabholung", pickup: true, book: "sofort", storno: "kostenlos bei Unwetterwarnung (24 Std.); sonst 35 bis 90 %, am selben Tag 100 %", weather: true, extra: "Online-Kalender mit Zeitfenstern; Foto- und Videodokumentation Pflicht" },
+  happy: { name: "Happy Rent", city: "Köln (Abholung Bedburg)", state: "Nordrhein-Westfalen", muc: false, url: "https://happyrentverleih.de/de/koeln-huepfburg-mieten", deposit: null, delivery: "nach PLZ und Kilometern berechnet, Auf- und Abbau optional", pickup: true, book: "sofort", storno: null, weather: false, extra: "niederländischer Anbieter; Verfügbarkeit in Echtzeit im Warenkorb" },
+  kispa: { name: "Kinderspass Frankfurt", city: "Frankfurt-Unterliederbach", state: "Hessen", muc: false, url: "https://www.kinderspass-frankfurt.de/preise/", deposit: null, delivery: "Auf- und Abbau ab 100 € je nach Entfernung", pickup: true, book: "unklar", storno: "kostenlos bei mind. 70 % Regenwahrscheinlichkeit 24 Std. vorher", weather: true, extra: "Folgetag 75 €; Kombirabatt mit Slush-Maschine" },
+  spass: { name: "Spass-Verleih", city: "Hünfelden", state: "Hessen", muc: false, url: "https://www.spass-verleih.de/eventmodule/huepfburgen/huepfburg-clown-5x4-m", deposit: null, delivery: "k. A.", pickup: true, book: "anfrage", storno: null, weather: false, extra: "vermietet bundesweit; Wochenend-Deal: Fr abholen, Mo zurück, 1 Tag zahlen; Fallschutzmatte gratis" },
+  hannover: { name: "Hannover-Hüpfburg-Verleih", city: "Hannover-Misburg", state: "Niedersachsen", muc: false, url: "https://www.hannover-huepfburg-verleih.de/start/preise/", deposit: null, delivery: "bis 20 km inklusive mit Auf- und Abbau, darüber 10 € + 0,49 €/km", pickup: null, book: "anfrage", storno: null, weather: false, extra: "eigene Preise für Feste (210 / 260 €); Fallschutzmatten für harten Boden 10 €", deliveryIncluded: true },
+  show4you: { name: "show4you", city: "Stuttgart / Ludwigsburg", state: "Baden-Württemberg", muc: false, url: "https://show4you.de/produkt-kategorie/mieten/huepfburgen/", deposit: null, delivery: "Abholung im Lager oder Lieferung mit Aufbau", pickup: true, book: "online", storno: null, weather: false, extra: "Preise als „ab“; netto oder brutto auf der Übersicht nicht erkennbar" },
+  basti: { name: "Basti-Bus", city: "Stuttgart", state: "Baden-Württemberg", muc: false, url: "https://www.basti-bus.de/hupfburg-mieten-stuttgart/", deposit: null, delivery: "laut Seite kostenlos inklusive Auf- und Abbau", pickup: false, book: "anfrage", storno: "Schönwetter-Garantie", weather: true, extra: "„ab“-Werbepreise, Liefergebiet über 50 Städte; Konditionen nicht nachvollziehbar", deliveryIncluded: true },
+  k2: { name: "K2 Eventmanufaktur", city: "Böblingen", state: "Baden-Württemberg", muc: false, url: "https://k2-eventmanufaktur.de/produkt/huepfburg-clown/", deposit: null, delivery: "k. A.", pickup: null, book: "online", storno: null, weather: false, extra: "Preis netto ausgewiesen; Betreuungspersonal buchbar" },
+  tolli: { name: "Tolli Park", city: "Mayen", state: "Rheinland-Pfalz", muc: false, url: "https://tolli-park.de/huepfburg-clown/", deposit: null, delivery: "Lieferung und Aufbauhilfe gegen Aufpreis", pickup: true, book: "anfrage", storno: null, weather: false, extra: "Wochenendpreis auf Anfrage" },
+  mainz: { name: "Mainzer Hüpfburgen", city: "Mainz", state: "Rheinland-Pfalz", muc: false, url: "https://www.huepfburgen-mainz.de/", deposit: "100 € bar bei Selbstabholung", delivery: "Kalkulator auf der Seite", pickup: true, book: "online", storno: "bis 7 Tage vorher kostenlos, danach 50 %", weather: false, extra: "über 100 Module; Reinigungsgebühr 100 €" },
+  dresden: { name: "Dresden Hüpfburg", city: "Dresden", state: "Sachsen", muc: false, url: "https://www.dresden-huepfburg.de/", deposit: null, delivery: "keine, nur Selbstabholung", pickup: true, book: "unklar", storno: null, weather: false, extra: "19 Modelle, „ab 35 €“" },
+};
+
+// Namen und Auffindbarkeit. Gelesen von den Startseiten der Anbieter am 07.10.2026 (Seitentitel, Domain, Ortsseiten in Navigation und Sitemap).
+// type: Fantasiename | Ort + Gattung | Ort + Fantasie | Personenname.  ortInTitel: steht ein Ort im Seitentitel der Startseite.
+const N = {
+  mhuepfer: { type: "Ort + Fantasie", domain: "muenchner-huepfer.de", title: "Hüpfburgen Verleih Vermietung München", ortInTitel: true, pages: "keine eigenen Ortsseiten", note: "Sitz Ismaning, „Münchner“ steckt im Namen" },
+  hmuenchen: { type: "Ort + Gattung", domain: "huepfburg-muenchen.de", title: "Hüpfburg mieten in München: Ihr Hüpfburgverleih für die Weltstadt mit Herz!", ortInTitel: true, pages: "keine eigenen Ortsseiten gefunden", note: "Suchbegriff als Name und Domain, Sitz in München" },
+  frosch: { type: "Fantasiename", domain: "huepfburg-frosch.de", title: "Hüpfburgen mieten in München | Hüpfburg Frosch Verleih", ortInTitel: true, pages: "keine Ortsseiten in der Stichprobe", note: "Sitz Gilching, München steht im Titel und in der Überschrift, nicht im Namen" },
+  lorenz: { type: "Personenname", domain: "lorenz-huepfburg.de", title: "Lorenz Hüpfburg - Mieten von Eventmodulen und Ausstattungen", ortInTitel: false, pages: "keine; Liefergebiet nur im Text", note: "Orte (München, Erding, Freising, Ebersberg, Landshut) nur in der Preisübersicht" },
+  flippy: { type: "Fantasiename", domain: "flippy-hopp.de", title: "Hüpfburg & Eventmodule Mieten | Flippy-Hopp Hüpfburgen für Events", ortInTitel: false, pages: "Seiten je Motiv und Ort, z. B. „…-dalmatiner-muenchen“, „…-zirkus-augsburg-memmingen“", note: "Ort steckt in den Unterseiten, nicht im Namen" },
+  gaudi: { type: "Fantasiename", domain: "gaudihuepfer.de", title: "Hüpfburg mieten im Landkreis Mühldorf am Inn - Gaudihüpfer.de", ortInTitel: true, pages: "20 Ortsseiten „huepfburg-mieten-<ort>“, darunter München, Erding, Ebersberg, Rosenheim", note: "Sitz Ampfing; wirbt gezielt für München über eine Unterseite" },
+  schake: { type: "Personenname", domain: "schake-evga.de", title: "Eventmodule mieten in Feucht & Nürnberg | Schake Event & Garten", ortInTitel: true, pages: "Seite je Produkt mit Ort, z. B. „huepfburg-mieten-nuernberg“", note: "Zwei Orte im Titel: Sitz und Großstadt" },
+  berlin: { type: "Ort + Gattung", domain: "hüpfburg.de", title: "Hüpfburg mieten Berlin ab 25 € | Günstig, schnell & direkt buchen", ortInTitel: true, pages: "jede Produktseite endet auf „-mieten-berlin“; über 500 URLs in der Sitemap", note: "Preis im Seitentitel; Domain ist die Gattung selbst" },
+  ott: { type: "Personenname", domain: "ott-event.de", title: "Veranstaltungstechnik und Service von OTTevent aus Hennigsdorf", ortInTitel: false, pages: "keine", note: "Ort nur im Fließtext des Titels" },
+  hanse: { type: "Ort + Fantasie", domain: "hansehuepfer.de", title: "Hansehüpfer | #1 Hüpfburg Hamburg mieten & Verleih 2026", ortInTitel: true, pages: "4 Hamburg-Seiten nach Suchabsicht: mieten, Verleih, Kindergeburtstag, Preise", note: "Region im Namen, Stadt und Jahr im Titel" },
+  luftschloss: { type: "Fantasiename", domain: "luftschloss-huepfburgen.de", title: null, ortInTitel: null, pages: "k. A.", note: "Seite lieferte keinen lesbaren Titel" },
+  hophop: { type: "Fantasiename", domain: "hophopkids.de", title: "HopHopKids - Hüpfburgenverleih", ortInTitel: false, pages: "keine", note: "Kein Ortsbezug im Titel" },
+  happy: { type: "Fantasiename", domain: "happyrentverleih.de", title: "Happy Rent Verleih NRW | Hüpfburgen - Attraktionen & Event Module", ortInTitel: true, pages: "Stadtseiten für Köln, Düsseldorf, Aachen u. a. (mind. 14 in der Sitemap-Stichprobe)", note: "Region im Titel, Städte als Unterseiten" },
+  kispa: { type: "Ort + Fantasie", domain: "kinderspass-frankfurt.de", title: "Hüpfburgen im Rhein-Main-Gebiet - Hüpfburg mieten Frankfurt", ortInTitel: true, pages: "keine Ortsseiten; 9 Seiten gesamt", note: "Ort im Namen und in der Domain" },
+  spass: { type: "Fantasiename", domain: "spass-verleih.de", title: "Eventmodule und Hüpfburgen mieten von Spass Verleih & Events DL GmbH", ortInTitel: false, pages: "vereinzelt, z. B. „/huepfburg-mieten-frankfurt“", note: "Bundesweit; Ortsseite nur für einen Standort gefunden" },
+  hannover: { type: "Ort + Gattung", domain: "hannover-huepfburg-verleih.de", title: "Hannover-Hüpfburg-Verleih - Tolle Hüpfburgen günstig mieten & liefern lassen", ortInTitel: true, pages: "keine; 13 Seiten gesamt", note: "Suchbegriff als Name und Domain" },
+  show4you: { type: "Fantasiename", domain: "show4you.de", title: "Eventattraktionen & Eventmodule mieten | show4you Bietigheim", ortInTitel: false, pages: "keine", note: "Ort nur als Firmensitz im Titel, „Raum Stuttgart“ in der Beschreibung" },
+  basti: { type: "Fantasiename", domain: "basti-bus.de", title: "Kindergeburtstag im (Basti-Bus) mob. Kinderwerkstatt", ortInTitel: false, pages: "53 Ortsseiten „hupfburg-mieten-<stadt>“", note: "Der Name sagt nichts über Hüpfburgen; Reichweite kommt komplett über die Ortsseiten" },
+  k2: { type: "Fantasiename", domain: "k2-eventmanufaktur.de", title: "Startseite - K2 Konzept- und Eventmanufaktur", ortInTitel: false, pages: "keine", note: "Titel „Startseite“, keine Beschreibung" },
+  tolli: { type: "Fantasiename", domain: "tolli-park.de", title: "Tolli Park Mayen - Freizeitpark mit Indoor-Spielplatz", ortInTitel: true, pages: "keine für Hüpfburgen", note: "Hüpfburg-Verleih ist Nebengeschäft eines Freizeitparks" },
+  mainz: { type: "Ort + Gattung", domain: "huepfburgen-mainz.de", title: "Hüpfburg mieten Mainz – 100+ Funmodule & Eyecatcher", ortInTitel: true, pages: "keine Ortsseiten; rund 130 URLs gesamt", note: "Zahl der Module im Titel" },
+  dresden: { type: "Ort + Gattung", domain: "dresden-huepfburg.de", title: "Jetzt Profi Hüpfburgen in Dresden mieten - Dresden Hüpfburg", ortInTitel: true, pages: "keine", note: "Suchbegriff als Name und Domain" },
+};
+
+// Artikel. price = Vergleichspreis pro Tag brutto (Wochenende, falls getrennt angegeben).
+// from = "ab"-Preis, net = Netto-Angabe umgerechnet, clown = vergleichbar mit 5,2 × 4 m Clown-Format.
+const A = [
+  { p: "mhuepfer", item: "Einhorn, Feuerwehr oder Dschungel (groß)", size: "groß", dims: null, persons: null, price: 220, wd: null, we: null, note: "mit Lieferung, Auf- und Abbau (15 km) 375 €" },
+  { p: "mhuepfer", item: "Kroko oder kleines Einhorn", size: "klein", dims: null, persons: null, price: 185, note: "mit Lieferung, Auf- und Abbau (15 km) 335 €" },
+  { p: "hmuenchen", item: "Kleine Hüpfburgen (4 Modelle, z. B. Kleines Schlösschen)", size: "klein", dims: "3,65 × 2,65 × 2,00 m", persons: 4, price: 165, note: "bis 4 Jahre" },
+  { p: "hmuenchen", item: "Mittlere Hüpfburgen (13 Modelle, z. B. Paw Patrol, Hase, Circus)", size: "mittel", dims: "4 × 4 bis 5 × 3,5 m", persons: null, price: 249 },
+  { p: "hmuenchen", item: "XXL-Hüpfburgen (13 Modelle, z. B. Flugzeug, Ritterburg)", size: "groß", dims: "5 × 6 bis 6 × 7 m", persons: null, price: 349 },
+  { p: "frosch", item: "Clown mit Dach", size: "mittel", dims: "5,20 × 4,00 × 5,00 m", persons: 10, price: 172.55, net: true, clown: true, note: "145 € netto; vermutlich dasselbe Modell wie dein Clown" },
+  { p: "lorenz", item: "Hüpfburgen (Preise nur auf Anfrage)", size: "–", dims: null, persons: null, price: null },
+  { p: "flippy", item: "Hüpfburgen und Module (Spanne laut Seite ca. 150–250 €)", size: "–", dims: null, persons: null, price: null },
+  { p: "thw", item: "Hüpfburg", size: "mittel", dims: "5 × 5 m", persons: null, price: 150, note: "ohne Anlieferung und Abholung" },
+  { p: "gaudi", item: "Mini-Hüpfburgen (Dschungel, Bausteine, Einhorn)", size: "klein", dims: null, persons: null, price: 100 },
+  { p: "gaudi", item: "Multiplay Krokodil oder Hai, Prinzessin", size: "mittel", dims: null, persons: null, price: 180 },
+  { p: "gaudi", item: "Schloss Gaudiburg", size: "mittel", dims: "5 × 5,4 × 5 m", persons: 10, price: 200, note: "Folgetag 100 €" },
+  { p: "gaudi", item: "Große Hüpfburg Dinogaudi", size: "groß", dims: null, persons: null, price: 220 },
+  { p: "gaudi", item: "Große Hüpfburg Pirat", size: "groß", dims: null, persons: null, price: 240 },
+  { p: "schake", item: "Hüpfburg mit Rutsche (groß)", size: "groß", dims: "6 × 5 × 4 m", persons: null, price: 200, note: "Folgetag 80 €" },
+  { p: "berlin", item: "Mini", size: "klein", dims: "2,75 × 2,30 × 1,75 m", persons: 2, price: 25, note: "1 bis 4 Jahre" },
+  { p: "berlin", item: "Hopsi", size: "klein", dims: "3,50 × 2,50 × 3,00 m", persons: 3, price: 90 },
+  { p: "berlin", item: "Camelot Mini", size: "klein", dims: "3,60 × 4,00 m", persons: 7, price: 120 },
+  { p: "berlin", item: "Mini Schloss", size: "klein", dims: "3,00 × 4,00 m", persons: 4, price: 120 },
+  { p: "berlin", item: "Auto, Dschungel, Spaßclown, Dinolinchen", size: "klein", dims: "3,80 × 2,80 bis 4,00 × 3,00 m", persons: 5, price: 150, note: "2 bis 8 Jahre" },
+  { p: "ott", item: "Clown mit Dach", size: "mittel", dims: "5 × 4 m", persons: null, price: 190.40, clown: true, note: "reduziert von 214,20 €; bis 16 Jahre" },
+  { p: "hanse", item: "Hüpfburgen (Einstiegspreis)", size: "–", dims: null, persons: null, price: 50, from: true },
+  { p: "hanse", item: "Fußball-Dart und Zielspiele (Spielmodul)", size: "Modul", dims: null, persons: null, price: 100 },
+  { p: "luftschloss", item: "MINI: Einhorn, Dinobaby, Little Rocket", size: "klein", dims: "3,45 × 3,00 × 2,10 m", persons: 5, price: 119, wd: 99, we: 119, note: "2 bis 5 Jahre" },
+  { p: "luftschloss", item: "MIDI: Happy Alpaka, Zauberwald", size: "mittel", dims: "5,80 × 4,00 × 3,70 m", persons: 10, price: 179, wd: 149, we: 179, note: "3 bis 14 Jahre" },
+  { p: "luftschloss", item: "MAXI: Robby Roboter", size: "groß", dims: "5,50 × 5,50 × 3,40 m", persons: 12, price: 199, wd: 169, we: 199 },
+  { p: "hophop", item: "Dschungel, Ritterburg, Piraten, Einhorn", size: "–", dims: null, persons: null, price: 150, wd: 120, we: 150, note: "Wochenendpaket Fr bis So 200 €" },
+  { p: "happy", item: "Hüpfburgen (Einstiegspreis)", size: "–", dims: null, persons: null, price: 71.39, from: true, net: true, note: "ab 59 € netto zzgl. 21 %" },
+  { p: "kispa", item: "Camelot (groß)", size: "groß", dims: "6 × 5 m", persons: 14, price: 289, note: "inklusive Auf- und Abbau" },
+  { p: "kispa", item: "Clown oder Camelot (klein)", size: "mittel", dims: "5 × 4 m", persons: 10, price: 159, clown: true, note: "Folgetag 75 €" },
+  { p: "kispa", item: "Prinzessin, Dschungel, Tiger", size: "mittel", dims: null, persons: 8, price: 139, note: "6 bis 8 Kinder" },
+  { p: "kispa", item: "Dino, Hai, Einhorn mit Rutsche", size: "klein", dims: null, persons: 6, price: 119, note: "4 bis 6 Kinder" },
+  { p: "kispa", item: "Wald, Einhorn-Pony (ohne Rutsche)", size: "klein", dims: null, persons: 7, price: 99 },
+  { p: "spass", item: "Clown 5 × 4 m", size: "mittel", dims: "5,20 × 4,00 × 5,30 m", persons: null, price: 155, net: true, clown: true, note: "130,25 € netto angegeben" },
+  { p: "hannover", item: "Standard-Hüpfburg", size: "mittel", dims: "4 × 5 m", persons: 12, price: 180, wd: 160, we: 180, note: "Kindergeburtstag; Feste 210 €" },
+  { p: "hannover", item: "Ritterburg", size: "groß", dims: "5 × 6 m", persons: 16, price: 240, wd: 200, we: 240, note: "Kindergeburtstag; Feste 260 €" },
+  { p: "show4you", item: "Pferd / Cowboy", size: "mittel", dims: "5 × 4 × 4 m", persons: 12, price: 160, from: true, clown: true },
+  { p: "show4you", item: "Multiplayer Schiff", size: "groß", dims: "6,5 × 4,5 × 3 m", persons: 10, price: 165, from: true },
+  { p: "show4you", item: "Giraffe", size: "groß", dims: "6 × 5 × 7 m", persons: 16, price: 185, from: true },
+  { p: "show4you", item: "Strand / Delphin", size: "groß", dims: "6 × 5 × 5 m", persons: 16, price: 205, from: true },
+  { p: "show4you", item: "Pirat Multiplayer, Zirkus, Affenpark", size: "groß", dims: "6 × 5,5 bis 7,1 × 7 m", persons: null, price: 235, from: true, note: "10 bis 14 Kinder" },
+  { p: "show4you", item: "Erwachsenen-Schloss", size: "groß", dims: "6 × 7 × 4 m", persons: 16, price: 295, from: true, note: "auch 6 Erwachsene" },
+  { p: "basti", item: "Happy Bounce 1", size: "klein", dims: "3,75 × 2,75 × 1,9 m", persons: null, price: 44, from: true, note: "3 bis 10 Jahre, inkl. Lieferung laut Seite" },
+  { p: "basti", item: "Happy Bounce 2", size: "mittel", dims: "5 × 4 × 3 m", persons: null, price: 55, from: true, note: "inkl. Lieferung laut Seite" },
+  { p: "basti", item: "Happy Bounce 3", size: "mittel", dims: "4,5 × 4 × 2,5 m", persons: null, price: 69, from: true, note: "inkl. Lieferung laut Seite" },
+  { p: "k2", item: "Clown (groß)", size: "groß", dims: "6,00 × 7,30 × 7,00 m", persons: 20, price: 368.90, net: true, note: "310 € netto; 15 bis 20 Kinder" },
+  { p: "tolli", item: "Clown", size: "groß", dims: "7,2 × 3,7 × 4 m", persons: 15, price: 150, note: "10 bis 15 Personen; Wochenende auf Anfrage" },
+  { p: "mainz", item: "Ninja Parcours", size: "Modul", dims: "25 × 10 × 5,9 m", persons: null, price: 395, from: true, note: "Großmodul für Feste" },
+  { p: "dresden", item: "Hüpfburgen (Einstiegspreis)", size: "–", dims: null, persons: null, price: 35, from: true, note: "nur Selbstabholung" },
+];
+
+const BOOK = { sofort: "Sofortbuchung", online: "Online (Ablauf unklar)", anfrage: "Anfrage", unklar: "k. A." };
+const SIZES = ["klein", "mittel", "groß", "Modul", "–"];
+const SIZE_LABEL = { "klein": "klein", "mittel": "mittel", "groß": "groß", "Modul": "Modul", "–": "ohne Angabe" };
+const MY_PRICE = 99;
+
+const $ = (id) => document.getElementById(id);
+const euro = (v) => v == null ? "k. A." : v.toLocaleString("de-DE", { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }) + " €";
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const median = (arr) => { if (!arr.length) return null; const s = [...arr].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+
+const state = { q: "", region: "alle", sizes: new Set(), books: new Set(), max: 400, priced: false, pickup: false, delivery: false, weather: false, clown: false, sortKey: "price", sortDir: 1 };
+
+function buildControls() {
+  const states = [...new Set(Object.values(P).map((x) => x.state))].sort((a, b) => a.localeCompare(b, "de"));
+  const opts = [["alle", "Ganz Deutschland"], ["muc", "Raum München, Dachau, Freising"], ...states.map((s) => [s, s])];
+  $("f-region").innerHTML = opts.map(([v, l]) => `<option value="${esc(v)}">${esc(l)}</option>`).join("");
+  $("f-size").innerHTML = SIZES.map((s) => `<button type="button" class="chip" aria-pressed="false" data-v="${esc(s)}">${esc(SIZE_LABEL[s])}</button>`).join("");
+  $("f-book").innerHTML = Object.entries(BOOK).map(([k, l]) => `<button type="button" class="chip" aria-pressed="false" data-v="${k}">${esc(l)}</button>`).join("");
+}
+
+function matches(a) {
+  const p = P[a.p];
+  if (state.region === "muc" && !p.muc) return false;
+  if (state.region !== "alle" && state.region !== "muc" && p.state !== state.region) return false;
+  if (state.sizes.size && !state.sizes.has(a.size)) return false;
+  if (state.books.size && !state.books.has(p.book)) return false;
+  if (state.priced && (a.price == null || a.from)) return false;
+  if (a.price != null && a.price > state.max) return false;
+  if (state.pickup && p.pickup !== true) return false;
+  if (state.delivery && !p.deliveryIncluded) return false;
+  if (state.weather && !p.weather) return false;
+  if (state.clown && !a.clown) return false;
+  if (state.q) {
+    const hay = `${p.name} ${p.city} ${p.state} ${a.item} ${a.note || ""}`.toLowerCase();
+    if (!hay.includes(state.q)) return false;
+  }
+  return true;
+}
+
+function sortRows(rows) {
+  const k = state.sortKey, d = state.sortDir;
+  const val = (a) => k === "provider" ? P[a.p].name : k === "item" ? a.item : k === "size" ? SIZES.indexOf(a.size) : k === "persons" ? a.persons : a.price;
+  return rows.sort((x, y) => {
+    const a = val(x), b = val(y);
+    if (a == null && b == null) return 0;
+    if (a == null) return 1;
+    if (b == null) return -1;
+    return (typeof a === "string" ? a.localeCompare(b, "de") : a - b) * d;
+  });
+}
+
+function bookPill(b) { return `<span class="pill p-${b}">${esc(BOOK[b])}</span>`; }
+
+function renderArticles(rows) {
+  const tb = $("t-art").querySelector("tbody");
+  if (!rows.length) { tb.innerHTML = `<tr><td colspan="9" class="empty">Keine Artikel passen zu den Filtern. Lockere die Auswahl oder setze die Filter zurück.</td></tr>`; return; }
+  tb.innerHTML = rows.map((a) => {
+    const p = P[a.p];
+    const tags = [p.muc ? `<span class="pill p-muc">Raum München</span>` : "", a.clown ? `<span class="pill p-clown">Clown-Format</span>` : ""].join(" ");
+    const priceTxt = a.price == null ? `<span class="na">auf Anfrage</span>` : `<span class="price">${a.from ? "ab " : ""}${euro(a.price)}</span>${a.net ? `<div class="sub">aus netto</div>` : ""}`;
+    const split = a.wd != null || a.we != null ? `<span class="num">${euro(a.wd)} / ${euro(a.we)}</span>` : `<span class="na">einheitlich</span>`;
+    return `<tr>
+      <td><div class="prov"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a></div><div class="sub">${esc(p.city)}, ${esc(p.state)}</div><div>${tags}</div></td>
+      <td>${esc(a.item)}${a.note ? `<div class="sub">${esc(a.note)}</div>` : ""}</td>
+      <td>${esc(SIZE_LABEL[a.size])}</td>
+      <td class="num">${a.dims ? esc(a.dims) : `<span class="na">k. A.</span>`}</td>
+      <td class="r num">${a.persons ?? `<span class="na">k. A.</span>`}</td>
+      <td class="r">${priceTxt}</td>
+      <td>${split}</td>
+      <td>${p.deliveryIncluded ? "inklusive" : p.delivery ? esc(p.delivery) : `<span class="na">k. A.</span>`}</td>
+      <td>${bookPill(p.book)}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderConditions(rows) {
+  const ids = [...new Set(rows.map((a) => a.p))].sort((a, b) => (P[b].muc - P[a].muc) || P[a].name.localeCompare(P[b].name, "de"));
+  const tb = $("t-cond").querySelector("tbody");
+  if (!ids.length) { tb.innerHTML = `<tr><td colspan="7" class="empty">Keine Anbieter in der Auswahl.</td></tr>`; return; }
+  const na = `<span class="na">k. A.</span>`;
+  tb.innerHTML = ids.map((id) => {
+    const p = P[id];
+    const pick = p.pickup === true ? "ja" : p.pickup === false ? "nein" : na;
+    return `<tr>
+      <td><div class="prov">${esc(p.name)}</div><div class="sub">${esc(p.city)}, ${esc(p.state)}</div>${p.muc ? `<span class="pill p-muc">Raum München</span>` : ""} ${bookPill(p.book)}</td>
+      <td>${p.deposit ? esc(p.deposit) : na}</td>
+      <td>${p.delivery ? esc(p.delivery) : na}</td>
+      <td>${pick}</td>
+      <td>${p.storno ? esc(p.storno) : na}</td>
+      <td>${p.extra ? esc(p.extra) : ""}</td>
+      <td><a href="${esc(p.url)}" target="_blank" rel="noopener">Webseite</a></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderNames(rows) {
+  const ids = [...new Set(rows.map((a) => a.p))].filter((id) => N[id]).sort((a, b) => (P[b].muc - P[a].muc) || P[a].name.localeCompare(P[b].name, "de"));
+  const tb = $("t-names").querySelector("tbody");
+  if (!ids.length) { tb.innerHTML = `<tr><td colspan="6" class="empty">Keine Anbieter in der Auswahl oder keine Angaben.</td></tr>`; return; }
+  const na = `<span class="na">k. A.</span>`;
+  tb.innerHTML = ids.map((id) => {
+    const p = P[id], n = N[id];
+    return `<tr>
+      <td><div class="prov">${esc(p.name)}</div><div class="sub">${esc(p.city)}, ${esc(p.state)}</div>${p.muc ? `<span class="pill p-muc">Raum München</span>` : ""}</td>
+      <td>${esc(n.type)}</td>
+      <td class="num">${esc(n.domain)}</td>
+      <td>${n.title ? esc(n.title) : na}${n.ortInTitel === true ? `<div class="sub">Ort im Titel</div>` : n.ortInTitel === false ? `<div class="sub">kein Ort im Titel</div>` : ""}</td>
+      <td>${esc(n.pages)}</td>
+      <td>${esc(n.note)}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderStrip(rows) {
+  const svg = $("strip");
+  const W = 1000, L = 40, R = 980, max = 400;
+  const x = (v) => L + (Math.min(v, max) / max) * (R - L);
+  const priced = rows.filter((a) => a.price != null);
+  const ticks = [0, 100, 200, 300, 400];
+  let out = `<line x1="${L}" x2="${R}" y1="80" y2="80" stroke="var(--line)" stroke-width="1"/>`;
+  out += ticks.map((t) => `<line x1="${x(t)}" x2="${x(t)}" y1="20" y2="84" stroke="var(--line)" stroke-width="1"/><text x="${x(t)}" y="104" text-anchor="middle" font-size="13" fill="var(--muted)" font-family="JetBrains Mono, monospace">${t} €</text>`).join("");
+  out += `<line x1="${x(MY_PRICE)}" x2="${x(MY_PRICE)}" y1="14" y2="84" stroke="var(--red)" stroke-width="2" stroke-dasharray="5 4"/>`;
+  const sorted = [...priced].sort((a, b) => a.price - b.price);
+  const lanes = [];
+  sorted.forEach((a) => {
+    const cx = x(a.price);
+    let lane = 0;
+    while (lanes[lane] != null && cx - lanes[lane] < 12) lane++;
+    lanes[lane] = cx;
+    const cy = 70 - (lane % 5) * 11;
+    const col = P[a.p].muc ? "var(--sun)" : "var(--accent)";
+    const title = `${P[a.p].name}: ${a.item}, ${a.from ? "ab " : ""}${euro(a.price)}`;
+    out += a.from
+      ? `<circle cx="${cx}" cy="${cy}" r="5" fill="var(--surface)" stroke="var(--red)" stroke-width="2"><title>${esc(title)}</title></circle>`
+      : `<circle cx="${cx}" cy="${cy}" r="5.5" fill="${col}" stroke="var(--surface)" stroke-width="1.5"><title>${esc(title)}</title></circle>`;
+  });
+  svg.innerHTML = out;
+}
+
+function renderKpis(rows) {
+  const concrete = rows.filter((a) => a.price != null && !a.from).map((a) => a.price);
+  $("k-count").textContent = rows.length;
+  const m = median(concrete);
+  $("k-median").textContent = m == null ? "–" : euro(Math.round(m));
+  $("k-range").textContent = concrete.length ? `${Math.round(Math.min(...concrete))}–${Math.round(Math.max(...concrete))} €` : "–";
+  const cm = median(A.filter((a) => a.clown && a.price != null && !a.from).map((a) => a.price));
+  $("k-clown").textContent = cm == null ? "–" : euro(Math.round(cm));
+  const provs = [...new Set(rows.map((a) => a.p))];
+  const sof = provs.filter((id) => P[id].book === "sofort").length;
+  $("k-sofort").textContent = `${sof} von ${provs.length}`;
+}
+
+function render() {
+  const rows = sortRows(A.filter(matches));
+  renderKpis(rows);
+  renderArticles(rows);
+  renderConditions(rows);
+  renderNames(rows);
+  renderStrip(rows);
+  const active = [state.q, state.region !== "alle", state.sizes.size, state.books.size, state.max < 400, state.priced, state.pickup, state.delivery, state.weather, state.clown].filter(Boolean).length;
+  $("f-status").textContent = active ? `${rows.length} von ${A.length} Artikeln, ${active} Filter aktiv` : `Alle ${A.length} Artikel`;
+  $("f-max-out").textContent = state.max >= 400 ? "unbegrenzt" : euro(state.max);
+  document.querySelectorAll("#t-art th.sortable").forEach((th) => {
+    th.setAttribute("aria-sort", th.dataset.key === state.sortKey ? (state.sortDir === 1 ? "ascending" : "descending") : "none");
+  });
+}
+
+function bind() {
+  $("f-q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); render(); });
+  $("f-region").addEventListener("change", (e) => { state.region = e.target.value; render(); });
+  $("f-max").addEventListener("input", (e) => { state.max = Number(e.target.value); render(); });
+  [["f-priced", "priced"], ["f-pickup", "pickup"], ["f-delivery", "delivery"], ["f-weather", "weather"], ["f-clown", "clown"]].forEach(([id, k]) => $(id).addEventListener("change", (e) => { state[k] = e.target.checked; render(); }));
+  const chipGroup = (id, set) => $(id).addEventListener("click", (e) => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    const v = b.dataset.v; const on = !set.has(v);
+    on ? set.add(v) : set.delete(v);
+    b.setAttribute("aria-pressed", String(on)); render();
+  });
+  chipGroup("f-size", state.sizes);
+  chipGroup("f-book", state.books);
+  const sortBy = (th) => { const k = th.dataset.key; if (state.sortKey === k) state.sortDir *= -1; else { state.sortKey = k; state.sortDir = 1; } render(); };
+  document.querySelectorAll("#t-art th.sortable").forEach((th) => {
+    th.addEventListener("click", () => sortBy(th));
+    th.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); sortBy(th); } });
+  });
+  $("f-reset").addEventListener("click", () => {
+    Object.assign(state, { q: "", region: "alle", max: 400, priced: false, pickup: false, delivery: false, weather: false, clown: false });
+    state.sizes.clear(); state.books.clear();
+    $("f-q").value = ""; $("f-region").value = "alle"; $("f-max").value = 400;
+    ["f-priced", "f-pickup", "f-delivery", "f-weather", "f-clown"].forEach((id) => { $(id).checked = false; });
+    document.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
+    render();
+  });
+}
+
+buildControls();
+bind();
+render();
+</script>
+
+</body>
+</html>
