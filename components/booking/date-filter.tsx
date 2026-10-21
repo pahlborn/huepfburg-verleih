@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CalendarSearch } from 'lucide-react'
 import { earliestBookableDate, latestBookableDate } from '@/lib/booking-rules'
 import { addDays, type ISODate } from '@/lib/dates'
@@ -13,6 +13,8 @@ interface DateFilterProps {
   defaultDate?: ISODate
   defaultEndDate?: ISODate
   inputId: string
+  /** Sprungziel für den Button "Verfügbarkeit prüfen". */
+  anchorId?: string
   className?: string
 }
 
@@ -23,9 +25,14 @@ const inputClass =
  * Kurzfilter mit Zeitraum. Funktioniert ohne JavaScript als normales GET-Formular auf /huepfburgen.
  * "Bis" ist optional: leer gelassen bedeutet ein einzelner Tag.
  */
-export function DateFilter({ today, defaultDate, defaultEndDate, inputId, className }: DateFilterProps) {
+export function DateFilter({ today, defaultDate, defaultEndDate, inputId, anchorId, className }: DateFilterProps) {
   const [from, setFrom] = useState<string>(defaultDate ?? '')
   const [to, setTo] = useState<string>(defaultEndDate && defaultEndDate !== defaultDate ? defaultEndDate : '')
+  const fromRef = useRef<HTMLInputElement>(null)
+  // Kommt der Besucher über "Verfügbarkeit prüfen" von einer anderen Seite, steht der Cursor gleich im Feld "Von".
+  useEffect(() => {
+    if (anchorId && window.location.hash === `#${anchorId}`) fromRef.current?.focus({ preventScroll: true })
+  }, [anchorId])
   const minTo = from || earliestBookableDate(today)
   const maxTo = from ? addDays(from, pricingConfig.maxRentalDays - 1) : latestBookableDate(today)
 
@@ -33,7 +40,8 @@ export function DateFilter({ today, defaultDate, defaultEndDate, inputId, classN
     <form
       action={withBasePath(process.env.NEXT_PUBLIC_BASE_PATH ? '/huepfburgen/' : '/huepfburgen')}
       method="get"
-      className={cn('flex flex-col gap-3 rounded-3xl border-2 bg-card p-4 shadow-sm sm:p-5', className)}
+      id={anchorId}
+      className={cn('flex scroll-mt-24 flex-col gap-3 rounded-3xl border-2 bg-card p-4 shadow-sm sm:p-5 target:border-primary target:ring-4 target:ring-primary/20', className)}
     >
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-2 font-heading text-lg font-semibold">Wann brauchen Sie die Hüpfburg?</legend>
@@ -44,6 +52,7 @@ export function DateFilter({ today, defaultDate, defaultEndDate, inputId, classN
             </label>
             <input
               id={`${inputId}-von`}
+              ref={fromRef}
               name="datum"
               type="date"
               required

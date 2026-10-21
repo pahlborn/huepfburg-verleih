@@ -31,6 +31,7 @@ export function CastleDateFilter({ className }: { className?: string }) {
       defaultDate={date}
       defaultEndDate={endDate}
       inputId="burgen-datum"
+      anchorId="zeitraum"
       className={className}
     />
   )

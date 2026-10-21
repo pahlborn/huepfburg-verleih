@@ -2,12 +2,17 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Menu } from 'lucide-react'
+import { normalizePath } from '@/components/layout/availability-button'
+import { cn } from '@/lib/utils'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { footerLinks, navigation, siteConfig } from '@/lib/site-config'
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)
+  const path = normalizePath(usePathname())
+  const isActive = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`))
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -25,8 +30,11 @@ export function MobileNav() {
             (item) => (
               <SheetClose
                 key={item.href}
-                render={<Link href={item.href} />}
-                className="rounded-xl px-3 py-3 text-lg font-semibold transition-colors hover:bg-secondary"
+                render={<Link href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} />}
+                className={cn(
+                  'rounded-xl px-3 py-3 text-lg font-semibold transition-colors hover:bg-secondary',
+                  isActive(item.href) && 'bg-secondary text-primary',
+                )}
               >
                 {item.label}
               </SheetClose>

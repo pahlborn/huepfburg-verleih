@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import { Castle, MapPin } from 'lucide-react'
-import { LinkButton } from '@/components/common/link-button'
+import { CalendarCheck, Castle, MapPin } from 'lucide-react'
+import { AvailabilityLink } from '@/components/layout/availability-button'
+import { MainNav } from '@/components/layout/main-nav'
 import { MobileNav } from '@/components/layout/mobile-nav'
-import { navigation, siteConfig } from '@/lib/site-config'
+import { siteConfig } from '@/lib/site-config'
 
 export function BrandMark({ className }: { className?: string }) {
   return (
@@ -29,22 +30,13 @@ export function SiteHeader() {
           <BrandMark />
         </Link>
 
-        <nav aria-label="Hauptnavigation" className="hidden items-center gap-1 lg:flex">
-          {navigation.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-full px-4 py-2 font-semibold text-foreground/85 transition-colors hover:bg-secondary hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <MainNav />
 
         <div className="flex items-center gap-2">
-          <LinkButton href="/huepfburgen" variant="sun" className="hidden sm:inline-flex">
+          <AvailabilityLink className="hidden h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 font-heading text-base font-medium whitespace-nowrap text-accent-foreground transition-colors hover:bg-accent/85 sm:inline-flex">
+            <CalendarCheck className="size-5" aria-hidden="true" />
             Verfügbarkeit prüfen
-          </LinkButton>
+          </AvailabilityLink>
           <MobileNav />
         </div>
       </div>
