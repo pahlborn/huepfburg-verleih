@@ -1,1 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f5bb5"/><path fill="#fff" d="M12 22h8v6h6v-6h12v6h6v-6h8v32H12z"/><path fill="#f6d94a" d="M27 54V40a5 5 0 0 1 10 0v14z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f7be0"/>
+      <stop offset="1" stop-color="#1a56b8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#sky)"/>
+  <!-- Funkeln -->
+  <path d="M180 168 Q191.16 218.84 242 230 Q191.16 241.16 180 292 Q168.84 241.16 118 230 Q168.84 218.84 180 168 Z" fill="#ffd23f"/>
+  <path d="M850 146 Q857.92 182.08 894 190 Q857.92 197.92 850 234 Q842.08 197.92 806 190 Q842.08 182.08 850 146 Z" fill="#ffffff"/>
+  <path d="M880 304 Q884.68 325.32 906 330 Q884.68 334.68 880 356 Q875.32 334.68 854 330 Q875.32 325.32 880 304 Z" fill="#ffd23f"/>
+  <g transform="translate(0 -18)">
+  <!-- Fahne -->
+  <rect x="504" y="150" width="16" height="130" rx="8" fill="#ffffff"/>
+  <path d="M520 156 L626 186 L520 218 Z" fill="#ff5a4e"/>
+  <!-- Mittelturm mit Kuppel -->
+  <rect x="402" y="262" width="220" height="250" rx="110" fill="#ffd23f"/>
+  <rect x="402" y="370" width="220" height="142" fill="#ffd23f"/>
+  <!-- Hauptkörper -->
+  <rect x="250" y="430" width="524" height="300" rx="36" fill="#ffd23f"/>
+  <g fill="#ffffff" opacity="0.95">
+    <rect x="250" y="500" width="524" height="34" rx="17"/>
+  </g>
+  <!-- Säulen links und rechts -->
+  <rect x="196" y="350" width="132" height="400" rx="66" fill="#ff5a4e"/>
+  <rect x="696" y="350" width="132" height="400" rx="66" fill="#ff5a4e"/>
+  <circle cx="262" cy="330" r="46" fill="#ffd23f"/>
+  <circle cx="762" cy="330" r="46" fill="#ffd23f"/>
+  <!-- Glanzlichter -->
+  <rect x="222" y="392" width="26" height="150" rx="13" fill="#ffffff" opacity="0.45"/>
+  <rect x="722" y="392" width="26" height="150" rx="13" fill="#ffffff" opacity="0.45"/>
+  <rect x="436" y="300" width="24" height="90" rx="12" fill="#ffffff" opacity="0.5"/>
+  <!-- Eingang -->
+  <path d="M432 730 V620 a80 80 0 0 1 160 0 V730 Z" fill="#13305f"/>
+  <!-- Sprungkissen vorn -->
+  <rect x="168" y="716" width="688" height="128" rx="64" fill="#ff5a4e"/>
+  <rect x="210" y="740" width="604" height="26" rx="13" fill="#ffffff" opacity="0.4"/>
+  </g>
+</svg>

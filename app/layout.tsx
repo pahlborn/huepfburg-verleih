@@ -27,7 +27,13 @@ export const metadata: Metadata = {
     title: `Hüpfburg mieten im ${siteConfig.serviceArea.headline}`,
     description: siteConfig.description,
   },
-  icons: { icon: withBasePath('/icon.svg') },
+  icons: {
+    icon: [{ url: withBasePath('/icon.svg'), type: 'image/svg+xml' }, { url: withBasePath('/icon-192.png'), sizes: '192x192' }],
+    apple: [{ url: withBasePath('/apple-icon.png'), sizes: '180x180' }],
+  },
+  manifest: withBasePath('/manifest.webmanifest'),
+  // Name unter dem Icon auf dem iPhone-Home-Bildschirm
+  appleWebApp: { title: siteConfig.homeScreenName, statusBarStyle: 'default' },
   // Entwurf auf GitHub Pages: nicht in Suchmaschinen aufnehmen.
   ...(process.env.NEXT_PUBLIC_NOINDEX ? { robots: { index: false, follow: false } } : {}),
 }

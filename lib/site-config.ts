@@ -13,6 +13,8 @@ export const siteConfig = {
   name: 'Hüpfburg-Verleih [Name]',
   /** Kurzform für enge Stellen (z. B. mobiler Header). */
   shortName: 'Hüpfburg-Verleih [Name]',
+  /** Name unter dem Icon auf dem Home-Bildschirm (kurz halten, max. ca. 12 Zeichen). Platzhalter bis der Firmenname feststeht. */
+  homeScreenName: 'Hüpfburgen',
   /** Produktions-URL für Sitemap, Canonical und JSON-LD. */
   url: 'https://www.example.de',
   tagline: 'Hüpfburgen mieten im Raum München, Dachau und Freising',
