@@ -1,7 +1,7 @@
 /**
  * ZUBEHÖR ZUM DAZUBUCHEN
  *
- * Preise in Euro pro Miete (Tagesmiete oder Wochenendpaket), alle Werte sind Platzhalter.
+ * Preise in Euro pro Miete (egal wie viele Tage), alle Werte sind Platzhalter.
  * Orientierung: hüpfburg.de (Berlin) verlangt 10 € für die Fallschutzmatte, 60 € für vier Wassersäcke,
  * 25 € für den Gebläse-Schallschutz und 75 € für einen Anhänger (Stand 08.10.2026).
  *

@@ -78,3 +78,8 @@ export function formatDateLong(iso: ISODate): string {
 export function formatDateShort(iso: ISODate): string {
   return shortFormatter.format(isoToUTC(iso))
 }
+
+/** Zeitraum als Text, z. B. "Samstag, 7. November 2026" oder "Fr, 06.11.2026 bis So, 08.11.2026". */
+export function formatRange(start: ISODate, end: ISODate = start): string {
+  return end === start ? formatDateLong(start) : `${formatDateShort(start)} bis ${formatDateShort(end)}`
+}

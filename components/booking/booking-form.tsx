@@ -17,9 +17,9 @@ import {
 } from '@/lib/booking-validation'
 import type { BookingSelection } from '@/lib/booking-selection'
 import type { Castle } from '@/lib/castles'
-import { addDays, formatDateLong } from '@/lib/dates'
+import { formatRange } from '@/lib/dates'
 import { formatCents } from '@/lib/format'
-import { pricingConfig, type PriceResult } from '@/lib/pricing'
+import type { PriceResult } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
 
 interface BookingFormProps {
@@ -226,11 +226,7 @@ export function BookingForm({ castle, selection, price }: BookingFormProps) {
             <SummaryRow label="Hüpfburg" value={castle.name} />
             <SummaryRow
               label="Termin"
-              value={
-                readySelection.rentalType === 'weekendPackage'
-                  ? `${formatDateLong(readySelection.date)} bis ${formatDateLong(addDays(readySelection.date, pricingConfig.weekendPackage.days - 1))}`
-                  : formatDateLong(readySelection.date)
-              }
+              value={`${formatRange(readySelection.date, readySelection.endDate)} (${readyPrice.days === 1 ? '1 Tag' : `${readyPrice.days} Tage`})`}
             />
             <SummaryRow
               label="Übergabe"
@@ -249,7 +245,15 @@ export function BookingForm({ castle, selection, price }: BookingFormProps) {
             {readyPrice.lines.map((line) => (
               <SummaryRow
                 key={line.id}
-                label={line.id === 'rental' ? 'Miete' : line.id === 'delivery' ? 'Lieferpauschale' : line.label}
+                label={
+                  line.id === 'rental'
+                    ? readyPrice.days > 1 && line.label.indexOf('Wochenendpreis') === -1
+                      ? 'Miete, 1. Tag'
+                      : 'Miete'
+                    : line.id === 'delivery'
+                      ? 'Lieferpauschale'
+                      : line.label
+                }
                 value={formatCents(line.cents)}
               />
             ))}

@@ -1,7 +1,6 @@
 import { getCastle } from '@/lib/castles'
 import { addDays, todayISO, weekdayOf, type ISODate } from '@/lib/dates'
-import { getSelectability, type SelectabilityReason } from '@/lib/booking-rules'
-import type { RentalType } from '@/lib/pricing'
+import { getRangeSelectability, type SelectabilityReason } from '@/lib/booking-rules'
 
 /**
  * VERFÜGBARKEIT UND BUCHUNGEN
@@ -19,9 +18,8 @@ import type { RentalType } from '@/lib/pricing'
 export interface BookingRecord {
   reference: string
   castleSlug: string
-  /** Alle belegten Kalendertage (bei Wochenendpaket Fr, Sa, So). */
+  /** Alle belegten Kalendertage von Mietbeginn bis Mietende. */
   dates: ISODate[]
-  rentalType: RentalType
   fulfilment: 'pickup' | 'delivery'
   customer: {
     name: string
@@ -98,15 +96,11 @@ export async function getBookedDates(slug: string): Promise<ISODate[]> {
 
 export type AvailabilityResult = { available: true } | { available: false; reason: SelectabilityReason }
 
-/** Prüft serverseitig, ob die Burg am gewünschten Datum (bzw. Wochenendpaket) frei ist. */
-export async function checkAvailability(
-  slug: string,
-  date: ISODate,
-  rentalType: RentalType,
-): Promise<AvailabilityResult> {
+/** Prüft serverseitig, ob die Burg im ganzen Zeitraum frei ist. */
+export async function checkAvailability(slug: string, start: ISODate, end: ISODate = start): Promise<AvailabilityResult> {
   if (!getCastle(slug)) return { available: false, reason: 'booked' }
   const booked = new Set(await getBookedDates(slug))
-  const reason = getSelectability(date, rentalType, booked, todayISO())
+  const reason = getRangeSelectability(start, end, booked, todayISO())
   return reason === 'ok' ? { available: true } : { available: false, reason }
 }
 

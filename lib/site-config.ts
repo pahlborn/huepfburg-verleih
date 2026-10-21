@@ -3,27 +3,29 @@
  *
  * Alle Firmen- und Kontaktdaten sowie die Mietbedingungs-Werte werden hier gepflegt.
  * Preise der einzelnen Hüpfburgen: lib/castles.ts
- * Liefer-Zonen, Feiertage, Wochenendpaket: lib/pricing.ts
+ * Liefer-Zonen, Feiertage, Folgetage: lib/pricing.ts
  *
  * Alles, was mit [eckigen Klammern] geschrieben ist, ist ein Platzhalter.
  */
 
 export const siteConfig = {
-  /** Firmenname (Platzhalter). Wird in Header, Footer, Titel, Impressum usw. verwendet. */
-  name: 'Hüpfburg-Verleih [Name]',
+  /** Geschäftsbezeichnung. Wird in Header, Footer, Titel, Impressum usw. verwendet. */
+  name: 'Hüpfburg-Verleih Peter Ahlborn',
   /** Kurzform für enge Stellen (z. B. mobiler Header). */
-  shortName: 'Hüpfburg-Verleih [Name]',
-  /** Name unter dem Icon auf dem Home-Bildschirm (kurz halten, max. ca. 12 Zeichen). Platzhalter bis der Firmenname feststeht. */
+  shortName: 'Hüpfburg-Verleih Ahlborn',
+  /** Name unter dem Icon auf dem Home-Bildschirm (kurz halten, max. ca. 12 Zeichen). */
   homeScreenName: 'Hüpfburgen',
   /** Produktions-URL für Sitemap, Canonical und JSON-LD. */
   url: 'https://www.example.de',
-  tagline: 'Hüpfburgen mieten im Raum München, Dachau und Freising',
+  tagline: 'Hüpfburgen mieten im Raum München, Dachau, Freising und Erding',
   description:
-    'Hüpfburg mieten für Kindergeburtstag, Vereinsfest oder Firmenfeier: Verfügbarkeit und Preis sofort sehen, online buchen. Selbstabholung oder Lieferung im Raum München, Dachau und Freising.',
+    'Hüpfburg mieten für Kindergeburtstag, Vereinsfest oder Firmenfeier: Verfügbarkeit und Preis sofort sehen, online buchen. Selbstabholung oder Lieferung im Raum München, Dachau, Freising und Erding.',
 
   serviceArea: {
-    headline: 'Raum München, Dachau, Freising',
-    regions: ['München', 'Landkreis Dachau', 'Landkreis Freising'],
+    headline: 'Raum München, Dachau, Freising und Erding',
+    /** Kurzform für den Header. */
+    short: 'München · Dachau · Freising · Erding',
+    regions: ['München', 'Landkreis Dachau', 'Landkreis Freising', 'Landkreis Erding'],
   },
 
   contact: {
@@ -37,7 +39,7 @@ export const siteConfig = {
   },
 
   address: {
-    owner: '[Vor- und Nachname / Firmenname]',
+    owner: 'Peter Ahlborn',
     street: '[Straße und Hausnummer]',
     postalCode: '85778',
     city: 'Haimhausen',
@@ -48,7 +50,7 @@ export const siteConfig = {
   legal: {
     vatId: '[USt-IdNr. oder Hinweis auf § 19 UStG]',
     registerEntry: '[Handelsregister / Gewerbeanmeldung, falls zutreffend]',
-    responsiblePerson: '[Vor- und Nachname]',
+    responsiblePerson: 'Peter Ahlborn',
     supervisoryAuthority: 'Bayerisches Landesamt für Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach',
   },
 

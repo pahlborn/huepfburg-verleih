@@ -203,7 +203,7 @@ export default function RentalTermsPage() {
             <LegalSection id="zubehoer" title="Zubehör">
               <p>
                 Zu jeder Burg gehören Gebläse, Erdnägel, Unterlegplane und Anleitung. Weiteres Zubehör können Sie beim Buchen
-                dazunehmen. Die Preise gelten pro Miete, auch für das Wochenendpaket:
+                dazunehmen. Die Preise gelten pro Miete, auch wenn Sie mehrere Tage mieten:
               </p>
               <ul>
                 {extras

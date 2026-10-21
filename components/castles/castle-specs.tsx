@@ -44,7 +44,7 @@ export function CastleSpecs({ castle, compact = false, className }: CastleSpecsP
         >
           <Icon className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
           <div>
-            <dt className="text-xs font-bold tracking-wide text-muted-foreground uppercase">{label}</dt>
+            <dt className="text-sm font-bold text-muted-foreground">{label}</dt>
             <dd className={cn('leading-snug', value === pending && 'text-muted-foreground italic')}>{value}</dd>
           </div>
         </div>

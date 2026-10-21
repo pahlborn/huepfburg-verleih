@@ -4,7 +4,7 @@ import { ArrowRight, CircleCheck, CircleX } from 'lucide-react'
 import { CastleMedia } from '@/components/castles/castle-media'
 import { CastleSpecs } from '@/components/castles/castle-specs'
 import { getLowestPrice, type Castle } from '@/lib/castles'
-import { formatDateLong, type ISODate } from '@/lib/dates'
+import { formatRange, type ISODate } from '@/lib/dates'
 import { formatEuro } from '@/lib/format'
 
 interface CastleCardProps {
@@ -12,15 +12,18 @@ interface CastleCardProps {
   headingLevel?: 'h2' | 'h3'
   /** Wunschdatum aus dem Kurzfilter. Wird an die Detailseite weitergereicht. */
   date?: ISODate
+  /** Ende des Zeitraums (einschließlich). */
+  endDate?: ISODate
   /** Ergebnis der Verfügbarkeitsprüfung für `date`. */
   isFreeOnDate?: boolean
 }
 
 const sizeLabel = { klein: 'Klein', mittel: 'Mittel', groß: 'Groß' } as const
 
-export function CastleCard({ castle, headingLevel = 'h2', date, isFreeOnDate }: CastleCardProps) {
+export function CastleCard({ castle, headingLevel = 'h2', date, endDate, isFreeOnDate }: CastleCardProps) {
   const Heading = headingLevel
-  const href = date ? `/huepfburgen/${castle.slug}?datum=${date}#buchung` : `/huepfburgen/${castle.slug}`
+  const query = date ? `?datum=${date}${endDate && endDate !== date ? `&bis=${endDate}` : ''}#buchung` : ''
+  const href = `/huepfburgen/${castle.slug}${query}`
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-3xl border bg-card shadow-sm transition-shadow focus-within:shadow-md hover:shadow-md">
@@ -67,7 +70,9 @@ export function CastleCard({ castle, headingLevel = 'h2', date, isFreeOnDate }: 
             ) : (
               <CircleX className="size-4 shrink-0" aria-hidden="true" />
             )}
-            {isFreeOnDate ? 'Frei am' : 'Leider belegt am'} {formatDateLong(date)}
+            {isFreeOnDate ? 'Frei' : endDate && endDate !== date ? 'Nicht durchgehend frei' : 'Leider belegt'}{' '}
+            {endDate && endDate !== date ? '' : 'am '}
+            {formatRange(date, endDate ?? date)}
           </p>
         ) : null}
 

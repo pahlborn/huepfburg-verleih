@@ -6,10 +6,10 @@ import { DraftNotice } from '@/components/common/draft-notice'
 import { LinkButton } from '@/components/common/link-button'
 import { parseSelection } from '@/lib/booking-selection'
 import { getCastle } from '@/lib/castles'
-import { addDays, formatDateLong } from '@/lib/dates'
+import { formatRange } from '@/lib/dates'
 import { getExtra } from '@/lib/extras'
 import { formatCents } from '@/lib/format'
-import { calculatePrice, pricingConfig } from '@/lib/pricing'
+import { calculatePrice } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
 
 export function ConfirmationView() {
@@ -31,7 +31,7 @@ export function ConfirmationView() {
       ? calculatePrice({
           castle,
           date: selection.date,
-          rentalType: selection.rentalType,
+          endDate: selection.endDate,
           fulfilment: selection.fulfilment,
           postalCode: selection.postalCode,
           extras: selection.extras,
@@ -55,10 +55,7 @@ export function ConfirmationView() {
     )
   }
 
-  const dateText =
-    selection.rentalType === 'weekendPackage'
-      ? `${formatDateLong(selection.date)} bis ${formatDateLong(addDays(selection.date, pricingConfig.weekendPackage.days - 1))}`
-      : formatDateLong(selection.date)
+  const dateText = `${formatRange(selection.date, selection.endDate)} (${price.days === 1 ? '1 Tag' : `${price.days} Tage`})`
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">

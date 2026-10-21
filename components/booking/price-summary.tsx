@@ -1,36 +1,34 @@
 import Link from 'next/link'
 import { formatCents } from '@/lib/format'
-import { formatDateLong, addDays, type ISODate } from '@/lib/dates'
-import { pricingConfig, type PriceResult, type RentalType } from '@/lib/pricing'
+import { formatRange, type ISODate } from '@/lib/dates'
+import { pricingConfig, type PriceResult } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
 import { WeatherBadge, WeatherFootnote } from '@/components/common/weather-note'
 
 interface PriceSummaryProps {
   price: PriceResult | null
   date?: ISODate
-  rentalType: RentalType
+  endDate?: ISODate
 }
 
 const incompleteMessages = {
   'needs-postal-code': 'Geben Sie die Postleitzahl des Aufstellorts ein, dann berechnen wir die Lieferpauschale.',
   'invalid-postal-code': 'Bitte geben Sie eine gültige, 5-stellige Postleitzahl ein.',
-  'invalid-package-date': 'Das Wochenendpaket startet immer an einem Freitag. Bitte wählen Sie einen freien Freitag.',
+  'invalid-range': `Bitte wählen Sie einen Zeitraum von höchstens ${pricingConfig.maxRentalDays} Tagen.`,
 } as const
 
 /** Live-Preis: Miete und Lieferpauschale zusammen, die Kaution getrennt davon. */
-export function PriceSummary({ price, date, rentalType }: PriceSummaryProps) {
+export function PriceSummary({ price, date, endDate }: PriceSummaryProps) {
   if (!date || !price) {
     return (
       <p className="text-muted-foreground">
-        Wählen Sie ein Datum im Kalender. Der Preis erscheint dann sofort hier.
+        Wählen Sie einen Tag oder Zeitraum im Kalender. Der Preis erscheint dann sofort hier.
       </p>
     )
   }
 
-  const dateText =
-    rentalType === 'weekendPackage'
-      ? `${formatDateLong(date)} bis ${formatDateLong(addDays(date, pricingConfig.weekendPackage.days - 1))}`
-      : formatDateLong(date)
+  const days = price.status === 'ok' && price.days > 1 ? ` (${price.days} Tage)` : ''
+  const dateText = `${formatRange(date, endDate ?? date)}${days}`
 
   if (price.status === 'delivery-on-request') {
     return (

@@ -14,7 +14,7 @@ const fredoka = Fredoka({ subsets: ['latin'], variable: '--font-fredoka', displa
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `Hüpfburg mieten im Raum München, Dachau und Freising | ${siteConfig.name}`,
+    default: `Hüpfburg mieten im Raum München, Dachau, Freising und Erding | ${siteConfig.name}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,

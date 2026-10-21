@@ -26,26 +26,26 @@ export async function submitBooking(
   form: BookingFormValues,
 ): Promise<SubmitBookingResult> {
   const castle = getCastle(selection?.slug)
-  if (!castle || !isValidISODate(selection.date)) {
+  if (!castle || !isValidISODate(selection.date) || !isValidISODate(selection.endDate)) {
     return { ok: false, code: 'invalid', message: 'Die Auswahl ist ungültig. Bitte laden Sie die Seite neu.' }
   }
 
   const errors = validateBookingForm(form)
   if (Object.keys(errors).length > 0) return { ok: false, code: 'validation', errors }
 
-  const availability = await checkAvailability(castle.slug, selection.date, selection.rentalType)
+  const availability = await checkAvailability(castle.slug, selection.date, selection.endDate)
   if (!availability.available) {
     return {
       ok: false,
       code: 'unavailable',
-      message: 'Dieser Termin ist leider nicht mehr frei. Bitte wählen Sie ein anderes Datum.',
+      message: 'Dieser Zeitraum ist leider nicht mehr ganz frei. Bitte wählen Sie andere Tage.',
     }
   }
 
   const price = calculatePrice({
     castle,
     date: selection.date,
-    rentalType: selection.rentalType,
+    endDate: selection.endDate,
     fulfilment: selection.fulfilment,
     postalCode: selection.postalCode,
     extras: selection.extras,
@@ -60,8 +60,7 @@ export async function submitBooking(
 
   const { reference } = await createBooking({
     castleSlug: castle.slug,
-    dates: getRentalDates(selection.date, selection.rentalType),
-    rentalType: selection.rentalType,
+    dates: getRentalDates(selection.date, selection.endDate),
     fulfilment: selection.fulfilment,
     customer: { name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim() },
     location: {

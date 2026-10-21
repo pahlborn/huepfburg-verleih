@@ -8,9 +8,9 @@ import { OptionCard } from '@/components/booking/option-card'
 import { PriceSummary } from '@/components/booking/price-summary'
 import { Input } from '@/components/ui/input'
 import type { BookingSelection } from '@/lib/booking-selection'
-import { getSelectability } from '@/lib/booking-rules'
+import { getRangeSelectability } from '@/lib/booking-rules'
 import type { Castle } from '@/lib/castles'
-import type { ISODate } from '@/lib/dates'
+import { formatRange, type ISODate } from '@/lib/dates'
 import { availableExtras, sanitizeExtras } from '@/lib/extras'
 import { formatCents } from '@/lib/format'
 import {
@@ -19,7 +19,6 @@ import {
   lookupDeliveryZone,
   pricingConfig,
   type Fulfilment,
-  type RentalType,
 } from '@/lib/pricing'
 import { siteConfig } from '@/lib/site-config'
 
@@ -28,6 +27,7 @@ interface BookingPanelProps {
   bookedDates: ISODate[]
   today: ISODate
   initialDate?: ISODate
+  initialEndDate?: ISODate
 }
 
 function Step({ number, title, children }: { number: number; title: string; children: ReactNode }) {
@@ -44,12 +44,12 @@ function Step({ number, title, children }: { number: number; title: string; chil
   )
 }
 
-export function BookingPanel({ castle, bookedDates, today, initialDate }: BookingPanelProps) {
+export function BookingPanel({ castle, bookedDates, today, initialDate, initialEndDate }: BookingPanelProps) {
   const booked = useMemo(() => new Set(bookedDates), [bookedDates])
-  const [rentalType, setRentalType] = useState<RentalType>('day')
-  const [date, setDate] = useState<ISODate | undefined>(
-    initialDate && getSelectability(initialDate, 'day', booked, today) === 'ok' ? initialDate : undefined,
-  )
+  const initialOk =
+    initialDate && getRangeSelectability(initialDate, initialEndDate ?? initialDate, booked, today) === 'ok'
+  const [date, setDate] = useState<ISODate | undefined>(initialOk ? initialDate : undefined)
+  const [endDate, setEndDate] = useState<ISODate | undefined>(initialOk ? (initialEndDate ?? initialDate) : undefined)
   const [fulfilment, setFulfilment] = useState<Fulfilment>('pickup')
   const [postalCode, setPostalCode] = useState('')
   const [chosenExtras, setChosenExtras] = useState<string[]>([])
@@ -57,10 +57,10 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
   const activeExtras = sanitizeExtras(chosenExtras, fulfilment)
 
   const price = useMemo(
-    () => (date ? calculatePrice({ castle, date, rentalType, fulfilment, postalCode, extras: activeExtras }) : null),
+    () => (date ? calculatePrice({ castle, date, endDate, fulfilment, postalCode, extras: activeExtras }) : null),
     // activeExtras ist aus chosenExtras und fulfilment abgeleitet
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [castle, date, rentalType, fulfilment, postalCode, chosenExtras],
+    [castle, date, endDate, fulfilment, postalCode, chosenExtras],
   )
 
   function toggleExtra(id: string, on: boolean) {
@@ -72,17 +72,16 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
       ? {
           slug: castle.slug,
           date,
-          rentalType,
+          endDate: endDate ?? date,
           fulfilment,
           postalCode: fulfilment === 'delivery' ? postalCode.trim() : undefined,
           extras: activeExtras,
         }
       : null
 
-  function handleRentalType(next: string) {
-    const nextType = next as RentalType
-    setRentalType(nextType)
-    setDate((current) => (current && getSelectability(current, nextType, booked, today) === 'ok' ? current : undefined))
+  function handleRange(start: ISODate, end: ISODate) {
+    setDate(start)
+    setEndDate(end)
   }
 
   const zoneLookup = fulfilment === 'delivery' && isValidPostalCode(postalCode) ? lookupDeliveryZone(postalCode) : null
@@ -98,37 +97,19 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-x-12">
       <div className="flex flex-col gap-10">
-        <Step number={1} title="Mietart und Datum wählen">
-          <div className="grid gap-3" role="radiogroup" aria-label="Mietart">
-            <OptionCard
-              name="rentalType"
-              value="day"
-              checked={rentalType === 'day'}
-              onChange={handleRentalType}
-              title="Einzelner Tag"
-              description="Jeder freie Tag. Mo bis Do günstiger, Fr bis So und an Feiertagen Wochenendpreis."
-            />
-            {pricingConfig.weekendPackage.enabled ? (
-              <OptionCard
-                name="rentalType"
-                value="weekendPackage"
-                checked={rentalType === 'weekendPackage'}
-                onChange={handleRentalType}
-                title={`${pricingConfig.weekendPackage.label} (Fr bis So)`}
-                description={`${pricingConfig.weekendPackage.description} Pauschalpreis ${formatCents(castle.pricing.weekendPackage * 100)}.`}
-              />
-            ) : null}
-          </div>
-          <AvailabilityCalendar
-            rentalType={rentalType}
-            selected={date}
-            onSelect={setDate}
-            bookedDates={bookedDates}
-            today={today}
-          />
-          <p className="text-sm text-muted-foreground">
-            {rentalType === 'weekendPackage'
-              ? 'Wählen Sie den Freitag, an dem das Wochenendpaket startet. Es muss das ganze Wochenende frei sein.'
+        <Step number={1} title="Zeitraum wählen">
+          <p className="text-muted-foreground">
+            Für einen Tag tippen Sie ihn einfach an. Für mehrere Tage tippen Sie zuerst den ersten und dann den letzten Tag
+            an. Jeder Folgetag kostet {Math.round(pricingConfig.extraDayFactor * 100)} % seines Tagespreises, ab{' '}
+            {formatCents(Math.round(castle.pricing.weekday * pricingConfig.extraDayFactor) * 100)}.
+            {pricingConfig.weekendCap.enabled
+              ? ` Freitag bis Sonntag kostet höchstens den Wochenendpreis von ${formatCents(castle.pricing.weekendPackage * 100)}.`
+              : ''}
+          </p>
+          <AvailabilityCalendar start={date} end={endDate} onChange={handleRange} bookedDates={bookedDates} today={today} />
+          <p className="text-sm text-muted-foreground" aria-live="polite">
+            {date
+              ? `Ihre Auswahl: ${formatRange(date, endDate ?? date)}${endDate && endDate !== date ? ` (${price?.status === 'ok' ? price.days : ''} Tage)` : ', ein Tag'}. Belegte Tage sind rot markiert und lassen sich nicht auswählen.`
               : 'Belegte Tage sind rot markiert und lassen sich nicht auswählen.'}
           </p>
         </Step>
@@ -210,7 +191,7 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
               ))}
             </div>
             <p className="text-sm text-muted-foreground">
-              Preise gelten pro Miete, auch für das Wochenendpaket. Gebläse, Erdnägel, Unterlegplane und Anleitung sind immer dabei.
+              Preise gelten pro Miete, auch bei mehreren Tagen. Gebläse, Erdnägel, Unterlegplane und Anleitung sind immer dabei.
             </p>
           </Step>
         ) : null}
@@ -222,7 +203,7 @@ export function BookingPanel({ castle, bookedDates, today, initialDate }: Bookin
       >
         <h3 className="mb-4 font-heading text-xl font-semibold">Ihr Preis</h3>
         <div aria-live="polite">
-          <PriceSummary price={price} date={date} rentalType={rentalType} />
+          <PriceSummary price={price} date={date} endDate={endDate} />
         </div>
       </aside>
 

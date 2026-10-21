@@ -3,43 +3,49 @@
 import { useMemo } from 'react'
 import { de } from 'react-day-picker/locale'
 import { Calendar } from '@/components/ui/calendar'
-import { getSelectability, latestBookableDate, earliestBookableDate } from '@/lib/booking-rules'
+import { getRangeSelectability, getSelectability, latestBookableDate, earliestBookableDate } from '@/lib/booking-rules'
 import { dateToISO, isoToLocalDate, type ISODate } from '@/lib/dates'
-import { getRentalDates, type RentalType } from '@/lib/pricing'
 
 interface AvailabilityCalendarProps {
-  rentalType: RentalType
-  selected?: ISODate
-  onSelect: (date: ISODate) => void
+  start?: ISODate
+  end?: ISODate
+  /** Neuer Zeitraum. Ein einzelner Tag hat start === end. */
+  onChange: (start: ISODate, end: ISODate) => void
   bookedDates: ISODate[]
   today: ISODate
 }
 
-export function AvailabilityCalendar({ rentalType, selected, onSelect, bookedDates, today }: AvailabilityCalendarProps) {
+/**
+ * Kalender für einen Zeitraum: Erster Klick wählt einen Tag (Tagesmiete). Ein zweiter Klick auf einen späteren Tag
+ * verlängert bis dorthin, sofern alle Tage dazwischen frei sind. Danach beginnt ein Klick eine neue Auswahl.
+ */
+export function AvailabilityCalendar({ start, end, onChange, bookedDates, today }: AvailabilityCalendarProps) {
   const booked = useMemo(() => new Set(bookedDates), [bookedDates])
   const bookedAsDates = useMemo(() => bookedDates.map(isoToLocalDate), [bookedDates])
-  const rangeAsDates = useMemo(
-    () => (selected ? getRentalDates(selected, rentalType).map(isoToLocalDate) : []),
-    [selected, rentalType],
-  )
+
+  function handleDay(day: ISODate) {
+    if (start && end === start && day > start && getRangeSelectability(start, day, booked, today) === 'ok') {
+      onChange(start, day)
+      return
+    }
+    onChange(day, day)
+  }
 
   return (
     <div>
       <Calendar
-        mode="single"
-        required
+        mode="range"
         locale={de}
         weekStartsOn={1}
-        selected={selected ? isoToLocalDate(selected) : undefined}
-        onSelect={(date) => onSelect(dateToISO(date))}
-        disabled={(date) => getSelectability(dateToISO(date), rentalType, booked, today) !== 'ok'}
+        selected={start ? { from: isoToLocalDate(start), to: isoToLocalDate(end ?? start) } : undefined}
+        onSelect={(_range, triggerDate) => handleDay(dateToISO(triggerDate))}
+        disabled={(date) => getSelectability(dateToISO(date), booked, today) !== 'ok'}
         startMonth={isoToLocalDate(today)}
         endMonth={isoToLocalDate(latestBookableDate(today))}
-        defaultMonth={isoToLocalDate(selected ?? earliestBookableDate(today))}
-        modifiers={{ booked: bookedAsDates, rentalRange: rangeAsDates }}
+        defaultMonth={isoToLocalDate(start ?? earliestBookableDate(today))}
+        modifiers={{ booked: bookedAsDates }}
         modifiersClassNames={{
           booked: 'rounded-(--cell-radius) bg-destructive/10 opacity-100! [&>button]:text-destructive [&>button]:line-through',
-          rentalRange: 'rounded-(--cell-radius) bg-primary/15',
         }}
         showOutsideDays={false}
         classNames={{ root: 'w-full' }}

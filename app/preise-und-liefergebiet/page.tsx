@@ -32,9 +32,10 @@ export default function PricesPage() {
             Mietpreise
           </h2>
           <p className="max-w-3xl leading-relaxed text-muted-foreground">
-            Montag bis Donnerstag gilt der Wochentag-Preis. Freitag bis Sonntag und an gesetzlichen Feiertagen gilt der
-            Wochenend-Preis. Das {pricingConfig.weekendPackage.label} ({pricingConfig.weekendPackage.description}) ist die
-            günstigere Wahl, wenn Sie die Burg über das ganze Wochenende brauchen.
+            Montag bis Donnerstag gilt der Wochentag-Preis, Freitag bis Sonntag und an gesetzlichen Feiertagen der
+            Wochenend-Preis. Sie können auch mehrere Tage am Stück mieten: Jeder Folgetag kostet{' '}
+            {Math.round(pricingConfig.extraDayFactor * 100)} % seines Tagespreises. Freitag bis Sonntag kostet höchstens
+            den {pricingConfig.weekendCap.label}. {pricingConfig.weekendCap.description}
           </p>
           <div
             className="overflow-x-auto rounded-3xl border bg-card"
@@ -42,7 +43,7 @@ export default function PricesPage() {
             aria-label="Preistabelle, horizontal scrollbar"
             tabIndex={0}
           >
-            <table className="w-full min-w-[40rem] border-collapse">
+            <table className="w-full min-w-[46rem] border-collapse">
               <caption className="sr-only">Mietpreise je Hüpfburg in Euro</caption>
               <thead>
                 <tr className="border-b bg-secondary/60">
@@ -56,7 +57,10 @@ export default function PricesPage() {
                     Fr bis So / Feiertag
                   </th>
                   <th scope="col" className={headCell}>
-                    {pricingConfig.weekendPackage.label}
+                    Folgetag
+                  </th>
+                  <th scope="col" className={headCell}>
+                    Fr bis So zusammen
                   </th>
                   <th scope="col" className={headCell}>
                     Kaution
@@ -72,6 +76,10 @@ export default function PricesPage() {
                     </th>
                     <td className={cell}>{formatEuro(castle.pricing.weekday)}</td>
                     <td className={cell}>{formatEuro(castle.pricing.weekend)}</td>
+                    <td className={cell}>
+                      {formatEuro(Math.round(castle.pricing.weekday * pricingConfig.extraDayFactor))} bis{' '}
+                      {formatEuro(Math.round(castle.pricing.weekend * pricingConfig.extraDayFactor))}
+                    </td>
                     <td className={cell}>{formatEuro(castle.pricing.weekendPackage)}</td>
                     <td className={cell}>{formatEuro(castle.pricing.deposit)}</td>
                   </tr>

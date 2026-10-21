@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Castle } from 'lucide-react'
+import { Castle, MapPin } from 'lucide-react'
 import { LinkButton } from '@/components/common/link-button'
 import { MobileNav } from '@/components/layout/mobile-nav'
 import { navigation, siteConfig } from '@/lib/site-config'
@@ -10,7 +10,13 @@ export function BrandMark({ className }: { className?: string }) {
       <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
         <Castle className="size-6" strokeWidth={1.75} aria-hidden="true" />
       </span>
-      <span className="font-heading text-lg leading-tight font-semibold text-balance sm:text-xl">{siteConfig.name}</span>
+      <span className="flex flex-col">
+        <span className="font-heading text-base leading-tight font-semibold sm:text-xl">{siteConfig.name}</span>
+        <span className="flex items-center gap-1 text-xs leading-tight font-semibold text-primary sm:text-sm">
+          <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+          {siteConfig.serviceArea.short}
+        </span>
+      </span>
     </span>
   )
 }

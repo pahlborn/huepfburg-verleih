@@ -1,5 +1,5 @@
 import { addDays, type ISODate } from '@/lib/dates'
-import { getRentalDates, isValidPackageStart, type RentalType } from '@/lib/pricing'
+import { checkRange, getRentalDates } from '@/lib/pricing'
 
 /**
  * Reine Regeln ohne Datenbankzugriff. Wird im Browser (Kalender) UND auf dem Server
@@ -20,21 +20,28 @@ export function latestBookableDate(today: ISODate): ISODate {
   return addDays(today, bookingRules.maxAdvanceDays)
 }
 
-export type SelectabilityReason = 'ok' | 'past' | 'too-far' | 'booked' | 'not-package-start'
+export type SelectabilityReason = 'ok' | 'past' | 'too-far' | 'booked' | 'end-before-start' | 'too-long'
 
-/**
- * Prüft, ob ein Datum als Mietbeginn wählbar ist. Beim Wochenendpaket müssen alle
- * belegten Tage (Fr, Sa, So) frei sein und der Start muss ein Freitag sein.
- */
-export function getSelectability(
-  date: ISODate,
-  rentalType: RentalType,
+/** Prüft, ob ein einzelner Tag frei und buchbar ist. */
+export function getSelectability(date: ISODate, bookedDates: ReadonlySet<ISODate>, today: ISODate): SelectabilityReason {
+  if (date < earliestBookableDate(today)) return 'past'
+  if (date > latestBookableDate(today)) return 'too-far'
+  if (bookedDates.has(date)) return 'booked'
+  return 'ok'
+}
+
+/** Prüft einen ganzen Zeitraum: gültig, nicht zu lang, und jeder Tag frei. */
+export function getRangeSelectability(
+  start: ISODate,
+  end: ISODate,
   bookedDates: ReadonlySet<ISODate>,
   today: ISODate,
 ): SelectabilityReason {
-  if (date < earliestBookableDate(today)) return 'past'
-  if (date > latestBookableDate(today)) return 'too-far'
-  if (rentalType === 'weekendPackage' && !isValidPackageStart(date)) return 'not-package-start'
-  if (getRentalDates(date, rentalType).some((day) => bookedDates.has(day))) return 'booked'
+  const range = checkRange(start, end)
+  if (range !== 'ok') return range
+  for (const day of getRentalDates(start, end)) {
+    const reason = getSelectability(day, bookedDates, today)
+    if (reason !== 'ok') return reason
+  }
   return 'ok'
 }

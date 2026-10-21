@@ -55,7 +55,7 @@ export const faqItems: FaqItem[] = [
     id: 'abholzeiten',
     category: 'Buchung und Abholung',
     question: 'Wann hole ich die Burg ab und wann bringe ich sie zurück?',
-    answer: `Bei der Tagesmiete holen Sie die Burg ab ${handover.dayPickupFrom} ab und bringen sie bis ${handover.dayReturnBy} zurück. Beim Wochenendpaket holen Sie sie ${handover.weekendPickup} ab und bringen sie ${handover.weekendReturn} zurück. Die genaue Uhrzeit stimmen wir nach der Buchung mit Ihnen ab.`,
+    answer: `Bei der Tagesmiete holen Sie die Burg ab ${handover.dayPickupFrom} ab und bringen sie bis ${handover.dayReturnBy} zurück. Wenn Sie Freitag bis Sonntag mieten, holen Sie sie ${handover.weekendPickup} ab und bringen sie ${handover.weekendReturn} zurück. Bei mehreren Tagen bringen Sie sie am Tag nach dem letzten Miettag zurück. Die genaue Uhrzeit stimmen wir nach der Buchung mit Ihnen ab.`,
   },
   {
     id: 'vorabend',
@@ -149,7 +149,7 @@ export const faqItems: FaqItem[] = [
     id: 'zubehoer',
     category: 'Aufbau und Abbau',
     question: 'Welches Zubehör kann ich dazubuchen?',
-    answer: `Beim Buchen können Sie auswählen: ${extraList}. Die Preise gelten pro Miete, auch für das Wochenendpaket, und erscheinen sofort im Gesamtpreis.`,
+    answer: `Beim Buchen können Sie auswählen: ${extraList}. Die Preise gelten pro Miete, auch bei mehreren Tagen, und erscheinen sofort im Gesamtpreis.`,
   },
 
   // --- Aufstellort und Strom ---
