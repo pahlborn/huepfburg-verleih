@@ -24,15 +24,17 @@ export function CastleCard({ castle, headingLevel = 'h2', date, isFreeOnDate }: 
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-3xl border bg-card shadow-sm transition-shadow focus-within:shadow-md hover:shadow-md">
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <CastleMedia castle={castle} className="transition-transform duration-500 group-hover:scale-[1.03]" />
+      <div className="relative aspect-[4/3] overflow-hidden bg-white">
+        <CastleMedia castle={castle} contain className="transition-transform duration-500 group-hover:scale-[1.03]" />
         <div className="absolute top-3 left-3 flex flex-wrap gap-2">
           <span className="rounded-full bg-card px-3 py-1 text-sm font-bold text-primary shadow-sm">
             {sizeLabel[castle.size]}
           </span>
-          <span className="rounded-full bg-card px-3 py-1 text-sm font-bold text-primary shadow-sm">
-            bis {castle.maxPersons} Kinder
-          </span>
+          {castle.maxPersons ? (
+            <span className="rounded-full bg-card px-3 py-1 text-sm font-bold text-primary shadow-sm">
+              bis {castle.maxPersons} Kinder
+            </span>
+          ) : null}
           {castle.isPlaceholder ? (
             <span className="rounded-full bg-accent px-3 py-1 text-sm font-bold text-accent-foreground shadow-sm">
               Platzhalter

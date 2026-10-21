@@ -9,6 +9,8 @@ interface CastleMediaProps {
   priority?: boolean
   sizes?: string
   className?: string
+  /** Ganzes Bild zeigen statt zuschneiden (Detailseite). */
+  contain?: boolean
 }
 
 /** Zeigt das Foto der Burg oder, solange noch keines hinterlegt ist, einen Platzhalter. */
@@ -18,6 +20,7 @@ export function CastleMedia({
   priority = false,
   sizes = '(min-width: 1024px) 33vw, 100vw',
   className,
+  contain = false,
 }: CastleMediaProps) {
   const image = castle.images[index]
   if (!image) {
@@ -31,7 +34,7 @@ export function CastleMedia({
   }
   return (
     <>
-      <Image src={withBasePath(image.src || '/placeholder.svg')} alt={image.alt} fill sizes={sizes} priority={priority} className="object-cover" />
+      <Image src={withBasePath(image.src || '/placeholder.svg')} alt={image.alt} fill sizes={sizes} priority={priority} className={contain ? 'object-contain' : 'object-cover'} />
       {image.credit ? (
         <span className="absolute bottom-1 right-1 rounded bg-black/55 px-1.5 py-0.5 text-[10px] leading-none text-white">
           {image.credit}

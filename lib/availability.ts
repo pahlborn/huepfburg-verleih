@@ -57,14 +57,14 @@ function nthUpcoming(today: ISODate, weekday: number, n: number): ISODate {
 function mockBookedDates(slug: string): ISODate[] {
   const today = todayISO()
   const weekendIndexes: Record<string, number[]> = {
-    'burg-beispiel-1': [0, 2, 3, 6],
-    'klatschender-clown': [1, 2, 4, 5],
-    'burg-beispiel-3': [0, 3, 4, 7],
+    'mini-zirkus': [0, 2, 3, 6],
+    'partyburg': [1, 2, 4, 5],
+    'clown-xl': [0, 3, 4, 7],
   }
   const weekdayBlocks: Record<string, { weekday: number; n: number }[]> = {
-    'burg-beispiel-1': [{ weekday: 4, n: 1 }],
-    'klatschender-clown': [{ weekday: 2, n: 2 }, { weekday: 3, n: 2 }],
-    'burg-beispiel-3': [{ weekday: 1, n: 3 }],
+    'mini-zirkus': [{ weekday: 4, n: 1 }],
+    'partyburg': [{ weekday: 2, n: 2 }, { weekday: 3, n: 2 }],
+    'clown-xl': [{ weekday: 1, n: 3 }],
   }
 
   const dates = new Set<ISODate>()

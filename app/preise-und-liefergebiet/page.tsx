@@ -23,7 +23,7 @@ export default function PricesPage() {
       <PageHero
         eyebrow="Transparent kalkuliert"
         title="Preise und Liefergebiet"
-        intro="Alle Preise sind Platzhalter-Beispiele und werden vor dem Start durch die echten Werte ersetzt. Den genauen Preis für Ihren Termin sehen Sie sofort auf der Seite der jeweiligen Hüpfburg."
+        intro="Die Preise sind ein erster Vorschlag und können sich bis zum Start noch ändern. Den genauen Preis für Ihren Termin sehen Sie sofort auf der Seite der jeweiligen Hüpfburg."
       />
 
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-4 py-12 sm:px-6">

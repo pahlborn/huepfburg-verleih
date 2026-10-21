@@ -94,7 +94,7 @@ export function PriceSummary({ price, date, rentalType }: PriceSummaryProps) {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Alle Preise sind Platzhalter. [Hinweis zu MwSt. bzw. § 19 UStG ergänzen] Fragen vorab? {siteConfig.contact.phone}
+        Preise sind ein Vorschlag. [Hinweis zu MwSt. bzw. § 19 UStG ergänzen] Fragen vorab? {siteConfig.contact.phone}
       </p>
     </div>
   )

@@ -33,7 +33,7 @@ export default function CastlesPage() {
         </Suspense>
         <WeatherFootnote className="mt-10 max-w-2xl" />
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          Alle Burgen, Maße und Preise auf dieser Seite sind Platzhalter und werden vor dem Start durch die echten Daten ersetzt.
+          Maße und Fotos stammen von den Herstellern, eigene Fotos folgen. Die Preise sind ein erster Vorschlag und können sich bis zum Start noch ändern.
         </p>
       </section>
     </>

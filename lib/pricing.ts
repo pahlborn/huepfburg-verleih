@@ -11,7 +11,9 @@ import { getHolidayName } from '@/lib/holidays'
  * - das Wochenendpaket,
  * - die Liefer-Zonen inklusive Zuordnung der Postleitzahlen.
  *
- * Alle Zahlen und Zuordnungen sind Platzhalter.
+ * Lieferpauschalen: Vorschlag vom 21.10.2026. Sie decken zwei Fahrten hin und zurück (Liefern und Abholen)
+ * plus Auf- und Abbau. Zum Vergleich im Raum München: Münchner Hüpfer 65 € Aufbau + 90 € Abbau (bis 15 km),
+ * Lorenz 50 € Grundpreis ohne Aufbau, Gaudihüpfer 59 € Lieferung, Aufbau ab 79 €.
  */
 
 export type RentalType = 'day' | 'weekendPackage'
@@ -56,7 +58,7 @@ export const pricingConfig = {
       id: 'zone-1',
       label: 'Zone 1',
       maxKm: 10,
-      fee: 25,
+      fee: 79,
       postalCodes: ['85778', '85777', '85241', '85716', '85764'],
       postalPrefixes: [],
     },
@@ -64,7 +66,7 @@ export const pricingConfig = {
       id: 'zone-2',
       label: 'Zone 2',
       maxKm: 25,
-      fee: 45,
+      fee: 109,
       postalCodes: ['85221', '85229', '85244', '85757', '85748', '85737', '85354', '85356', '85609', '85391'],
       postalPrefixes: ['8093'],
     },
@@ -72,7 +74,7 @@ export const pricingConfig = {
       id: 'zone-3',
       label: 'Zone 3',
       maxKm: 40,
-      fee: 65,
+      fee: 139,
       postalCodes: ['85435', '85551', '85591', '82110', '82140', '82256', '85276'],
       postalPrefixes: ['80', '81'],
     },

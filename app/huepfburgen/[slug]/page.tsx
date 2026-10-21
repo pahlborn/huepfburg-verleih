@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ChevronRight, CircleCheck, TriangleAlert } from 'lucide-react'
+import { ChevronRight, CircleCheck, PackageCheck, TriangleAlert } from 'lucide-react'
 import { BookingPanelLoader } from '@/components/booking/booking-panel-loader'
-import { CastleMedia } from '@/components/castles/castle-media'
+import { CastleGallery } from '@/components/castles/castle-gallery'
 import { CastleSpecs } from '@/components/castles/castle-specs'
 import { castles, getCastle, getLowestPrice } from '@/lib/castles'
 import { formatEuro } from '@/lib/format'
@@ -57,18 +57,7 @@ export default async function CastleDetailPage({ params }: PageProps<'/huepfburg
       </div>
 
       <section className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-        <div className="flex flex-col gap-3">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border">
-            <CastleMedia castle={castle} index={0} priority sizes="(min-width: 1024px) 55vw, 100vw" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {[1, 2].map((index) => (
-              <div key={index} className="relative aspect-[4/3] overflow-hidden rounded-2xl border">
-                <CastleMedia castle={castle} index={index} sizes="(min-width: 1024px) 27vw, 50vw" />
-              </div>
-            ))}
-          </div>
-        </div>
+        <CastleGallery castle={castle} />
 
         <div className="flex flex-col gap-6">
           <div>
@@ -103,6 +92,15 @@ export default async function CastleDetailPage({ params }: PageProps<'/huepfburg
           </ul>
 
           <CastleSpecs castle={castle} />
+
+          <div className="rounded-2xl bg-secondary/60 p-5">
+            <h2 className="flex items-center gap-2 font-heading text-lg font-semibold">
+              <PackageCheck className="size-5 text-primary" aria-hidden="true" />
+              Bei jeder Miete dabei
+            </h2>
+            <p className="mt-1 text-muted-foreground">{castle.included.join(', ')}.</p>
+            <p className="mt-2 text-sm text-muted-foreground">Transport bei Selbstabholung: {castle.transport}.</p>
+          </div>
         </div>
       </section>
 
