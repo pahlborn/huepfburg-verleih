@@ -2,7 +2,9 @@ import { Check, Package, Truck } from 'lucide-react'
 import { formatEuro } from '@/lib/format'
 import { pricingConfig } from '@/lib/pricing'
 import { DateFilter } from '@/components/booking/date-filter'
-import { PlaceholderImage } from '@/components/common/placeholder-image'
+import Link from 'next/link'
+import { CastleMedia } from '@/components/castles/castle-media'
+import { getCastle } from '@/lib/castles'
 import type { ISODate } from '@/lib/dates'
 import { siteConfig } from '@/lib/site-config'
 import { WeatherFootnote } from '@/components/common/weather-note'
@@ -13,6 +15,9 @@ const promises = [
   'Kaution transparent, getrennt ausgewiesen',
 ]
 
+// Übergangsbild bis zu eigenen Fotos: Herstellerfoto der Clownburg mit Bildnachweis.
+const heroCastle = getCastle('clown-xl')!
+
 export function Hero({ today }: { today: ISODate }) {
   return (
     <section className="bg-secondary/60" aria-labelledby="hero-titel">
@@ -20,7 +25,6 @@ export function Hero({ today }: { today: ISODate }) {
           am Desktop links Titel und Termin, rechts oben Abholung/Lieferung, darunter das Bild. */}
       <div className="mx-auto grid max-w-6xl gap-x-12 gap-y-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.1fr_1fr]">
         <div className="rise-in lg:col-start-1 lg:row-start-1">
-          <p className="mb-3 text-sm font-bold tracking-wide text-primary uppercase">{siteConfig.serviceArea.headline}</p>
           <h1 id="hero-titel" className="text-5xl font-semibold text-balance sm:text-6xl">
             Hüpfburg in 2 Minuten buchen
           </h1>
@@ -69,9 +73,16 @@ export function Hero({ today }: { today: ISODate }) {
           <WeatherFootnote className="mt-3 max-w-xl" />
         </div>
 
-        <div className="rise-in aspect-[4/3] self-start overflow-hidden rounded-[2rem] border-4 border-background shadow-lg lg:col-start-2 lg:row-start-2 [animation-delay:120ms]">
-          <PlaceholderImage label="Hero-Foto: Hüpfburg mit Kindern im Garten" tone="sun" />
-        </div>
+        <Link
+          href="/huepfburgen/clown-xl"
+          aria-label={`${heroCastle.name} ansehen`}
+          className="rise-in group relative block aspect-[4/3] self-start overflow-hidden rounded-[2rem] border-4 border-background bg-white shadow-lg lg:col-start-2 lg:row-start-2 [animation-delay:120ms]"
+        >
+          <CastleMedia castle={heroCastle} index={0} priority contain sizes="(min-width: 1024px) 45vw, 100vw" />
+          <span className="absolute top-3 left-3 rounded-full bg-card/95 px-3 py-1 font-heading text-sm font-semibold text-primary shadow-sm transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+            {heroCastle.name} ansehen
+          </span>
+        </Link>
       </div>
     </section>
   )
