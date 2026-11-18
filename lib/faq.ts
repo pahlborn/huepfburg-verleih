@@ -244,7 +244,7 @@ export const faqItems: FaqItem[] = [
     category: 'Nutzung und Sicherheit',
     question: 'Sind die Hüpfburgen geprüft?',
     answer:
-      'Unsere Burgen sind Profi-Geräte aus robuster PVC-Plane, gebaut nach der Norm EN 14960 für aufblasbare Spielgeräte. [Platzhalter: Prüfbuch und regelmäßige Prüfung bestätigen.] Billige Nylon-Burgen aus dem Spielwarenhandel vermieten wir nicht.',
+      'Unsere Burgen sind Profi-Geräte aus robuster PVC-Plane, gebaut nach der Norm EN 14960 für aufblasbare Spielgeräte. Jede Burg trägt ein fest angebrachtes Typenschild mit Hersteller, Seriennummer, maximaler Nutzerzahl und Altersangabe, dazu das CE-Kennzeichen als Bestätigung der EU-Konformität. Zusätzlich lassen wir jede Burg einmal jährlich von einer unabhängigen Prüfstelle nach EN 14960 durchchecken – ohne bestandene Jahresprüfung setzen wir kein Gerät ein. Billige Nylon-Burgen aus dem Spielwarenhandel vermieten wir nicht.',
   },
   {
     id: 'versicherung',

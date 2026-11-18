@@ -90,6 +90,11 @@ export default function RentalTermsPage() {
                 </li>
                 <li>Erwachsene dürfen die Burg nicht betreten, und die Burg darf nicht überlastet werden.</li>
               </ul>
+              <p>
+                Alle Burgen sind nach EN 14960 gefertigt und tragen ein Typenschild (Hersteller, Seriennummer, maximale
+                Nutzerzahl, Altersangabe) sowie das CE-Kennzeichen. Zusätzlich lassen wir jede Burg einmal jährlich von einer
+                unabhängigen Prüfstelle nach EN 14960 prüfen.
+              </p>
             </LegalSection>
 
             <LegalSection id="verhalten" title="Verhaltensregeln auf der Burg">
@@ -136,8 +141,9 @@ export default function RentalTermsPage() {
                 </li>
                 <li>Die Burg ist nach Anleitung zu verankern. Die Art der Verankerung hängt vom Untergrund ab.</li>
                 <li>
-                  Ausreichend Platz plus Sicherheitsabstand zu Wänden, Zäunen, Bäumen, Fahrzeugen und anderen Hindernissen. Der
-                  Platzbedarf steht bei jeder Burg.
+                  Rundum mindestens 1,8 m frei zu Wänden, Zäunen, Bäumen, Fahrzeugen und anderen Hindernissen, vor dem
+                  Eingang mindestens 3,5 m (Vorgabe nach EN 14960). Den genauen Platzbedarf je Burg finden Sie bei jeder
+                  Burg.
                 </li>
                 <li>
                   Ebenerdiger Zugang zum Aufstellort mit ca. <Placeholder>{terms.accessWidthMeters} m</Placeholder> Breite.

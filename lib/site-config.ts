@@ -135,7 +135,7 @@ export const siteConfig = {
       id: 'norm',
       icon: 'shield-check',
       title: 'Geprüft nach DIN EN 14960',
-      text: 'Sicherheitsprüfung der Hüpfburgen nach Norm, mit Nachweis auf Anfrage.',
+      text: 'Typenschild, CE-Kennzeichen und jährliche Prüfung durch eine unabhängige Prüfstelle, mit Nachweis auf Anfrage.',
       confirmed: false,
     },
     {
